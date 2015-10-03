@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: SimugenCore;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-ClassPath: .
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime,
+ org.apache.commons.math;bundle-version="2.1.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: simugen.core.abstracts,
+ simugen.core.defaults,
+ simugen.core.interfaces,
+ simugen.core.rng
