@@ -1,12 +1,15 @@
 package simugen.core.defaults;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.math.random.MersenneTwister;
 
 import simugen.core.interfaces.LoggingStyle;
 import simugen.core.interfaces.SimEngine;
 import simugen.core.interfaces.SimEvent;
+import simugen.core.interfaces.SimEventListener;
 import simugen.core.interfaces.SimModel;
 
 public class DefaultSimEngine implements SimEngine
@@ -22,6 +25,8 @@ public class DefaultSimEngine implements SimEngine
 	private MersenneTwister doubleGenerator;
 
 	private long seed;
+
+	private List<SimEventListener> listListeners = new ArrayList<>();
 
 	public void setModel(SimModel model)
 	{
@@ -56,6 +61,8 @@ public class DefaultSimEngine implements SimEngine
 
 		internalModel.startUp();
 
+		internalModel.getListeners();
+
 		SimEvent e = getNextEvent();
 
 		while (e != null && !forceStop)
@@ -63,11 +70,13 @@ public class DefaultSimEngine implements SimEngine
 			print(e.printEvent(logging), logging);
 
 			e = getNextEvent();
-			
-			if(e instanceof ModelFinishedEvent)
+
+			listListeners.forEach(new SimEventConsumer(e));
+
+			if (e instanceof ModelFinishedEvent)
 			{
 				print(e.printEvent(logging), logging);
-				
+
 				e = null;
 			}
 		}
@@ -95,7 +104,7 @@ public class DefaultSimEngine implements SimEngine
 
 	public void print(String message, LoggingStyle style)
 	{
-		if(message == null)
+		if (message == null)
 		{
 			return;
 		}
@@ -139,4 +148,9 @@ public class DefaultSimEngine implements SimEngine
 		return seed;
 	}
 
+	@Override
+	public void addEventListener(SimEventListener e)
+	{
+		listListeners.add(e);
+	}
 }

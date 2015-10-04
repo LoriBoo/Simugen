@@ -7,11 +7,14 @@ import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.SimComponent;
 import simugen.core.interfaces.SimEngine;
 import simugen.core.interfaces.SimEvent;
+import simugen.core.interfaces.SimEventListener;
 import simugen.core.interfaces.SimModel;
 
 public abstract class AbstractSimModel implements SimModel
 {
 	private List<SimComponent> components = new ArrayList<>();
+	
+	private List<SimEventListener> listeners = new ArrayList<>();
 	
 	boolean complete = false;
 
@@ -21,11 +24,27 @@ public abstract class AbstractSimModel implements SimModel
 		complete = true;
 		onShutdown();
 	}
+	
+	@Override
+	public void addListener(SimEventListener e)
+	{
+		listeners.add(e);	
+	}
 
 	@Override
 	public void addComponent(SimComponent comp)
 	{
 		components.add(comp);
+		if(comp instanceof SimEventListener)
+		{
+			listeners.add((SimEventListener) comp);
+		}
+	}
+	
+	@Override
+	public List<SimEventListener> getListeners()
+	{
+		return listeners;
 	}
 
 	@Override
