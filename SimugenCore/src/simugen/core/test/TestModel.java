@@ -5,7 +5,7 @@ import simugen.core.abstracts.ProcessGenerated;
 import simugen.core.defaults.DefaultProcessor;
 import simugen.core.defaults.StringEvent;
 import simugen.core.interfaces.SimEvent;
-import simugen.core.rng.TriangularNumberGenerator;
+import simugen.core.rng.EmpiricalGenerator;
 
 public class TestModel extends AbstractSimModel
 {
@@ -13,8 +13,19 @@ public class TestModel extends AbstractSimModel
 	@Override
 	public void startUp()
 	{
-		final TriangularNumberGenerator numberGen = new TriangularNumberGenerator(
-				1, 5, 10);
+		final EmpiricalGenerator numberGen = new EmpiricalGenerator();
+		
+		numberGen.addValue(0.125);
+		
+		numberGen.addValue(0.5);
+		
+		numberGen.addValue(0.5);
+		
+		numberGen.addValue(0.5);
+		
+		numberGen.addValue(0.8);
+		
+		numberGen.computeProbabilities();
 
 		DefaultProcessor comp = new DefaultProcessor();
 
