@@ -131,7 +131,7 @@ public class StockBuilderFactory
 
 		builder.setCompany(company);
 		builder.setStartDate(startDate);
-		builder.setEndDate(startDate);
+		builder.setEndDate(endDate);
 		builder.setInterval(interval);
 
 		return builder;

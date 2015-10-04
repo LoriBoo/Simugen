@@ -49,7 +49,7 @@ public class StockBuilderFactoryTest
 
 			Map<Date, Double> data = StockScraperUtils.getHistorical(builder);
 
-			assertTrue(data.entrySet().size() == 1);
+			assertTrue(data.entrySet().size() == 2);
 
 			for (Entry<Date, Double> e : data.entrySet())
 			{
@@ -59,7 +59,43 @@ public class StockBuilderFactoryTest
 		}
 		catch (IOException | ParseException e)
 		{
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testDerivatives()
+	{
+		StockCompany company = StockBuilderFactory.INSTANCE
+				.createCompany("HII");
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		try
+		{
+			Date startDate = format.parse("2015-09-30");
+
+			Date endDate = format.parse("2015-10-01");
+
+			YahooUrlBuilder builder = StockBuilderFactory.INSTANCE
+					.createBuilder(company, startDate, endDate);
+
+			Map<Date, Double> data = StockScraperUtils.getHistorical(builder);
+
+			assertTrue(data.entrySet().size() == 2);
+
+			data = StockScraperUtils.getPercentChange(data);
+
+			assertTrue(data.entrySet().size() == 1);
+
+			for (Entry<Date, Double> e : data.entrySet())
+			{
+				System.out.println("Date: " + e.getKey().toString());
+				System.out.println("Percent Change: " + e.getValue());
+			}
+		}
+		catch (IOException | ParseException e)
+		{
 			e.printStackTrace();
 		}
 	}

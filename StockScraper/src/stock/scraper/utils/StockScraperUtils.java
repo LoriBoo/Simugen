@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 
@@ -138,5 +139,30 @@ public class StockScraperUtils
 		assert csv.canWrite();
 
 		return csv;
+	}
+	
+	public static Map<Date, Double> getPercentChange(Map<Date, Double> data)
+	{
+		Map<Date, Double> derviative = new LinkedHashMap<>();
+		
+		Double last = null;
+
+		for (Entry<Date, Double> entry : data.entrySet())
+		{
+			if(last != null)
+			{
+				double value = entry.getValue();
+				
+				double difference = value-last;
+				
+				double percent = difference / last;
+				
+				derviative.put(entry.getKey(), percent);
+			}
+			
+			last = entry.getValue();
+		}
+
+		return derviative;
 	}
 }
