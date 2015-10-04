@@ -38,7 +38,9 @@ public abstract class AbstractSimModel implements SimModel
 		
 		for(SimComponent c : components)
 		{
-			SimEvent evt = c.process(e.getNext());
+			double next = e.getNext();
+			
+			SimEvent evt = c.process(next);
 			
 			if(evt != null)
 			{
