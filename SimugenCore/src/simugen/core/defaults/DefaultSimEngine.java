@@ -61,7 +61,7 @@ public class DefaultSimEngine implements SimEngine
 
 		internalModel.startUp();
 
-		internalModel.getListeners();
+		listListeners.addAll(internalModel.getListeners());
 
 		SimEvent e = getNextEvent();
 
