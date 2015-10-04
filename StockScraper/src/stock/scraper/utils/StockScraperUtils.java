@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
@@ -27,10 +28,10 @@ public class StockScraperUtils
 
 	private static int close_index = -1;
 
-	public static Map<Date, Double> getHistorical(YahooUrlBuilder builder)
+	public static Map<Date, BigDecimal> getHistorical(YahooUrlBuilder builder)
 			throws MalformedURLException, IOException, ParseException
 	{
-		Map<Date, Double> historicalData = new LinkedHashMap<>();
+		Map<Date, BigDecimal> historicalData = new LinkedHashMap<>();
 
 		File data = getDataFile(builder.getUrl());
 
@@ -38,7 +39,7 @@ public class StockScraperUtils
 
 		Date date = null;
 
-		Double value = null;
+		BigDecimal value = null;
 
 		while (readFile.ready())
 		{
@@ -63,7 +64,8 @@ public class StockScraperUtils
 				}
 				else if (i == close_index && value == null)
 				{
-					value = Double.valueOf(col);
+					value = new BigDecimal(col).setScale(4,
+							BigDecimal.ROUND_HALF_UP);
 				}
 				else if ((i == date_index && date != null)
 						|| (i == close_index && value != null))
@@ -140,26 +142,28 @@ public class StockScraperUtils
 
 		return csv;
 	}
-	
-	public static Map<Date, Double> getPercentChange(Map<Date, Double> data)
-	{
-		Map<Date, Double> derviative = new LinkedHashMap<>();
-		
-		Double last = null;
 
-		for (Entry<Date, Double> entry : data.entrySet())
+	public static Map<Date, BigDecimal> getPercentChange(
+			Map<Date, BigDecimal> data)
+	{
+		Map<Date, BigDecimal> derviative = new LinkedHashMap<>();
+
+		BigDecimal last = null;
+
+		for (Entry<Date, BigDecimal> entry : data.entrySet())
 		{
-			if(last != null)
+			if (last != null)
 			{
-				double value = entry.getValue();
-				
-				double difference = value-last;
-				
-				double percent = difference / last;
-				
-				derviative.put(entry.getKey(), percent);
+				BigDecimal value = entry.getValue();
+
+				BigDecimal difference = value.subtract(last);
+
+				BigDecimal percentage = difference.divide(last, 4,
+						BigDecimal.ROUND_HALF_UP);
+
+				derviative.put(entry.getKey(), percentage);
 			}
-			
+
 			last = entry.getValue();
 		}
 

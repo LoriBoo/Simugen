@@ -3,6 +3,7 @@ package stock.scraper.builder.test;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,11 +48,11 @@ public class StockBuilderFactoryTest
 			YahooUrlBuilder builder = StockBuilderFactory.INSTANCE
 					.createBuilder(company, startDate, endDate);
 
-			Map<Date, Double> data = StockScraperUtils.getHistorical(builder);
+			Map<Date, BigDecimal> data = StockScraperUtils.getHistorical(builder);
 
 			assertTrue(data.entrySet().size() == 2);
 
-			for (Entry<Date, Double> e : data.entrySet())
+			for (Entry<Date, BigDecimal> e : data.entrySet())
 			{
 				System.out.println("Date: " + e.getKey().toString());
 				System.out.println("Stock Value: " + e.getValue());
@@ -80,7 +81,7 @@ public class StockBuilderFactoryTest
 			YahooUrlBuilder builder = StockBuilderFactory.INSTANCE
 					.createBuilder(company, startDate, endDate);
 
-			Map<Date, Double> data = StockScraperUtils.getHistorical(builder);
+			Map<Date, BigDecimal> data = StockScraperUtils.getHistorical(builder);
 
 			assertTrue(data.entrySet().size() == 2);
 
@@ -88,7 +89,7 @@ public class StockBuilderFactoryTest
 
 			assertTrue(data.entrySet().size() == 1);
 
-			for (Entry<Date, Double> e : data.entrySet())
+			for (Entry<Date, BigDecimal> e : data.entrySet())
 			{
 				System.out.println("Date: " + e.getKey().toString());
 				System.out.println("Percent Change: " + e.getValue());
