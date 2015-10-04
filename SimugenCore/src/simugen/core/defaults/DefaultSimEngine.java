@@ -95,6 +95,10 @@ public class DefaultSimEngine implements SimEngine
 
 	public void print(String message, LoggingStyle style)
 	{
+		if(message == null)
+		{
+			return;
+		}
 		switch (style)
 		{
 		case DATA:

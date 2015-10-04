@@ -6,7 +6,7 @@ import simugen.core.interfaces.SimEvent;
 
 public abstract class ProcessGenerated<T> implements EventProcess
 {
-	private DataGenerator<T> generator = null;
+	protected DataGenerator<T> generator = null;
 	
 	public ProcessGenerated (DataGenerator<T> generator)
 	{
