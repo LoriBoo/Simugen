@@ -5,6 +5,10 @@ Bundle-SymbolicName: StockGui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: stock.gui.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ SimugenCore;bundle-version="0.1.0",
+ StockModel;bundle-version="1.0.0",
+ StockScraper;bundle-version="1.0.0",
+ org.eclipse.ui.views;bundle-version="3.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
