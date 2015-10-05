@@ -50,7 +50,7 @@
          <view
                id="StockGui.ListView"
                minimized="false"
-               ratio="0.5"
+               ratio=".3"
                relationship="left"
                relative="org.eclipse.ui.editorss"
                visible="true">
@@ -63,6 +63,14 @@
             allPopups="false"
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
+               label="File">
+            <command
+                  commandId="StockGui.addCompany"
+                  label="Add Company"
+                  style="push">
+            </command>
+         </menu>
+         <menu
                label="Views">
             <command
                   commandId="org.eclipse.ui.views.showView"
@@ -71,6 +79,14 @@
             </command>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="stock.gui.handlers.AddCompanyHandler"
+            id="StockGui.addCompany"
+            name="Add Company">
+      </command>
    </extension>
 
 </plugin>

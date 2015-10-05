@@ -10,3 +10,7 @@ Require-Bundle: org.apache.commons.io;bundle-version="2.2.0",
  org.eclipse.ui.ide.application;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Plugin-Class: stock.scraper.activator.Activator
+Export-Package: stock.scraper.builder,
+ stock.scraper.builder.factory,
+ stock.scraper.builder.impl,
+ stock.scraper.utils
