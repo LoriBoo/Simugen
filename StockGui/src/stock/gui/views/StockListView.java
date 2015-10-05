@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 
+import stock.gui.Activator;
 import stock.scraper.builder.StockCompany;
 
 public class StockListView extends ViewPart
@@ -20,6 +21,11 @@ public class StockListView extends ViewPart
 		tree = new Tree(parent, SWT.SINGLE);
 
 		parent.layout();
+
+		for (StockCompany company : Activator.getDefault().getCompanies())
+		{
+			addStockCompany(company);
+		}
 	}
 
 	public void addStockCompany(StockCompany company)
