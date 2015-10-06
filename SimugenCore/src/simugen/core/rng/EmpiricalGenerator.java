@@ -1,5 +1,6 @@
 package simugen.core.rng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -7,8 +8,10 @@ import java.util.Map;
 
 import simugen.core.interfaces.DataGenerator;
 
-public class EmpiricalGenerator implements DataGenerator<Number>
+public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private ArrayList<Double> values = new ArrayList<>();
 
 	private ArrayList<Double> probabilities = new ArrayList<>();

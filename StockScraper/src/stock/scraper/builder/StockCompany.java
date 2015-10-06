@@ -1,13 +1,15 @@
 package stock.scraper.builder;
 
 import java.io.Serializable;
-
-import simugen.core.rng.EmpiricalGenerator;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
 
 public interface StockCompany extends Serializable
 {
 	public String getMarket();
 	public String getCompanyName();
 	public String getToken();
-	public EmpiricalGenerator getDataGenerator();
+	public void addHistorical(Date date, BigDecimal decimal);
+	public Map<Date, BigDecimal> getHistorical();
 }

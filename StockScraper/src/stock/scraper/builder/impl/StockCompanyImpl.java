@@ -1,6 +1,10 @@
 package stock.scraper.builder.impl;
 
-import simugen.core.rng.EmpiricalGenerator;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import stock.scraper.builder.StockCompany;
 
 public class StockCompanyImpl implements StockCompany
@@ -13,7 +17,7 @@ public class StockCompanyImpl implements StockCompany
 	
 	private final String token;
 	
-	private transient EmpiricalGenerator generator = null;
+	private final Map<Date, BigDecimal> historical;
 	
 	public StockCompanyImpl(String market, String name, String token)
 	{
@@ -22,6 +26,8 @@ public class StockCompanyImpl implements StockCompany
 		this.name = name;
 		
 		this.token = token;
+		
+		this.historical = new LinkedHashMap<>();
 	}
 	
 	@Override
@@ -41,10 +47,16 @@ public class StockCompanyImpl implements StockCompany
 	{
 		return token;
 	}
-
+	
 	@Override
-	public EmpiricalGenerator getDataGenerator()
+	public void addHistorical(Date date, BigDecimal decimal)
 	{
-		return generator;
+		historical.put(date, decimal);
+	}
+	
+	@Override
+	public Map<Date, BigDecimal> getHistorical()
+	{
+		return historical;
 	}
 }
