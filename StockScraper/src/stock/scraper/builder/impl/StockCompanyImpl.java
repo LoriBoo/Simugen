@@ -59,4 +59,10 @@ public class StockCompanyImpl implements StockCompany
 	{
 		return historical;
 	}
+
+	@Override
+	public void clearHistorical()
+	{
+		historical.clear();
+	}
 }

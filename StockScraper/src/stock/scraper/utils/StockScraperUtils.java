@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 
@@ -93,6 +95,13 @@ public class StockScraperUtils
 
 		readFile.close();
 		deleteTempFile();
+		
+		if(!historicalData.isEmpty())
+		{
+			SortedMap<Date, BigDecimal> sorted = new TreeMap<>(historicalData);
+			
+			return sorted;
+		}
 
 		return historicalData;
 	}

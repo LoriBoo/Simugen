@@ -12,4 +12,5 @@ public interface StockCompany extends Serializable
 	public String getToken();
 	public void addHistorical(Date date, BigDecimal decimal);
 	public Map<Date, BigDecimal> getHistorical();
+	public void clearHistorical();
 }
