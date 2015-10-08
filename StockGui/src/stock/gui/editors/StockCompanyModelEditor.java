@@ -1,4 +1,4 @@
-package stock.gui.views;
+package stock.gui.editors;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
@@ -15,30 +16,30 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.EditorPart;
 
 import simugen.core.rng.EmpiricalGenerator;
-import stock.gui.Activator;
 import stock.gui.utilities.StockGuiUtils;
 import stock.scraper.builder.StockAddDataEvent;
 import stock.scraper.builder.StockCompany;
 import stock.scraper.builder.StockCompanyListener;
 import stock.scraper.utils.StockScraperUtils;
 
-public class StockModelView extends ViewPart
+public class StockCompanyModelEditor extends EditorPart
 {
 	private StockCompany company;
-
+	
+	private Map<Date, BigDecimal> percentages;
+	
 	private EmpiricalGenerator generator;
 
-	private Map<Date, BigDecimal> percentages;
-
 	private XYGraph graph;
-
-	public void setCompany(StockCompany company)
+	
+	public void setup()
 	{
-		this.company = company;
-
 		percentages = StockScraperUtils
 				.getPercentChange(company.getHistorical());
 
@@ -58,24 +59,48 @@ public class StockModelView extends ViewPart
 		});
 	}
 
-	protected EmpiricalGenerator getGenerator()
+	@Override
+	public void doSave(IProgressMonitor monitor)
 	{
-		if (!generator.isReady())
-		{
-			generator.computeProbabilities();
-		}
-		return generator;
+
+	}
+
+	@Override
+	public void doSaveAs()
+	{
+
+	}
+
+	@Override
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException
+	{
+		setSite(site);
+		
+		setInput(input);
+		
+		company = input.getAdapter(StockCompany.class);
+		
+		setPartName(company.getMarket().concat(":").concat(company.getToken()));
+	}
+
+	@Override
+	public boolean isDirty()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed()
+	{
+		return false;
 	}
 
 	@Override
 	public void createPartControl(Composite parent)
-	{
-		StockCompany company = Activator.getDefault().getCompanies().get(0);
-
-		setCompany(company);
-
+	{		
 		parent.setLayout(new FillLayout());
-
+		
 		final Canvas can = new Canvas(parent, SWT.DEFAULT);
 
 		parent.layout();
@@ -109,8 +134,10 @@ public class StockModelView extends ViewPart
 		graph.addTrace(trace);
 
 		graph.performAutoScale();
-	}
 
+		parent.layout();
+	}
+	
 	public void setup(CircularBufferDataProvider buffer)
 	{
 		buffer.setChronological(true);
@@ -137,11 +164,6 @@ public class StockModelView extends ViewPart
 	public void setFocus()
 	{
 
-	}
-
-	public StockCompany getCompany()
-	{
-		return company;
 	}
 
 }

@@ -19,6 +19,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -93,9 +94,9 @@ public class Activator extends AbstractUIPlugin
 	public void stop(BundleContext context) throws Exception
 	{
 		plugin = null;
-		
+
 		saveData(COMPANY_DATA, listCompanies.toArray(new Serializable[0]));
-		
+
 		super.stop(context);
 	}
 
@@ -121,7 +122,7 @@ public class Activator extends AbstractUIPlugin
 	{
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
+
 	public List<StockCompany> getCompanies()
 	{
 		return listCompanies;
@@ -162,21 +163,21 @@ public class Activator extends AbstractUIPlugin
 		try
 		{
 			fileReader = new FileReader(file);
-			
+
 			CharArrayWriter bufArray = new CharArrayWriter();
-			
-			while(fileReader.ready())
+
+			while (fileReader.ready())
 			{
 				int c = fileReader.read();
-				
-				if(c != -1)
+
+				if (c != -1)
 				{
 					bufArray.append((char) c);
 				}
 			}
-			
+
 			char[] buffer = bufArray.toCharArray();
-			
+
 			byte[] array = Hex.decodeHex(buffer);
 
 			byt = new ByteArrayInputStream(array);
@@ -184,13 +185,13 @@ public class Activator extends AbstractUIPlugin
 			reader = new ObjectInputStream(byt);
 
 			Object obj = reader.readObject();
-			
+
 			while (!(obj instanceof EOF))
 			{
 				T data = t.cast(obj);
 
 				list.add(data);
-				
+
 				obj = reader.readObject();
 			}
 		}
@@ -246,9 +247,9 @@ public class Activator extends AbstractUIPlugin
 			{
 				writer.writeObject(data);
 			}
-			
+
 			EOF eof = new EOF();
-			
+
 			writer.writeObject(eof);
 
 			byte[] array = byt.toByteArray();
@@ -285,5 +286,35 @@ public class Activator extends AbstractUIPlugin
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public <T> T getView(Class<T> $class)
+	{
+		T ret = null;
+
+		for (IViewReference ref : this.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().getViewReferences())
+		{
+			IViewPart view = ref.getView(false);
+
+			if (view != null && $class.isInstance(view))
+			{
+				ret = $class.cast(view);
+			}
+		}
+		return ret;
+	}
+
+	public StockCompany getCompany(String company)
+	{
+		for (StockCompany c : listCompanies)
+		{
+			if (c.getCompanyName().equals(company))
+			{
+				return c;
+			}
+		}
+
+		return null;
 	}
 }
