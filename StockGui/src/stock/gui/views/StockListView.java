@@ -1,7 +1,11 @@
 package stock.gui.views;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -43,6 +47,39 @@ public class StockListView extends ViewPart
 		item.setText(company.getCompanyName());
 
 		item.setData(company);
+
+		tree.addMouseListener(new MouseListener()
+		{
+
+			@Override
+			public void mouseUp(MouseEvent e)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseDown(MouseEvent e)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e)
+			{
+				if (getSelectedCompany() != null)
+				{
+					StockModelView view = new StockModelView();
+
+					view.setCompany(getSelectedCompany());
+
+					Activator.getDefault().getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage()
+							.activate(view);
+				}
+			}
+		});
 	}
 
 	public StockCompany getSelectedCompany()

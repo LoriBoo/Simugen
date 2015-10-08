@@ -17,7 +17,7 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 	private ArrayList<Double> probabilities = new ArrayList<>();
 
 	private Map<Double, Double> mapValueToProbabilities = new HashMap<>();
-	
+
 	private Map<Double, Double> cdf = new HashMap<>();
 
 	private boolean ready = false;
@@ -35,16 +35,23 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 
 		double prob;
 
-		values.sort(new Comparator<Double>()
+		@SuppressWarnings("unchecked")
+		ArrayList<Double> buffer = (ArrayList<Double>) values.getClass()
+				.cast(values.clone());
+
+		buffer.sort(new Comparator<Double>()
 		{
 			@Override
 			public int compare(Double o1, Double o2)
 			{
 				int count1 = getNumberOf(o1);
 				int count2 = getNumberOf(o2);
+
 				return Integer.compare(count1, count2);
 			}
 		});
+
+		values = buffer;
 
 		for (double d : values)
 		{
@@ -59,7 +66,7 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 
 			mapValueToProbabilities.put(d, prob);
 		}
-		
+
 		createCDF();
 
 		ready = true;
@@ -75,12 +82,12 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 			last += mapValueToProbabilities.get(value);
 
 			mapValueToProbabilities.put(value, last);
-			
+
 			cdf.put(last, value);
 		}
-		
+
 		probabilities.clear();
-		
+
 		probabilities.addAll(mapValueToProbabilities.values());
 	}
 

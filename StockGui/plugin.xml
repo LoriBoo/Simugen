@@ -42,6 +42,13 @@
             name="List View"
             restorable="true">
       </view>
+      <view
+            allowMultiple="true"
+            class="stock.gui.views.StockModelView"
+            id="StockGui.StockModelView"
+            name="Model View"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
