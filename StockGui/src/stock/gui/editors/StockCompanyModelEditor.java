@@ -37,6 +37,8 @@ public class StockCompanyModelEditor extends EditorPart
 	private EmpiricalGenerator generator;
 
 	private XYGraph graph;
+
+	private Trace actualsTrace;
 	
 	public void setup()
 	{
@@ -60,18 +62,6 @@ public class StockCompanyModelEditor extends EditorPart
 	}
 
 	@Override
-	public void doSave(IProgressMonitor monitor)
-	{
-
-	}
-
-	@Override
-	public void doSaveAs()
-	{
-
-	}
-
-	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException
 	{
@@ -82,18 +72,6 @@ public class StockCompanyModelEditor extends EditorPart
 		company = input.getAdapter(StockCompany.class);
 		
 		setPartName(company.getMarket().concat(":").concat(company.getToken()));
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed()
-	{
-		return false;
 	}
 
 	@Override
@@ -126,12 +104,12 @@ public class StockCompanyModelEditor extends EditorPart
 
 		setup(bufferData);
 
-		Trace trace = new Trace("Actual", graph.primaryXAxis,
+		actualsTrace = new Trace("Actual", graph.primaryXAxis,
 				graph.primaryYAxis, bufferData);
 
-		trace.setPointStyle(PointStyle.XCROSS);
+		actualsTrace.setPointStyle(PointStyle.XCROSS);
 
-		graph.addTrace(trace);
+		graph.addTrace(actualsTrace);
 
 		graph.performAutoScale();
 
@@ -161,7 +139,31 @@ public class StockCompanyModelEditor extends EditorPart
 	}
 
 	@Override
+	public boolean isDirty()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed()
+	{
+		return false;
+	}
+
+	@Override
 	public void setFocus()
+	{
+
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor)
+	{
+
+	}
+
+	@Override
+	public void doSaveAs()
 	{
 
 	}
