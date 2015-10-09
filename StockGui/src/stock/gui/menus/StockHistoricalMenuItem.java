@@ -162,7 +162,7 @@ public class StockHistoricalMenuItem
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException
 				{
-					Map<Date, BigDecimal> hist = null;
+					Map<Long, BigDecimal> hist = null;
 					try
 					{
 						hist = StockScraperUtils.getHistorical(builder);
@@ -174,7 +174,7 @@ public class StockHistoricalMenuItem
 
 					selected.clearHistorical();
 
-					for (Entry<Date, BigDecimal> entry : hist.entrySet())
+					for (Entry<Long, BigDecimal> entry : hist.entrySet())
 					{
 						selected.addHistorical(entry.getKey(),
 								entry.getValue());

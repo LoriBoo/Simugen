@@ -12,24 +12,24 @@ public class StockCompanyImpl implements StockCompany
 	private static final long serialVersionUID = 1L;
 
 	private final String market;
-	
+
 	private final String name;
-	
+
 	private final String token;
-	
-	private final Map<Date, BigDecimal> historical;
-	
+
+	private final Map<Long, BigDecimal> historical;
+
 	public StockCompanyImpl(String market, String name, String token)
 	{
 		this.market = market;
-		
+
 		this.name = name;
-		
+
 		this.token = token;
-		
+
 		this.historical = new LinkedHashMap<>();
 	}
-	
+
 	@Override
 	public String getMarket()
 	{
@@ -47,15 +47,15 @@ public class StockCompanyImpl implements StockCompany
 	{
 		return token;
 	}
-	
+
 	@Override
-	public void addHistorical(Date date, BigDecimal decimal)
+	public void addHistorical(Long date, BigDecimal decimal)
 	{
 		historical.put(date, decimal);
 	}
-	
+
 	@Override
-	public Map<Date, BigDecimal> getHistorical()
+	public Map<Long, BigDecimal> getHistorical()
 	{
 		return historical;
 	}
@@ -64,5 +64,21 @@ public class StockCompanyImpl implements StockCompany
 	public void clearHistorical()
 	{
 		historical.clear();
+	}
+
+	@Override
+	public double getLatest()
+	{
+		Date latest = null;
+
+		for (Long date : historical.keySet())
+		{
+			Date compare = new Date(date);
+			
+			latest = latest == null ? compare
+					: compare.after(latest) ? compare : latest;
+		}
+		
+		return historical.get(latest.getTime()).doubleValue();
 	}
 }

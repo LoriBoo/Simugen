@@ -1,7 +1,6 @@
 package stock.scraper.builder;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.EventObject;
 import java.util.Map.Entry;
 
@@ -9,11 +8,11 @@ public class StockAddDataEvent extends EventObject
 {
 	private static final long serialVersionUID = 1L;
 
-	private final Entry<Date, BigDecimal> source;
+	private final Entry<Long, BigDecimal> source;
 	
 	private final StockCompany company;
 
-	public StockAddDataEvent(Entry<Date, BigDecimal> source, StockCompany company)
+	public StockAddDataEvent(Entry<Long, BigDecimal> source, StockCompany company)
 	{
 		super(source);
 
@@ -28,7 +27,7 @@ public class StockAddDataEvent extends EventObject
 	}
 	
 	@Override
-	public Entry<Date, BigDecimal> getSource()
+	public Entry<Long, BigDecimal> getSource()
 	{
 		return source;
 	}

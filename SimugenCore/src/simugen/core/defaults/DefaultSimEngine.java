@@ -28,6 +28,10 @@ public class DefaultSimEngine implements SimEngine
 
 	private List<SimEventListener> listListeners = new ArrayList<>();
 
+	private boolean running = false;
+
+	private int runs = 0;
+
 	public void setModel(SimModel model)
 	{
 		internalModel = model;
@@ -35,12 +39,24 @@ public class DefaultSimEngine implements SimEngine
 
 	public void start()
 	{
-		start(new MersenneTwister().nextLong());
+		for (int i = 0; i < runs; i++)
+		{
+			System.out.println("Run " + i + " Started");
+			start(new MersenneTwister().nextLong());
+		}
+
+		SimEvent event = new EngineBatchFinishEvent();
+
+		print(event.printEvent(logging), logging);
+
+		listListeners.forEach(new SimEventConsumer(event));
 	}
 
 	public void start(long seed)
 	{
 		this.seed = seed;
+
+		internalModel = internalModel.getCopy();
 
 		if (streamOut == null)
 		{
@@ -54,6 +70,8 @@ public class DefaultSimEngine implements SimEngine
 		{
 			throw new IllegalStateException("Model has not readied up");
 		}
+
+		this.running = true;
 
 		doubleGenerator = new MersenneTwister(seed);
 
@@ -85,6 +103,10 @@ public class DefaultSimEngine implements SimEngine
 		{
 			print("Engine was forcibly stopped.", LoggingStyle.ERR);
 		}
+
+		listListeners.removeAll(internalModel.getListeners());
+
+		running = false;
 	}
 
 	private SimEvent getNextEvent()
@@ -152,5 +174,17 @@ public class DefaultSimEngine implements SimEngine
 	public void addEventListener(SimEventListener e)
 	{
 		listListeners.add(e);
+	}
+
+	@Override
+	public boolean isRunning()
+	{
+		return running;
+	}
+
+	@Override
+	public void setRuns(int runs)
+	{
+		this.runs = runs;
 	}
 }

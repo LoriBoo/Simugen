@@ -12,7 +12,7 @@ import stock.scraper.builder.StockCompany;
 public class StockGuiUtils
 {
 	public static EmpiricalGenerator createDistribution(
-			Map<Date, BigDecimal> historical)
+			Map<Long, BigDecimal> historical)
 	{
 		EmpiricalGenerator generator = new EmpiricalGenerator();
 
@@ -42,16 +42,16 @@ public class StockGuiUtils
 	 * @param newEntry
 	 */
 	public static void addEntry(StockCompany company,
-			EmpiricalGenerator generator, Map<Date, BigDecimal> percentages,
-			Entry<Date, BigDecimal> newEntry)
+			EmpiricalGenerator generator, Map<Long, BigDecimal> percentages,
+			Entry<Long, BigDecimal> newEntry)
 	{
 		int index = percentages.entrySet().size();
 
 		int lastIndex = index - 1;
 
-		Date lastDate = percentages.keySet().toArray(new Date[0])[lastIndex];
+		Date lastDate = new Date(percentages.keySet().toArray(new Long[0])[lastIndex]);
 
-		Date nuwDate = newEntry.getKey();
+		Date nuwDate = new Date(newEntry.getKey());
 
 		BigDecimal last = company.getHistorical().get(lastDate);
 
@@ -60,7 +60,7 @@ public class StockGuiUtils
 		BigDecimal percentChange = nuw.subtract(last).divide(last,
 				RoundingMode.HALF_UP);
 
-		percentages.put(nuwDate, percentChange);
+		percentages.put(nuwDate.getTime(), percentChange);
 
 		generator.addValue(percentChange.doubleValue());
 	}

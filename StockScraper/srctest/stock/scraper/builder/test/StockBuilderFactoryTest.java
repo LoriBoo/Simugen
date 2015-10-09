@@ -48,11 +48,11 @@ public class StockBuilderFactoryTest
 			YahooUrlBuilder builder = StockBuilderFactory.INSTANCE
 					.createBuilder(company, startDate, endDate);
 
-			Map<Date, BigDecimal> data = StockScraperUtils.getHistorical(builder);
+			Map<Long, BigDecimal> data = StockScraperUtils.getHistorical(builder);
 
 			assertTrue(data.entrySet().size() == 2);
 
-			for (Entry<Date, BigDecimal> e : data.entrySet())
+			for (Entry<Long, BigDecimal> e : data.entrySet())
 			{
 				System.out.println("Date: " + e.getKey().toString());
 				System.out.println("Stock Value: " + e.getValue());
@@ -81,7 +81,7 @@ public class StockBuilderFactoryTest
 			YahooUrlBuilder builder = StockBuilderFactory.INSTANCE
 					.createBuilder(company, startDate, endDate);
 
-			Map<Date, BigDecimal> data = StockScraperUtils.getHistorical(builder);
+			Map<Long, BigDecimal> data = StockScraperUtils.getHistorical(builder);
 
 			assertTrue(data.entrySet().size() == 2);
 
@@ -89,7 +89,7 @@ public class StockBuilderFactoryTest
 
 			assertTrue(data.entrySet().size() == 1);
 
-			for (Entry<Date, BigDecimal> e : data.entrySet())
+			for (Entry<Long, BigDecimal> e : data.entrySet())
 			{
 				System.out.println("Date: " + e.getKey().toString());
 				System.out.println("Percent Change: " + e.getValue());

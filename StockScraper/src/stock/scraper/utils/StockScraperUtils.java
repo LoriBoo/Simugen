@@ -30,10 +30,10 @@ public class StockScraperUtils
 
 	private static int close_index = -1;
 
-	public static Map<Date, BigDecimal> getHistorical(YahooUrlBuilder builder)
+	public static Map<Long, BigDecimal> getHistorical(YahooUrlBuilder builder)
 			throws MalformedURLException, IOException, ParseException
 	{
-		Map<Date, BigDecimal> historicalData = new LinkedHashMap<>();
+		Map<Long, BigDecimal> historicalData = new LinkedHashMap<>();
 
 		File data = getDataFile(builder.getUrl());
 
@@ -84,7 +84,7 @@ public class StockScraperUtils
 
 				if (value != null && date != null)
 				{
-					historicalData.put(date, value);
+					historicalData.put(date.getTime(), value);
 
 					date = null;
 
@@ -98,7 +98,7 @@ public class StockScraperUtils
 		
 		if(!historicalData.isEmpty())
 		{
-			SortedMap<Date, BigDecimal> sorted = new TreeMap<>(historicalData);
+			SortedMap<Long, BigDecimal> sorted = new TreeMap<>(historicalData);
 			
 			return sorted;
 		}
@@ -152,14 +152,14 @@ public class StockScraperUtils
 		return csv;
 	}
 
-	public static Map<Date, BigDecimal> getPercentChange(
-			Map<Date, BigDecimal> data)
+	public static Map<Long, BigDecimal> getPercentChange(
+			Map<Long, BigDecimal> data)
 	{
-		Map<Date, BigDecimal> derviative = new LinkedHashMap<>();
+		Map<Long, BigDecimal> derviative = new LinkedHashMap<>();
 
 		BigDecimal last = null;
 
-		for (Entry<Date, BigDecimal> entry : data.entrySet())
+		for (Entry<Long, BigDecimal> entry : data.entrySet())
 		{
 			if (last != null)
 			{

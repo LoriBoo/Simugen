@@ -18,7 +18,7 @@ public class StockProcess extends ProcessGenerated<Number>
 	@Override
 	public boolean isComplete()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

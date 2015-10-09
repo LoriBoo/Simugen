@@ -11,4 +11,5 @@ public interface SimModel extends Readyable
 	public SimEvent getNextEvent(SimEngine e);
 	public List<SimEventListener> getListeners();
 	public void addListener(SimEventListener e);
+	public SimModel getCopy();
 }

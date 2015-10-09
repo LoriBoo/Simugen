@@ -13,4 +13,6 @@ public interface SimEngine
 	public void setLoggingStyle(LoggingStyle log);
 	public long getSeed();
 	public void addEventListener(SimEventListener e);
+	public boolean isRunning();
+	public void setRuns(int runs);
 }

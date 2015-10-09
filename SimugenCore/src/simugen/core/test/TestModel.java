@@ -5,6 +5,7 @@ import simugen.core.abstracts.ProcessGenerated;
 import simugen.core.defaults.DefaultProcessor;
 import simugen.core.defaults.StringEvent;
 import simugen.core.interfaces.SimEvent;
+import simugen.core.interfaces.SimModel;
 import simugen.core.rng.EmpiricalGenerator;
 
 public class TestModel extends AbstractSimModel
@@ -56,6 +57,12 @@ public class TestModel extends AbstractSimModel
 	@Override
 	public void onShutdown()
 	{
+	}
+
+	@Override
+	public SimModel getCopy()
+	{
+		return this;
 	}
 
 }
