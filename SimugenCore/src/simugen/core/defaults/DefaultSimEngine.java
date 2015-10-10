@@ -41,7 +41,7 @@ public class DefaultSimEngine implements SimEngine
 	{
 		for (int i = 0; i < runs; i++)
 		{
-			System.out.println("Run " + i + " Started");
+			print("Run " + i + " Started", logging);
 			start(new MersenneTwister().nextLong());
 		}
 
@@ -149,6 +149,10 @@ public class DefaultSimEngine implements SimEngine
 				streamOut.println("[ERROR]" + message);
 			}
 		}
+		case SUPRESS:
+			break;
+		default:
+			break;
 		}
 	}
 

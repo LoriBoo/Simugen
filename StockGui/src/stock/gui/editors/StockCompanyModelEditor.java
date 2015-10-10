@@ -2,9 +2,11 @@ package stock.gui.editors;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.math.MathException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
@@ -21,6 +23,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -115,6 +118,69 @@ public class StockCompanyModelEditor extends EditorPart
 
 		parent.setLayout(new GridLayout(1, true));
 
+		final Button numberOfReps = new Button(parent, SWT.PUSH);
+
+		numberOfReps.setText("Number of Reps");
+
+		numberOfReps.addSelectionListener(new SelectionListener()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				numberOfReps.setEnabled(false);
+
+				StockModel model = new StockModel(generator,
+						company.getCompanyName(), new StockData(new Date()));
+
+				model.setInitialValue(company.getLatest());
+
+				try
+				{
+					int max = 600;
+
+					int sample = 100;
+
+					int days = 90;
+
+					double CI = 0.998d;
+
+					int number = StockGuiUtils.numberOfReps(model, sample, days,
+							max, CI);
+
+					String message = "Maximum runs hit.";
+
+					if (number < max)
+					{
+						message = "Number of runs for " + CI + " confidence interval: "
+								+ number;
+					}
+
+					MessageBox box = new MessageBox(parent.getShell());
+
+					box.setText("Results");
+
+					box.setMessage(message);
+
+					box.open();
+				}
+				catch (MathException e1)
+				{
+					e1.printStackTrace();
+				}
+				finally
+				{
+					numberOfReps.setEnabled(true);
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+
+			}
+		});
+
 		runButton = new Button(parent, SWT.PUSH);
 
 		runButton.setLayoutData(new GridData());
@@ -143,7 +209,7 @@ public class StockCompanyModelEditor extends EditorPart
 				model.setComputations(30);
 
 				engine.setModel(model);
-				
+
 				engine.setRuns(50);
 
 				engine.setLoggingStyle(LoggingStyle.DATA);
@@ -153,10 +219,10 @@ public class StockCompanyModelEditor extends EditorPart
 				engine.start();
 
 				Display display = getSite().getShell().getDisplay();
-				
-				while(engine.isRunning())
+
+				while (engine.isRunning())
 				{
-					if(!display.readAndDispatch())
+					if (!display.readAndDispatch())
 					{
 						display.sleep();
 					}
@@ -278,9 +344,9 @@ public class StockCompanyModelEditor extends EditorPart
 					graph.primaryYAxis, stockData.getMedianBuffer());
 
 			graph.addTrace(minTrace);
-			
+
 			graph.addTrace(maxTrace);
-			
+
 			graph.addTrace(medTrace);
 
 			graph.performAutoScale();

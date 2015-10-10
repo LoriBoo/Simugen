@@ -8,12 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.IDataProvider;
+
+import simugen.core.stats.StatUtil;
 
 public class StockData
 {
 	private final Map<Long, List<Double>> $map = new LinkedHashMap<>();
+
+	private final Map<Long, List<Double>> $mapGrowth = new LinkedHashMap<>();
 
 	private Date current;
 
@@ -31,21 +36,23 @@ public class StockData
 		current.setTime(start.getTime());
 	}
 
-	public void addValue(double value)
+	public void addValue(double value, double growth)
 	{
-		addDataPoint(current, value);
+		addDataPoint(current, value, growth);
 
 		current.setTime(current.getTime() + 86400000L);
 	}
 
-	private void addDataPoint(Date date, double value)
+	private void addDataPoint(Date date, double value, double growth)
 	{
 		if (!$map.containsKey(date.getTime()))
 		{
 			$map.put(date.getTime(), new ArrayList<Double>());
+			$mapGrowth.put(date.getTime(), new ArrayList<Double>());
 		}
 
 		$map.get(date.getTime()).add(value);
+		$mapGrowth.get(date.getTime()).add(growth);
 	}
 
 	public IDataProvider getMinBuffer()
@@ -133,5 +140,38 @@ public class StockData
 		double val2 = list.get(index2);
 
 		return ((val1 + val2) / 2);
+	}
+
+	public double getMeanDailyGrowth(int day)
+	{
+		Long dateList[] = $mapGrowth.keySet()
+				.toArray(new Long[$mapGrowth.keySet().size()]);
+
+		Long date = dateList[day];
+
+		Double values[] = $mapGrowth.get(date)
+				.toArray(new Double[$mapGrowth.get(date).size()]);
+
+		return StatUtil.getAverage(ArrayUtils.toPrimitive(values));
+	}
+
+	public double getTotalMeanDailyGrowth()
+	{
+		double acrossDate[] = new double[$mapGrowth.keySet().size()];
+
+		Long dateList[] = $mapGrowth.keySet()
+				.toArray(new Long[$mapGrowth.keySet().size()]);
+
+		for (int i = 0; i < $mapGrowth.keySet().size(); i++)
+		{
+			Long l = dateList[i];
+
+			Double values[] = $mapGrowth.get(l)
+					.toArray(new Double[$mapGrowth.get(l).size()]);
+
+			acrossDate[i] = StatUtil.getAverage(ArrayUtils.toPrimitive(values));
+		}
+
+		return StatUtil.getAverage(acrossDate);
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import simugen.core.abstracts.AbstractSimModel;
-import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.SimEvent;
 import simugen.core.interfaces.SimEventListener;
 import simugen.core.interfaces.SimModel;
@@ -78,7 +77,9 @@ public class StockModel extends AbstractSimModel implements SimEventListener
 		{
 			if (event instanceof StockEvent)
 			{
-				stockData.addValue(((StockEvent) event).getValue());
+				final StockEvent evt = (StockEvent) event;
+				
+				stockData.addValue(evt.getValue(), evt.getGrowth());
 			}
 		}
 	}

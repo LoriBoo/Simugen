@@ -2,11 +2,23 @@ package stock.gui.utilities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.math.MathException;
+import org.eclipse.swt.widgets.Display;
+
+import simugen.core.defaults.DefaultSimEngine;
+import simugen.core.interfaces.LoggingStyle;
+import simugen.core.interfaces.SimEngine;
+import simugen.core.interfaces.SimModel;
 import simugen.core.rng.EmpiricalGenerator;
+import simugen.core.stats.StatUtil;
+import stock.model.StockModel;
+import stock.model.components.StockEventListener;
+import stock.model.data.StockData;
 import stock.scraper.builder.StockCompany;
 
 public class StockGuiUtils
@@ -49,7 +61,8 @@ public class StockGuiUtils
 
 		int lastIndex = index - 1;
 
-		Date lastDate = new Date(percentages.keySet().toArray(new Long[0])[lastIndex]);
+		Date lastDate = new Date(
+				percentages.keySet().toArray(new Long[0])[lastIndex]);
 
 		Date nuwDate = new Date(newEntry.getKey());
 
@@ -63,5 +76,64 @@ public class StockGuiUtils
 		percentages.put(nuwDate.getTime(), percentChange);
 
 		generator.addValue(percentChange.doubleValue());
+	}
+
+	public static int numberOfReps(StockModel model, int samples, int days,
+			int maxRuns, double confidence) throws MathException
+	{
+		SimEngine engine;
+
+		Date start = Calendar.getInstance().getTime();
+
+		StockData data = new StockData(start);
+		
+		model.setComputations(days);
+
+		for (int i = 0; i < samples; i++)
+		{
+			data.reset();
+			
+			SimModel internal = model.getCopy();
+
+			engine = new DefaultSimEngine();
+
+			engine.setLoggingStyle(LoggingStyle.SUPRESS);
+
+			engine.setRuns(samples);
+
+			engine.addEventListener(new StockEventListener(data));
+
+			engine.setModel(internal);
+
+			engine.start();
+
+//			while (engine.isRunning())
+//			{
+//				if (!Display.getDefault().readAndDispatch())
+//				{
+//					Display.getDefault().sleep();
+//				}
+//			}
+		}
+
+		double x[] = new double[days];
+
+		for (int i = 0; i < days; i++)
+		{
+			x[i] = data.getMeanDailyGrowth(i);
+		}
+
+		double xBar = data.getTotalMeanDailyGrowth();
+
+		double sumSquares = 0;
+
+		for (double xi : x)
+		{
+			sumSquares += Math.pow(xi - xBar, 2);
+		}
+
+		double s = Math.sqrt((1d / ((double) (x.length - 1))) * sumSquares);
+
+		return StatUtil.numberReps(confidence, s, maxRuns);
 	}
 }

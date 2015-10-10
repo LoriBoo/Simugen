@@ -7,14 +7,23 @@ public class StockEvent implements SimEvent
 {
 	double value;
 	
-	public StockEvent(double value)
+	double growth;
+	
+	public StockEvent(double value, double growth)
 	{
 		this.value = value;
+		
+		this.growth = growth;
 	}
 	
 	public double getValue()
 	{
 		return this.value;
+	}
+	
+	public double getGrowth()
+	{
+		return this.growth;
 	}
 	
 	@Override

@@ -24,11 +24,13 @@ public class StockProcess extends ProcessGenerated<Number>
 	@Override
 	public SimEvent process(Number next)
 	{
-		double delta = next.doubleValue() * value;
+		double growth = next.doubleValue();
+		
+		double delta = growth * value;
 
 		value += delta;
 
-		return new StockEvent(value);
+		return new StockEvent(value, growth);
 	}
 
 }

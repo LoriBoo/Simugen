@@ -6,14 +6,16 @@ import org.apache.commons.math.distribution.TDistributionImpl;
 
 public class StatUtil
 {
-	public int numberReps(double CI, double s, int maxRuns)
+	public static int numberReps(double CI, double s, int maxRuns)
 			throws MathException
 	{
 		int N = 2;
 		int df = N - 1;
 		double t = getT_TestValue(CI, df);
 
-		while (minimalDifference(compute(t, s, N), CI) == false && N < maxRuns)
+		double alpha = 1 - CI;
+
+		while (compute(t, s, N) >= alpha && N < maxRuns)
 		{
 			N++;
 			df++;
@@ -22,7 +24,8 @@ public class StatUtil
 		return N;
 	}
 
-	private double getT_TestValue(double interval, int df) throws MathException
+	private static double getT_TestValue(double interval, int df)
+			throws MathException
 	{
 		TDistribution tDistro = new TDistributionImpl(df);
 
@@ -31,15 +34,20 @@ public class StatUtil
 		return tDistro.inverseCumulativeProbability(1 - (alpha / 2));
 	}
 
-	private boolean minimalDifference(double d0, double d1)
-	{
-		double diff = Math.abs(d0 - d1);
-
-		return diff <= 1e-6;
-	}
-
-	private double compute(double t, double s, double N)
+	private static double compute(double t, double s, double N)
 	{
 		return 2d * t * (s / Math.sqrt(N));
+	}
+
+	public static double getAverage(double[] values)
+	{
+		double sum = 0d;
+
+		for (Double d : values)
+		{
+			sum += d;
+		}
+
+		return sum / Double.valueOf(values.length);
 	}
 }
