@@ -30,7 +30,7 @@ public class StockProcess extends ProcessGenerated<Number>
 
 		value += delta;
 
-		return new StockEvent(value, growth);
+		return new StockEvent(growth);
 	}
 
 }

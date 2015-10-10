@@ -39,15 +39,17 @@ public class DefaultSimEngine implements SimEngine
 
 	public void start()
 	{
+		printEngine("Engine batching started.");
+		
 		for (int i = 0; i < runs; i++)
 		{
-			print("Run " + i + " Started", logging);
+			printEngine("Run " + i + " Started");
 			start(new MersenneTwister().nextLong());
 		}
 
 		SimEvent event = new EngineBatchFinishEvent();
 
-		print(event.printEvent(logging), logging);
+		printEngine(event.printEvent(logging));
 
 		listListeners.forEach(new SimEventConsumer(event));
 	}
@@ -58,16 +60,16 @@ public class DefaultSimEngine implements SimEngine
 
 		internalModel = internalModel.getCopy();
 
-		if (streamOut == null)
-		{
-			streamOut = System.out;
-		}
 		if (internalModel == null)
 		{
+			printEngineErr("Model has not been set!");
+			
 			throw new IllegalStateException("Model has not been set");
 		}
 		else if (!internalModel.isReady())
 		{
+			printEngineErr("Model has not readied up!");
+			
 			throw new IllegalStateException("Model has not readied up");
 		}
 
@@ -85,7 +87,7 @@ public class DefaultSimEngine implements SimEngine
 
 		while (e != null && !forceStop)
 		{
-			print(e.printEvent(logging), logging);
+			printSet(e.printEvent(logging));
 
 			e = getNextEvent();
 
@@ -93,15 +95,13 @@ public class DefaultSimEngine implements SimEngine
 
 			if (e instanceof ModelFinishedEvent)
 			{
-				print(e.printEvent(logging), logging);
-
 				e = null;
 			}
 		}
 
 		if (forceStop)
 		{
-			print("Engine was forcibly stopped.", LoggingStyle.ERR);
+			printEngineErr("Engine was forcibly stopped.");
 		}
 
 		listListeners.removeAll(internalModel.getListeners());
@@ -123,9 +123,29 @@ public class DefaultSimEngine implements SimEngine
 	{
 		return doubleGenerator.nextDouble();
 	}
+	
+	public void printEngine(String message)
+	{
+		printSet("[SimEngine] " + message);
+	}
+	
+	public void printEngineErr(String message)
+	{
+		print("[SimEngine] " + message, LoggingStyle.ERR);
+	}
+	
+	public void printSet(String message)
+	{
+		print(message, logging);
+	}
 
 	public void print(String message, LoggingStyle style)
 	{
+		if (streamOut == null)
+		{
+			streamOut = System.out;
+		}
+
 		if (message == null)
 		{
 			return;

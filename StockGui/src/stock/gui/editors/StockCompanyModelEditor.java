@@ -2,7 +2,6 @@ package stock.gui.editors;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,6 +37,7 @@ import simugen.core.interfaces.SimEventListener;
 import simugen.core.rng.EmpiricalGenerator;
 import stock.gui.utilities.StockGuiUtils;
 import stock.model.StockModel;
+import stock.model.components.StockEventListener;
 import stock.model.data.StockData;
 import stock.scraper.builder.StockAddDataEvent;
 import stock.scraper.builder.StockCompany;
@@ -131,7 +131,7 @@ public class StockCompanyModelEditor extends EditorPart
 				numberOfReps.setEnabled(false);
 
 				StockModel model = new StockModel(generator,
-						company.getCompanyName(), new StockData(new Date()));
+						company.getCompanyName());
 
 				model.setInitialValue(company.getLatest());
 
@@ -145,15 +145,15 @@ public class StockCompanyModelEditor extends EditorPart
 
 					double CI = 0.998d;
 
-					int number = StockGuiUtils.numberOfReps(model, sample, days,
-							max, CI);
+					int number = StockGuiUtils.numberOfReps(model,
+							company.getLatest(), sample, days, max, CI);
 
 					String message = "Maximum runs hit.";
 
 					if (number < max)
 					{
-						message = "Number of runs for " + CI + " confidence interval: "
-								+ number;
+						message = "Number of runs for " + CI
+								+ " confidence interval: " + number;
 					}
 
 					MessageBox box = new MessageBox(parent.getShell());
@@ -199,16 +199,21 @@ public class StockCompanyModelEditor extends EditorPart
 
 				SimEngine engine = new DefaultSimEngine();
 
-				stockData = new StockData(Calendar.getInstance().getTime());
+				stockData = new StockData(Calendar.getInstance().getTime(),
+						company.getLatest());
 
+				StockEventListener listener = new StockEventListener(stockData);
+				
 				StockModel model = new StockModel(generator,
-						company.getCompanyName(), stockData);
+						company.getCompanyName());
 
 				model.setInitialValue(company.getLatest());
 
 				model.setComputations(30);
 
 				engine.setModel(model);
+				
+				engine.addEventListener(listener);
 
 				engine.setRuns(50);
 

@@ -23,22 +23,34 @@ public class StockData
 	private Date current;
 
 	private final Date start;
+	
+	private final double initialValue;
+	
+	private double currentValue;
 
-	public StockData(Date start)
+	public StockData(Date start, double initialValue)
 	{
 		this.start = new Date(start.getTime());
 
 		this.current = new Date(start.getTime());
+		
+		this.initialValue = initialValue;
+		
+		this.currentValue = initialValue;
 	}
 
 	public void reset()
 	{
 		current.setTime(start.getTime());
+		
+		currentValue = initialValue;
 	}
 
-	public void addValue(double value, double growth)
+	public void addGrowth(double growth)
 	{
-		addDataPoint(current, value, growth);
+		currentValue += (growth * currentValue);
+		
+		addDataPoint(current, currentValue, growth);
 
 		current.setTime(current.getTime() + 86400000L);
 	}

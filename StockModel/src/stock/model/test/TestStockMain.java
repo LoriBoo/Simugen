@@ -1,13 +1,10 @@
 package stock.model.test;
 
-import java.util.Calendar;
-
 import simugen.core.defaults.DefaultSimEngine;
 import simugen.core.interfaces.LoggingStyle;
 import simugen.core.interfaces.SimEngine;
 import simugen.core.rng.EmpiricalGenerator;
 import stock.model.StockModel;
-import stock.model.data.StockData;
 
 public class TestStockMain
 {
@@ -30,8 +27,7 @@ public class TestStockMain
 
 		generator.computeProbabilities();
 
-		model = new StockModel(generator, "Huntington Ingalls",
-				new StockData(Calendar.getInstance().getTime()));
+		model = new StockModel(generator, "Huntington Ingalls");
 
 		model.setInitialValue(106.94);
 

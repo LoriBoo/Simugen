@@ -5,20 +5,11 @@ import simugen.core.interfaces.SimEvent;
 
 public class StockEvent implements SimEvent
 {
-	double value;
-	
 	double growth;
 	
-	public StockEvent(double value, double growth)
+	public StockEvent(double growth)
 	{
-		this.value = value;
-		
 		this.growth = growth;
-	}
-	
-	public double getValue()
-	{
-		return this.value;
 	}
 	
 	public double getGrowth()
@@ -31,7 +22,7 @@ public class StockEvent implements SimEvent
 	{
 		if(style.equals(LoggingStyle.DEBUG))
 		{
-			return "[" + this.getClass().getName() + "] Stock value simulated at :" + value;
+			return "[" + this.getClass().getName() + "] Stock growth simulated :" + growth;
 		}
 		return null;
 	}

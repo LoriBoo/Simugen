@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import simugen.core.abstracts.AbstractSimModel;
-import simugen.core.interfaces.SimEvent;
-import simugen.core.interfaces.SimEventListener;
 import simugen.core.interfaces.SimModel;
 import simugen.core.rng.EmpiricalGenerator;
-import stock.model.components.StockEvent;
 import stock.model.components.StockProcess;
 import stock.model.components.StockProcessor;
-import stock.model.data.StockData;
 
-public class StockModel extends AbstractSimModel implements SimEventListener
+public class StockModel extends AbstractSimModel
 {
 	EmpiricalGenerator historical;
 
@@ -25,20 +21,13 @@ public class StockModel extends AbstractSimModel implements SimEventListener
 
 	List<Double> listValues = new ArrayList<>();
 
-	private final StockData stockData;
-
-	public StockModel(EmpiricalGenerator data, String company,
-			StockData stockData)
+	public StockModel(EmpiricalGenerator data, String company)
 	{
 		this.company = company;
 
 		this.historical = data;
 
-		this.stockData = stockData;
-
-		addListener(this);
-
-		assert (data != null && company != null && stockData != null);
+		assert (data != null && company != null);
 	}
 
 	public void setComputations(int computations)
@@ -54,8 +43,6 @@ public class StockModel extends AbstractSimModel implements SimEventListener
 	@Override
 	public void startUp()
 	{
-		stockData.reset();
-
 		final StockProcessor processor = new StockProcessor(comp);
 
 		final StockProcess proc = new StockProcess(historical, value);
@@ -71,23 +58,9 @@ public class StockModel extends AbstractSimModel implements SimEventListener
 	}
 
 	@Override
-	public void processEvent(SimEvent event)
-	{
-		synchronized (stockData)
-		{
-			if (event instanceof StockEvent)
-			{
-				final StockEvent evt = (StockEvent) event;
-				
-				stockData.addValue(evt.getValue(), evt.getGrowth());
-			}
-		}
-	}
-
-	@Override
 	public SimModel getCopy()
 	{
-		StockModel copy = new StockModel(historical, company, stockData);
+		StockModel copy = new StockModel(historical, company);
 
 		copy.setComputations(comp);
 

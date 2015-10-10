@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.math.MathException;
-import org.eclipse.swt.widgets.Display;
 
 import simugen.core.defaults.DefaultSimEngine;
 import simugen.core.interfaces.LoggingStyle;
@@ -78,16 +77,18 @@ public class StockGuiUtils
 		generator.addValue(percentChange.doubleValue());
 	}
 
-	public static int numberOfReps(StockModel model, int samples, int days,
+	public static int numberOfReps(StockModel model, double startValue, int samples, int days,
 			int maxRuns, double confidence) throws MathException
 	{
 		SimEngine engine;
 
 		Date start = Calendar.getInstance().getTime();
 
-		StockData data = new StockData(start);
+		StockData data = new StockData(start, startValue);
 		
 		model.setComputations(days);
+		
+		StockEventListener listener = new StockEventListener(data);
 
 		for (int i = 0; i < samples; i++)
 		{
@@ -101,7 +102,7 @@ public class StockGuiUtils
 
 			engine.setRuns(samples);
 
-			engine.addEventListener(new StockEventListener(data));
+			engine.addEventListener(listener);
 
 			engine.setModel(internal);
 
@@ -118,7 +119,7 @@ public class StockGuiUtils
 
 		double x[] = new double[days];
 
-		for (int i = 0; i < days; i++)
+		for (int i = 0; i < days-1; i++)
 		{
 			x[i] = data.getMeanDailyGrowth(i);
 		}
