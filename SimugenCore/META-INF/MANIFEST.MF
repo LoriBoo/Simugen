@@ -13,4 +13,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: simugen.core.abstracts,
  simugen.core.defaults,
  simugen.core.interfaces,
- simugen.core.rng
+ simugen.core.rng,
+ simugen.core.stats
