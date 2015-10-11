@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.math.MathException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
@@ -15,6 +14,8 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,7 +23,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -36,6 +38,7 @@ import simugen.core.interfaces.SimEvent;
 import simugen.core.interfaces.SimEventListener;
 import simugen.core.rng.EmpiricalGenerator;
 import stock.gui.utilities.StockGuiUtils;
+import stock.gui.utilities.StockNumberOfRuns;
 import stock.model.StockModel;
 import stock.model.components.StockEventListener;
 import stock.model.data.StockData;
@@ -67,8 +70,16 @@ public class StockCompanyModelEditor extends EditorPart
 
 	private StockData stockData;
 
+	private int pRuns;
+
+	private int pDays;
+
 	private void setup()
 	{
+		pRuns = 30;
+
+		pDays = 50;
+
 		percentages = StockScraperUtils
 				.getPercentChange(company.getHistorical());
 
@@ -114,131 +125,12 @@ public class StockCompanyModelEditor extends EditorPart
 
 		Composite parent = new Composite(base, SWT.NONE);
 
-		parent.setLayoutData(new GridLayout(1, true));
+		parent.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		parent.setLayout(new GridLayout(1, true));
 
-		final Button numberOfReps = new Button(parent, SWT.PUSH);
-
-		numberOfReps.setText("Number of Reps");
-
-		numberOfReps.addSelectionListener(new SelectionListener()
-		{
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				numberOfReps.setEnabled(false);
-
-				StockModel model = new StockModel(generator,
-						company.getCompanyName());
-
-				model.setInitialValue(company.getLatest());
-
-				try
-				{
-					int max = 600;
-
-					int sample = 100;
-
-					int days = 90;
-
-					double CI = 0.998d;
-
-					int number = StockGuiUtils.numberOfReps(model,
-							company.getLatest(), sample, days, max, CI);
-
-					String message = "Maximum runs hit.";
-
-					if (number < max)
-					{
-						message = "Number of runs for " + CI
-								+ " confidence interval: " + number;
-					}
-
-					MessageBox box = new MessageBox(parent.getShell());
-
-					box.setText("Results");
-
-					box.setMessage(message);
-
-					box.open();
-				}
-				catch (MathException e1)
-				{
-					e1.printStackTrace();
-				}
-				finally
-				{
-					numberOfReps.setEnabled(true);
-				}
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e)
-			{
-
-			}
-		});
-
-		runButton = new Button(parent, SWT.PUSH);
-
-		runButton.setLayoutData(new GridData());
-
-		runButton.setText("Run model");
-
-		runButton.addSelectionListener(new SelectionListener()
-		{
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				runButton.setText("Running...");
-
-				runButton.setEnabled(false);
-
-				SimEngine engine = new DefaultSimEngine();
-
-				stockData = new StockData(Calendar.getInstance().getTime(),
-						company.getLatest());
-
-				StockEventListener listener = new StockEventListener(stockData);
-				
-				StockModel model = new StockModel(generator,
-						company.getCompanyName());
-
-				model.setInitialValue(company.getLatest());
-
-				model.setComputations(30);
-
-				engine.setModel(model);
-				
-				engine.addEventListener(listener);
-
-				engine.setRuns(50);
-
-				engine.setLoggingStyle(LoggingStyle.DATA);
-
-				engine.addEventListener(StockCompanyModelEditor.this);
-
-				engine.start();
-
-				Display display = getSite().getShell().getDisplay();
-
-				while (engine.isRunning())
-				{
-					if (!display.readAndDispatch())
-					{
-						display.sleep();
-					}
-				}
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e)
-			{
-			}
-		});
+		createModelControls(parent);
 
 		final Canvas can = new Canvas(parent, SWT.DEFAULT);
 
@@ -277,6 +169,211 @@ public class StockCompanyModelEditor extends EditorPart
 		graph.performAutoScale();
 
 		parent.layout();
+	}
+
+	private void createModelControls(Composite base)
+	{
+		Composite parent = new Composite(base, SWT.NONE);
+
+		// Settable constants:
+		// days
+		// replications
+		parent.setLayout(new GridLayout(3, true));
+
+		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		Label label = new Label(parent, SWT.NONE);
+
+		label.setText("Days to Simulate:");
+
+		label.setLayoutData(
+				new GridData(SWT.LEFT, SWT.FILL, true, false, 2, 1));
+
+		final Text txtDays = new Text(parent, SWT.SINGLE | SWT.BORDER);
+
+		txtDays.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		txtDays.setText(String.valueOf(this.pDays));
+
+		label = new Label(parent, SWT.NONE);
+
+		label.setText("Number of Runs:");
+
+		label.setLayoutData(
+				new GridData(SWT.LEFT, SWT.FILL, true, false, 2, 1));
+
+		final Text txtRuns = new Text(parent, SWT.SINGLE | SWT.BORDER);
+
+		txtRuns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		txtRuns.setText(String.valueOf(this.pRuns));
+
+		final Button numberOfReps = new Button(parent, SWT.PUSH);
+
+		numberOfReps.setText("Number of Runs Test");
+
+		numberOfReps
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		numberOfReps.addSelectionListener(new SelectionListener()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				StockModel model = new StockModel(generator,
+						company.getCompanyName());
+
+				StockNumberOfRuns runs = new StockNumberOfRuns(model,
+						company.getLatest());
+
+				if (runs.open())
+				{
+					setDays(runs.days);
+
+					setRuns(runs.finalRuns);
+
+					txtDays.setText(String.valueOf(pDays));
+
+					txtRuns.setText(String.valueOf(pRuns));
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+			}
+		});
+
+		runButton = new Button(parent, SWT.PUSH);
+
+		runButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		runButton.setText("Run model");
+
+		runButton.addSelectionListener(new SelectionListener()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				runModel();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+			}
+		});
+
+		final VerifyListener verifyInteger = new VerifyListener()
+		{
+			@Override
+			public void verifyText(VerifyEvent e)
+			{
+				Text text = Text.class.cast(e.widget);
+
+				String value = e.start == 0 ? e.text
+						: text.getText().concat(e.text);
+
+				try
+				{
+					if (!value.isEmpty())
+					{
+						if (Integer.valueOf(value) < 0)
+						{
+							e.doit = false;
+						}
+					}
+				}
+				catch (NumberFormatException f)
+				{
+					// Yummy
+					e.doit = false;
+				}
+				finally
+				{
+					if (value.isEmpty())
+					{
+						runButton.setEnabled(!e.doit);
+					}
+					else
+					{
+						runButton.setEnabled(true);
+					}
+
+					if (e.doit && !value.isEmpty())
+					{
+						int val = Integer.valueOf(value);
+
+						if (e.getSource().equals(txtRuns))
+						{
+							setRuns(val);
+						}
+						else
+						{
+							setDays(val);
+						}
+					}
+				}
+			}
+		};
+
+		txtDays.addVerifyListener(verifyInteger);
+
+		txtRuns.addVerifyListener(verifyInteger);
+	}
+
+	protected void runModel()
+	{
+		runButton.setText("Running...");
+
+		runButton.setEnabled(false);
+
+		SimEngine engine = new DefaultSimEngine();
+
+		stockData = new StockData(Calendar.getInstance().getTime(),
+				company.getLatest());
+
+		StockEventListener listener = new StockEventListener(stockData);
+
+		StockModel model = new StockModel(generator, company.getCompanyName());
+
+		model.setComputations(pDays);
+
+		engine.setRuns(pRuns);
+
+		engine.setModel(model);
+
+		engine.addEventListener(listener);
+
+		// engine.setRuns(getRuns());
+
+		engine.setLoggingStyle(LoggingStyle.DATA);
+
+		engine.addEventListener(StockCompanyModelEditor.this);
+
+		engine.start();
+
+		Display display = getSite().getShell().getDisplay();
+
+		while (engine.isRunning())
+		{
+			if (!display.readAndDispatch())
+			{
+				display.sleep();
+			}
+		}
+	}
+
+	protected void setDays(int val)
+	{
+		pDays = val;
+	}
+
+	protected void setRuns(int val)
+	{
+		pRuns = val;
 	}
 
 	public void setup(CircularBufferDataProvider buffer)
@@ -339,6 +436,18 @@ public class StockCompanyModelEditor extends EditorPart
 
 			runButton.setText("Run model");
 
+			if (minTrace != null)
+			{
+				assert maxTrace != null;
+				assert medTrace != null;
+
+				graph.removeTrace(maxTrace);
+
+				graph.removeTrace(medTrace);
+
+				graph.removeTrace(minTrace);
+			}
+
 			minTrace = new Trace("Min", graph.primaryXAxis, graph.primaryYAxis,
 					stockData.getMinBuffer());
 
@@ -347,6 +456,15 @@ public class StockCompanyModelEditor extends EditorPart
 
 			medTrace = new Trace("Median", graph.primaryXAxis,
 					graph.primaryYAxis, stockData.getMedianBuffer());
+
+			minTrace.setTraceColor(
+					Display.getDefault().getSystemColor(SWT.COLOR_RED));
+
+			maxTrace.setTraceColor(
+					Display.getDefault().getSystemColor(SWT.COLOR_GREEN));
+
+			minTrace.setTraceColor(
+					Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
 
 			graph.addTrace(minTrace);
 

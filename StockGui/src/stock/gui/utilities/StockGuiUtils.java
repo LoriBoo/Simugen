@@ -107,14 +107,6 @@ public class StockGuiUtils
 			engine.setModel(internal);
 
 			engine.start();
-
-//			while (engine.isRunning())
-//			{
-//				if (!Display.getDefault().readAndDispatch())
-//				{
-//					Display.getDefault().sleep();
-//				}
-//			}
 		}
 
 		double x[] = new double[days];
