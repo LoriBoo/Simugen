@@ -7,7 +7,7 @@ import simugen.core.interfaces.SimEvent;
 public class DefaultProcessor implements SimComponent
 {
 	EventProcess process = null;
-	
+
 	public void setProcess(EventProcess run)
 	{
 		process = run;
@@ -29,5 +29,15 @@ public class DefaultProcessor implements SimComponent
 	public boolean isComplete()
 	{
 		return process.isComplete();
+	}
+
+	/**
+	 * Default Processor has no bearing on the results of the processed event.
+	 * Subclasses can override.
+	 */
+	@Override
+	public void response(boolean complete)
+	{
+
 	}
 }

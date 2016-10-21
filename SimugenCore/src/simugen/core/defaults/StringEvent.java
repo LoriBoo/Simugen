@@ -1,9 +1,9 @@
 package simugen.core.defaults;
 
+import simugen.core.abstracts.AbstractProcessResponseEvent;
 import simugen.core.interfaces.LoggingStyle;
-import simugen.core.interfaces.SimEvent;
 
-public class StringEvent implements SimEvent
+public class StringEvent extends AbstractProcessResponseEvent
 {
 	final String message;
 	
@@ -17,5 +17,11 @@ public class StringEvent implements SimEvent
 	{
 		return message;
 	}
-
+	
+	@Override
+	public long getTime()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

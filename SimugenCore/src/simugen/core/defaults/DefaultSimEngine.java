@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.math.random.MersenneTwister;
 
+import simugen.core.abstracts.TimeSimEvent;
 import simugen.core.interfaces.LoggingStyle;
 import simugen.core.interfaces.SimEngine;
 import simugen.core.interfaces.SimEvent;
@@ -32,6 +33,8 @@ public class DefaultSimEngine implements SimEngine
 
 	private int runs = 0;
 
+	private long milliseconds = 0L;
+
 	public void setModel(SimModel model)
 	{
 		internalModel = model;
@@ -40,7 +43,7 @@ public class DefaultSimEngine implements SimEngine
 	public void start()
 	{
 		printEngine("Engine batching started.");
-		
+
 		for (int i = 0; i < runs; i++)
 		{
 			printEngine("Run " + i + " Started");
@@ -63,13 +66,13 @@ public class DefaultSimEngine implements SimEngine
 		if (internalModel == null)
 		{
 			printEngineErr("Model has not been set!");
-			
+
 			throw new IllegalStateException("Model has not been set");
 		}
 		else if (!internalModel.isReady())
 		{
 			printEngineErr("Model has not readied up!");
-			
+
 			throw new IllegalStateException("Model has not readied up");
 		}
 
@@ -83,19 +86,39 @@ public class DefaultSimEngine implements SimEngine
 
 		listListeners.addAll(internalModel.getListeners());
 
-		SimEvent e = getNextEvent();
+		final List<SimEvent> eventList = new ArrayList<>();
 
-		while (e != null && !forceStop)
+		eventList.addAll(getNextEvents());
+
+		while (!eventList.isEmpty() && !forceStop)
 		{
-			printSet(e.printEvent(logging));
+			List<SimEvent> copy = new ArrayList<>(eventList);
 
-			e = getNextEvent();
+			eventList.clear();
 
-			listListeners.forEach(new SimEventConsumer(e));
+			boolean done = false;
 
-			if (e instanceof ModelFinishedEvent)
+			for (SimEvent e : copy)
 			{
-				e = null;
+				if (e instanceof TimeSimEvent)
+				{
+					final TimeSimEvent evt = (TimeSimEvent) e;
+
+					milliseconds += evt.getTime();
+				}
+
+				printSet(e.printEvent(logging));
+
+				listListeners.forEach(new SimEventConsumer(e));
+
+				if (e instanceof ModelFinishedEvent)
+				{
+					done = true;
+				}
+			}
+			if (!done)
+			{
+				eventList.addAll(getNextEvents());
 			}
 		}
 
@@ -109,9 +132,9 @@ public class DefaultSimEngine implements SimEngine
 		running = false;
 	}
 
-	private SimEvent getNextEvent()
+	private List<SimEvent> getNextEvents()
 	{
-		return internalModel.getNextEvent(this);
+		return internalModel.getNextEvents(this);
 	}
 
 	public void stop()
@@ -123,17 +146,17 @@ public class DefaultSimEngine implements SimEngine
 	{
 		return doubleGenerator.nextDouble();
 	}
-	
+
 	public void printEngine(String message)
 	{
 		printSet("[SimEngine] " + message);
 	}
-	
+
 	public void printEngineErr(String message)
 	{
 		print("[SimEngine] " + message, LoggingStyle.ERR);
 	}
-	
+
 	public void printSet(String message)
 	{
 		print(message, logging);
@@ -153,10 +176,10 @@ public class DefaultSimEngine implements SimEngine
 		switch (style)
 		{
 		case DATA:
-			streamOut.println(message);
+			streamOut.println("{" + milliseconds + "}" + message);
 			break;
 		case DEBUG:
-			streamOut.println("[DEBUG] " + message);
+			streamOut.println("{" + milliseconds + "}" + "[DEBUG] " + message);
 			break;
 		case ERR:
 		{

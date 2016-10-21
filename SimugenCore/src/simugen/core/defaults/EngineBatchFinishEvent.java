@@ -1,9 +1,9 @@
 package simugen.core.defaults;
 
+import simugen.core.abstracts.AbstractProcessResponseEvent;
 import simugen.core.interfaces.LoggingStyle;
-import simugen.core.interfaces.SimEvent;
 
-public class EngineBatchFinishEvent implements SimEvent
+public class EngineBatchFinishEvent extends AbstractProcessResponseEvent
 {
 
 	@Override
@@ -12,4 +12,10 @@ public class EngineBatchFinishEvent implements SimEvent
 		return "Engine batching complete.";
 	}
 
+	@Override
+	public long getTime()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
