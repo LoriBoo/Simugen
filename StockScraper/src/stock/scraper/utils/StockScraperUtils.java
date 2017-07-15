@@ -20,6 +20,12 @@ import org.apache.commons.io.FileUtils;
 
 import stock.scraper.builder.YahooUrlBuilder;
 
+/**
+ * @Depricated
+ * 	Yahoo finance apis appear offline.
+ * @author Bashh
+ *
+ */
 public class StockScraperUtils
 {
 	public final static String HEADER_DATE = "Date";
@@ -36,6 +42,8 @@ public class StockScraperUtils
 		Map<Long, BigDecimal> historicalData = new LinkedHashMap<>();
 
 		File data = getDataFile(builder.getUrl());
+		
+		System.out.println(data.getName());
 
 		BufferedReader readFile = new BufferedReader(new FileReader(data));
 

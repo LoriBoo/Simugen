@@ -446,6 +446,7 @@ public class StockCompanyModelEditor extends EditorPart
 				graph.removeTrace(medTrace);
 
 				graph.removeTrace(minTrace);
+
 			}
 
 			minTrace = new Trace("Min", graph.primaryXAxis, graph.primaryYAxis,
@@ -463,7 +464,7 @@ public class StockCompanyModelEditor extends EditorPart
 			maxTrace.setTraceColor(
 					Display.getDefault().getSystemColor(SWT.COLOR_GREEN));
 
-			minTrace.setTraceColor(
+			medTrace.setTraceColor(
 					Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
 
 			graph.addTrace(minTrace);

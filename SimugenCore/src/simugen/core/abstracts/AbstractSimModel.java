@@ -65,14 +65,17 @@ public abstract class AbstractSimModel implements SimModel
 
 		double next = e.getNext();
 
-		final List<SimEvent> list = new ArrayList<>();
-
+		final SimEvent[] arr = new SimEvent[components.size()]; 
+		
+		int i = 0;
+		
 		for (SimComponent c : components)
 		{
-			list.add(c.process(next));
+			arr[i] = c.process(next);
+			i++;
 		}
-
-		return controller.process(list.toArray(new TimeSimEvent[list.size()]));
+		
+		return controller.process(arr);
 	}
 
 	private boolean allComplete()
