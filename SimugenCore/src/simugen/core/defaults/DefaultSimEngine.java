@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.random.MersenneTwister;
+import org.apache.commons.math3.random.MersenneTwister;
 
 import simugen.core.abstracts.TimeSimEvent;
 import simugen.core.interfaces.LoggingStyle;
