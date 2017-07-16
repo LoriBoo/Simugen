@@ -5,8 +5,15 @@ import java.util.concurrent.TimeUnit;
 import simugen.core.interfaces.LoggingStyle;
 import simugen.core.interfaces.SimEvent;
 
-public class TimeSimEvent extends AbstractProcessResponseEvent
-{
+/**
+ * This event pretended that every event was not time based. It is, and should
+ * be agnostic to what the time in the event represents.
+ * 
+ * @author BASHH
+ *
+ */
+@Deprecated
+public class TimeSimEvent extends AbstractProcessResponseEvent {
 	private final TimeUnit timeUnit;
 
 	private double time;
@@ -15,36 +22,30 @@ public class TimeSimEvent extends AbstractProcessResponseEvent
 
 	private boolean isTimeSet = false;
 
-	public TimeSimEvent(TimeUnit timeUnit, SimEvent subEvent)
-	{
+	public TimeSimEvent(TimeUnit timeUnit, SimEvent subEvent) {
 		this.timeUnit = timeUnit;
 
 		this.subEvent = subEvent;
 	}
-	
-	public boolean isTimeSet()
-	{
+
+	public boolean isTimeSet() {
 		return isTimeSet;
 	}
-	
-	public void setTime(double time)
-	{
+
+	public void setTime(double time) {
 		this.time = time;
 		isTimeSet = true;
 	}
 
 	@Override
-	public String printEvent(LoggingStyle style)
-	{
+	public String printEvent(LoggingStyle style) {
 		return subEvent.printEvent(style);
 	}
 
-	public long getTime()
-	{
+	public long getTime() {
 		long millis = -1L;
 
-		switch (timeUnit)
-		{
+		switch (timeUnit) {
 		case DAYS:
 			millis = (long) (86400000 * time);
 			break;
@@ -52,8 +53,7 @@ public class TimeSimEvent extends AbstractProcessResponseEvent
 			millis = (long) (3600000 * time);
 			break;
 		case MICROSECONDS:
-			throw new UnsupportedOperationException(
-					"Microsecond TimeUnit not supported");
+			throw new UnsupportedOperationException("Microsecond TimeUnit not supported");
 		case MILLISECONDS:
 			millis = (long) time;
 			break;
@@ -61,8 +61,7 @@ public class TimeSimEvent extends AbstractProcessResponseEvent
 			millis = (long) (60000 * time);
 			break;
 		case NANOSECONDS:
-			throw new UnsupportedOperationException(
-					"Nanoseconds TimeUnit not supported");
+			throw new UnsupportedOperationException("Nanoseconds TimeUnit not supported");
 		case SECONDS:
 			millis = (long) (1000 * time);
 			break;
@@ -71,5 +70,11 @@ public class TimeSimEvent extends AbstractProcessResponseEvent
 		}
 
 		return millis;
+	}
+
+	@Override
+	public void setProcessed() {
+		// TODO Auto-generated method stub
+		
 	}
 }

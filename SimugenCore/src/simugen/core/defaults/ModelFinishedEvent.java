@@ -1,10 +1,12 @@
 package simugen.core.defaults;
 
-public class ModelFinishedEvent extends StringEvent
+import simugen.core.abstracts.AbstractSimEvent;
+
+public class ModelFinishedEvent extends AbstractSimEvent
 {
-	public ModelFinishedEvent()
+	public ModelFinishedEvent(long time)
 	{
-		super("Model completed successfully.");
+		super("Model completed successfully.", time);
 	}
 
 }

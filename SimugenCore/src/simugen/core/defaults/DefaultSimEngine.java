@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.math3.random.MersenneTwister;
 
-import simugen.core.abstracts.TimeSimEvent;
 import simugen.core.interfaces.LoggingStyle;
 import simugen.core.interfaces.SimEngine;
 import simugen.core.interfaces.SimEvent;
@@ -50,7 +49,7 @@ public class DefaultSimEngine implements SimEngine
 			start(new MersenneTwister().nextLong());
 		}
 
-		SimEvent event = new EngineBatchFinishEvent();
+		SimEvent event = new EngineBatchFinishEvent(milliseconds);
 
 		printEngine(event.printEvent(logging));
 
@@ -90,6 +89,8 @@ public class DefaultSimEngine implements SimEngine
 
 		eventList.addAll(getNextEvents());
 
+		// Keep getting events until there are none left, or the engine has been
+		// halted by the user.
 		while (!eventList.isEmpty() && !forceStop)
 		{
 			List<SimEvent> copy = new ArrayList<>(eventList);
@@ -100,12 +101,7 @@ public class DefaultSimEngine implements SimEngine
 
 			for (SimEvent e : copy)
 			{
-				if (e instanceof TimeSimEvent)
-				{
-					final TimeSimEvent evt = (TimeSimEvent) e;
-
-					milliseconds += evt.getTime();
-				}
+				milliseconds = e.getTime();
 
 				printSet(e.printEvent(logging));
 
@@ -125,6 +121,10 @@ public class DefaultSimEngine implements SimEngine
 		if (forceStop)
 		{
 			printEngineErr("Engine was forcibly stopped.");
+		}
+		else if (eventList.isEmpty())
+		{
+
 		}
 
 		listListeners.removeAll(internalModel.getListeners());
@@ -233,5 +233,11 @@ public class DefaultSimEngine implements SimEngine
 	public void setRuns(int runs)
 	{
 		this.runs = runs;
+	}
+
+	@Override
+	public long getMilliseconds()
+	{
+		return milliseconds;
 	}
 }

@@ -3,14 +3,14 @@ package simugen.core.abstracts;
 import java.util.ArrayList;
 import java.util.List;
 
-import simugen.core.defaults.DefaultSimTimeController;
+import simugen.core.defaults.DefaultSimController;
 import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.SimComponent;
+import simugen.core.interfaces.SimController;
 import simugen.core.interfaces.SimEngine;
 import simugen.core.interfaces.SimEvent;
 import simugen.core.interfaces.SimEventListener;
 import simugen.core.interfaces.SimModel;
-import simugen.core.interfaces.SimTimeController;
 
 public abstract class AbstractSimModel implements SimModel
 {
@@ -18,7 +18,7 @@ public abstract class AbstractSimModel implements SimModel
 
 	private List<SimEventListener> listeners = new ArrayList<>();
 
-	private final SimTimeController controller = new DefaultSimTimeController();
+	private final SimController controller = new DefaultSimController();
 
 	boolean complete = false;
 
@@ -51,31 +51,31 @@ public abstract class AbstractSimModel implements SimModel
 		return listeners;
 	}
 
+	/**
+	 * {@link #getNextEvents(SimEngine)} checks for next events based on the
+	 * next tick from the engine.
+	 * 
+	 * AbstractSimModel delegates to the controller assigned, to produce events.
+	 */
 	@Override
 	public List<SimEvent> getNextEvents(SimEngine e)
 	{
 		final List<SimEvent> events = new ArrayList<>();
-		
+
+		final long modelTime = e.getMilliseconds();
+
+		// If the model has completed return a ModelFinishedEvent
 		if (complete || allComplete())
 		{
-			events.add(new ModelFinishedEvent());
-			
+
+			events.add(new ModelFinishedEvent(modelTime));
+
 			return events;
 		}
 
 		double next = e.getNext();
 
-		final SimEvent[] arr = new SimEvent[components.size()]; 
-		
-		int i = 0;
-		
-		for (SimComponent c : components)
-		{
-			arr[i] = c.process(next);
-			i++;
-		}
-		
-		return controller.process(arr);
+		return controller.getNextEvents(next, components);
 	}
 
 	private boolean allComplete()

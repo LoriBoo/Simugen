@@ -4,6 +4,13 @@ import simugen.core.interfaces.EventProcess;
 import simugen.core.interfaces.SimComponent;
 import simugen.core.interfaces.SimEvent;
 
+/**
+ * Might come back later, but not sure it's in line with where I want to go now.
+ * 
+ * @author BASHH
+ *
+ */
+@Deprecated
 public class DefaultProcessor implements SimComponent
 {
 	EventProcess process = null;
@@ -36,8 +43,14 @@ public class DefaultProcessor implements SimComponent
 	 * Subclasses can override.
 	 */
 	@Override
-	public void response(boolean complete)
+	public void setIsComplete(boolean complete)
 	{
 
+	}
+
+	@Override
+	public boolean canProduceEvent()
+	{
+		return false;
 	}
 }

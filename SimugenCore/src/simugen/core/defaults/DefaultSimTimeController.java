@@ -3,13 +3,23 @@ package simugen.core.defaults;
 import java.util.ArrayList;
 import java.util.List;
 
+import simugen.core.interfaces.SimComponent;
+import simugen.core.interfaces.SimController;
+import simugen.core.interfaces.SimEngine;
 import simugen.core.interfaces.SimEvent;
-import simugen.core.interfaces.SimTimeController;
 
-public class DefaultSimTimeController implements SimTimeController
+/**
+ * Deprecated, not sure how I want to do this.
+ * 
+ * @author BASHH
+ *
+ */
+@Deprecated
+public class DefaultSimTimeController implements SimController
 {
 	@Override
-	public List<SimEvent> process(SimEvent... events)
+	@Deprecated
+	public List<SimEvent> process(SimEngine ee, SimEvent... events)
 	{
 		long time = -1L;
 
@@ -30,10 +40,19 @@ public class DefaultSimTimeController implements SimTimeController
 				evt.add(e);
 			}
 			
-			e.setProcessedResponse(true, evt.contains(e));
+//			e.setProcessedResponse(true, evt.contains(e));
+			
 		}
 
 		return evt;
+	}
+
+	@Override
+	public List<SimEvent> getNextEvents(double next,
+			List<SimComponent> components)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -15,4 +15,5 @@ public interface SimEngine
 	public void addEventListener(SimEventListener e);
 	public boolean isRunning();
 	public void setRuns(int runs);
+	public long getMilliseconds();
 }
