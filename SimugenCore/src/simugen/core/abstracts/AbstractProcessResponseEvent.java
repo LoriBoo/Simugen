@@ -4,9 +4,9 @@ import simugen.core.interfaces.SimEvent;
 
 public abstract class AbstractProcessResponseEvent implements SimEvent
 {
-	private boolean processed;
+	private boolean processed = false;
 	
-	private boolean response;
+	private boolean response = false;
 	
 	public void setProcessedResponse(boolean processed, boolean response)
 	{

@@ -9,17 +9,28 @@ public class TimeSimEvent extends AbstractProcessResponseEvent
 {
 	private final TimeUnit timeUnit;
 
-	private final double time;
+	private double time;
 
 	private final SimEvent subEvent;
 
-	public TimeSimEvent(TimeUnit timeUnit, double time, SimEvent subEvent)
-	{
-		this.time = time;
+	private boolean isTimeSet = false;
 
+	public TimeSimEvent(TimeUnit timeUnit, SimEvent subEvent)
+	{
 		this.timeUnit = timeUnit;
 
 		this.subEvent = subEvent;
+	}
+	
+	public boolean isTimeSet()
+	{
+		return isTimeSet;
+	}
+	
+	public void setTime(double time)
+	{
+		this.time = time;
+		isTimeSet = true;
 	}
 
 	@Override

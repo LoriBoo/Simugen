@@ -10,13 +10,15 @@ public class TestMain
 
 	public static void main(String[] args)
 	{
-		SimModel model = new TestModel();
+		SimModel model = new TestTimeModel();
 		
 		SimEngine engine = new DefaultSimEngine();
 		
 		engine.setLoggingStyle(LoggingStyle.DATA);
 		
 		engine.setModel(model);
+		
+		engine.setRuns(1);
 		
 		engine.start();
 		
