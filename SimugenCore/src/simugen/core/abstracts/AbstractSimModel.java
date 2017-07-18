@@ -3,22 +3,19 @@ package simugen.core.abstracts;
 import java.util.ArrayList;
 import java.util.List;
 
-import simugen.core.defaults.DefaultSimController;
-import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.SimComponent;
-import simugen.core.interfaces.SimController;
 import simugen.core.interfaces.SimEngine;
-import simugen.core.interfaces.SimEvent;
-import simugen.core.interfaces.SimEventListener;
+import simugen.core.interfaces.SimMessage;
 import simugen.core.interfaces.SimModel;
+import simugen.core.messages.ModelFinishedEvent;
 
 public abstract class AbstractSimModel implements SimModel
 {
 	private List<SimComponent> components = new ArrayList<>();
 
-	private List<SimEventListener> listeners = new ArrayList<>();
+	// private List<SimEventListener> listeners = new ArrayList<>();
 
-	private final SimController controller = new DefaultSimController();
+	// private final SimController controller = new DefaultSimController();
 
 	boolean complete = false;
 
@@ -30,79 +27,36 @@ public abstract class AbstractSimModel implements SimModel
 	}
 
 	@Override
-	public void addListener(SimEventListener e)
+	public void addComponent(SimComponent components)
 	{
-		listeners.add(e);
+		this.components.add(components);
 	}
 
 	@Override
-	public void addComponent(SimComponent comp)
+	public List<SimMessage> getMessages(SimEngine engine, long tick)
 	{
-		components.add(comp);
-		if (comp instanceof SimEventListener)
-		{
-			listeners.add((SimEventListener) comp);
-		}
-	}
-
-	@Override
-	public List<SimEventListener> getListeners()
-	{
-		return listeners;
-	}
-
-	/**
-	 * {@link #getNextEvents(SimEngine)} checks for next events based on the
-	 * next tick from the engine.
-	 * 
-	 * AbstractSimModel delegates to the controller assigned, to produce events.
-	 */
-	@Override
-	public List<SimEvent> getNextEvents(SimEngine e)
-	{
-		final List<SimEvent> events = new ArrayList<>();
-
-		final long modelTime = e.getMilliseconds();
+		final List<SimMessage> messages = new ArrayList<>();
 
 		// If the model has completed return a ModelFinishedEvent
-		if (complete || allComplete())
+		if (complete)
 		{
+			messages.add(
+					new ModelFinishedEvent(engine.getMilliseconds(), this));
 
-			events.add(new ModelFinishedEvent(modelTime));
-
-			return events;
+			return messages;
 		}
 
-		double next = e.getNext();
-
-		return controller.getNextEvents(next, components);
-	}
-
-	private boolean allComplete()
-	{
 		for (SimComponent c : components)
 		{
-			if (!c.isComplete())
+			final List<SimMessage> m = c.getMessages(engine, tick);
+
+			if (m != null)
 			{
-				return false;
+				messages.addAll(m);
 			}
 		}
 
-		return true;
-	}
-
-	@Override
-	public boolean isReady()
-	{
-		for (SimComponent c : components)
-		{
-			if (!c.isReady())
-			{
-				return false;
-			}
-		}
-
-		return true;
+		return messages.isEmpty() ? null : messages;
 	}
 
 }

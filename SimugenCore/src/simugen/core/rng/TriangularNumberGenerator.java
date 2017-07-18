@@ -17,18 +17,16 @@ public class TriangularNumberGenerator implements DataGenerator<Number>
 		this.min = min;
 		this.max = max;
 		this.mode = mode;
-		Fc = (mode-min) / (max-min);
-	}
-	
-	@Override
-	public boolean isReady()
-	{
-		return (min != max && min != mode && min < mode && mode < max);
+		Fc = (mode - min) / (max - min);
 	}
 
 	@Override
 	public Number getNext(double d)
 	{
+		assert min < max;
+		assert min < mode;
+		assert mode < max;
+
 		Number number = null;
 		if (d < Fc)
 		{

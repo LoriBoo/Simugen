@@ -7,10 +7,13 @@ import java.util.List;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import simugen.core.interfaces.LoggingStyle;
+import simugen.core.interfaces.SimComponent;
 import simugen.core.interfaces.SimEngine;
-import simugen.core.interfaces.SimEvent;
-import simugen.core.interfaces.SimEventListener;
+import simugen.core.interfaces.SimMessage;
 import simugen.core.interfaces.SimModel;
+import simugen.core.messages.EngineBatchFinishMessage;
+import simugen.core.messages.ModelFinishedEvent;
+import simugen.core.stats.SimMessageComparitor;
 
 public class DefaultSimEngine implements SimEngine
 {
@@ -26,13 +29,15 @@ public class DefaultSimEngine implements SimEngine
 
 	private long seed;
 
-	private List<SimEventListener> listListeners = new ArrayList<>();
+	// private List<SimEventListener> listListeners = new ArrayList<>();
 
 	private boolean running = false;
 
 	private int runs = 0;
 
 	private long milliseconds = 0L;
+
+	private long tick = 0L;
 
 	public void setModel(SimModel model)
 	{
@@ -49,18 +54,23 @@ public class DefaultSimEngine implements SimEngine
 			start(new MersenneTwister().nextLong());
 		}
 
-		SimEvent event = new EngineBatchFinishEvent(milliseconds);
+		SimMessage finishedMessage = new EngineBatchFinishMessage(this,
+				milliseconds);
 
-		printEngine(event.printEvent(logging));
+		printEngine(finishedMessage.getLogMessage());
 
-		listListeners.forEach(new SimEventConsumer(event));
+		// SimEvent event = new EngineBatchFinishEvent(milliseconds);
+		//
+		// printEngine(event.printEvent(logging));
+		//
+		// listListeners.forEach(new SimEventConsumer(event));
 	}
 
 	public void start(long seed)
 	{
 		this.seed = seed;
 
-		internalModel = internalModel.getCopy();
+		// internalModel = internalModel.getCopy();
 
 		if (internalModel == null)
 		{
@@ -83,58 +93,87 @@ public class DefaultSimEngine implements SimEngine
 
 		internalModel.startUp();
 
-		listListeners.addAll(internalModel.getListeners());
+		// listListeners.addAll(internalModel.getListeners());
 
-		final List<SimEvent> eventList = new ArrayList<>();
-
-		eventList.addAll(getNextEvents());
+		// List<SimMessage> messageList = new ArrayList<>();
 
 		// Keep getting events until there are none left, or the engine has been
 		// halted by the user.
-		while (!eventList.isEmpty() && !forceStop)
+
+		boolean dirty = false;
+
+		boolean complete = false;
+
+		while (complete == false)
 		{
-			List<SimEvent> copy = new ArrayList<>(eventList);
 
-			eventList.clear();
+			List<SimMessage> messageList = getMessages();
 
-			boolean done = false;
-
-			for (SimEvent e : copy)
+			if (messageList == null)
 			{
-				milliseconds = e.getTime();
+				messageList = new ArrayList<>();
 
-				printSet(e.printEvent(logging));
+				messageList.add(
+						new ModelFinishedEvent(milliseconds, internalModel));
+			}
 
-				listListeners.forEach(new SimEventConsumer(e));
+			do
+			{
+				// Sort the list in order of model time
+				messageList.sort(new SimMessageComparitor());
 
-				if (e instanceof ModelFinishedEvent)
+				for (SimMessage e : messageList)
 				{
-					done = true;
+					// For each message, if it has a sender, send it to the
+					// component.
+
+					final SimComponent to = e.getSimComponentTo();
+
+					if (to != null)
+					{
+						to.receiveMessage(e);
+					}
+
+					// Update the time in the engine
+					milliseconds = e.getModelTime();
+
+					printEngine(e.getLogMessage());
+
+					if (e instanceof ModelFinishedEvent)
+					{
+						complete = true;
+					}
 				}
-			}
-			if (!done)
-			{
-				eventList.addAll(getNextEvents());
-			}
+
+				messageList = getMessages();
+
+				// If we got new messages based on messages sent, the engine is
+				// dirty and needs to process the messages
+				dirty = messageList != null;
+
+			} while (dirty && !forceStop);
+
+			// Tick the engine, so that components know to generate new messages
+			tick++;
 		}
 
 		if (forceStop)
 		{
 			printEngineErr("Engine was forcibly stopped.");
 		}
-		else if (eventList.isEmpty())
-		{
+		// else if (messageList.isEmpty())
+		// {
+		//
+		// }
 
-		}
-
-		listListeners.removeAll(internalModel.getListeners());
+		// listListeners.removeAll(internalModel.getListeners());
 
 		running = false;
 	}
 
-	private List<SimEvent> getNextEvents()
+	private List<SimMessage> getMessages()
 	{
-		return internalModel.getNextEvents(this);
+		return internalModel.getMessages(this, this.tick);
 	}
 
 	public void stop()
@@ -217,11 +256,11 @@ public class DefaultSimEngine implements SimEngine
 		return seed;
 	}
 
-	@Override
-	public void addEventListener(SimEventListener e)
-	{
-		listListeners.add(e);
-	}
+	// @Override
+	// public void addEventListener(SimEventListener e)
+	// {
+	// listListeners.add(e);
+	// }
 
 	@Override
 	public boolean isRunning()

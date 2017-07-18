@@ -104,17 +104,13 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 		return count;
 	}
 
-	@Override
-	public boolean isReady()
-	{
-		return ready;
-	}
-
 	// If the probability of a number is 0.25,
 	// and the passed probability, d, is <=0.25, it's valid.
 	@Override
 	public Number getNext(double d)
 	{
+		assert ready;
+		
 		for (Double prob : probabilities)
 		{
 			if (d <= prob)
