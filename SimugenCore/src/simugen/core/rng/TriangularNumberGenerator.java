@@ -36,6 +36,7 @@ public class TriangularNumberGenerator implements DataGenerator<Number>
 		{
 			number = max - Math.sqrt((1 - d) * (max - min) * (max - mode));
 		}
+
 		return number;
 	}
 

@@ -10,7 +10,14 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Export-Package: simugen.core.abstracts,
+ simugen.core.components,
+ simugen.core.components.abstracts,
+ simugen.core.components.interfaces,
  simugen.core.defaults,
+ simugen.core.enums,
  simugen.core.interfaces,
  simugen.core.rng,
- simugen.core.stats
+ simugen.core.stats,
+ simugen.core.test,
+ simugen.core.transfer,
+ simugen.core.transfer.interfaces

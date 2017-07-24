@@ -2,5 +2,13 @@ package simugen.core.interfaces;
 
 public interface DataGenerator<T extends Object>
 {
-	public T getNext(double d);
+	default T getNext(double d)
+	{
+		throw new IllegalAccessError();
+	}
+
+	default T getNext(EngineTick tick)
+	{
+		throw new IllegalAccessError();
+	}
 }
