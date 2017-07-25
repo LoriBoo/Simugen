@@ -4,24 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import simugen.core.components.interfaces.Queue;
-import simugen.core.defaults.DefaultElementQueuedContext;
 import simugen.core.defaults.NullEngineTick;
 import simugen.core.enums.QueueMethod;
 import simugen.core.interfaces.Component;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.transfer.ElementTransferData;
-import simugen.core.transfer.TransferInputPipe;
 import simugen.core.transfer.TransferOutputPipe;
 
-public class AbstractQueue extends AbstractComponent implements Queue
+public abstract class AbstractQueue
+		extends AbstractSingleInSingleOutPipeComponent implements Queue
 {
 	protected int totalCapacity = -1;
 
 	protected final QueueMethod method;
-
-	protected final TransferInputPipe inputPipe = new TransferInputPipe(this);
-
-	protected final TransferOutputPipe outputPipe = new TransferOutputPipe();
 
 	protected final List<ElementTransferData> elementsInQueue = new ArrayList<>();
 
@@ -31,8 +26,6 @@ public class AbstractQueue extends AbstractComponent implements Queue
 	public AbstractQueue()
 	{
 		this.method = QueueMethod.FIFO;
-
-		addProcessData();
 	}
 
 	/**
@@ -53,8 +46,6 @@ public class AbstractQueue extends AbstractComponent implements Queue
 	public AbstractQueue(QueueMethod method)
 	{
 		this.method = method;
-
-		addProcessData();
 	}
 
 	/**
@@ -68,14 +59,6 @@ public class AbstractQueue extends AbstractComponent implements Queue
 		this(method);
 
 		this.totalCapacity = totalCapacity;
-	}
-
-	private void addProcessData()
-	{
-		final DefaultElementQueuedContext context = new DefaultElementQueuedContext(
-				this);
-
-		addProcessDataContext(ElementTransferData.class, context);
 	}
 
 	/**
@@ -95,6 +78,8 @@ public class AbstractQueue extends AbstractComponent implements Queue
 		final int index = getNextIndex();
 
 		final ElementTransferData eData = elementsInQueue.get(index);
+
+		final TransferOutputPipe outputPipe = getTransferOutputPipe();
 
 		final Component to = outputPipe.getUnion().getDownStreamPipe()
 				.getOwner();
@@ -144,12 +129,6 @@ public class AbstractQueue extends AbstractComponent implements Queue
 	}
 
 	@Override
-	public void queueElement(ElementTransferData data)
-	{
-		elementsInQueue.add(data);
-	}
-
-	@Override
 	public int getElementCapacity()
 	{
 		return totalCapacity == -1 ? -1
@@ -157,21 +136,15 @@ public class AbstractQueue extends AbstractComponent implements Queue
 	}
 
 	@Override
-	public TransferInputPipe getTransferInputPipe()
-	{
-		return this.inputPipe;
-	}
-
-	@Override
-	public TransferOutputPipe getTransferOutputPipe()
-	{
-		return this.outputPipe;
-	}
-
-	@Override
 	protected boolean canGenerate()
 	{
 		return !elementsInQueue.isEmpty();
+	}
+
+	@Override
+	public void receiveElement(ElementTransferData data)
+	{
+		elementsInQueue.add(data);
 	}
 
 }

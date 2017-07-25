@@ -1,7 +1,6 @@
 package simugen.core.components.abstracts;
 
 import simugen.core.components.interfaces.Server;
-import simugen.core.defaults.DefaultServeElementContext;
 import simugen.core.defaults.ServerCompletedEvent;
 import simugen.core.enums.TimeUnit;
 import simugen.core.interfaces.Component;
@@ -9,74 +8,60 @@ import simugen.core.interfaces.DataGenerator;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
 import simugen.core.transfer.ElementTransferData;
-import simugen.core.transfer.TransferInputPipe;
 import simugen.core.transfer.TransferOutputPipe;
 
-public abstract class AbstractServer extends AbstractComponent implements Server
+public abstract class AbstractServer
+		extends AbstractSingleInSingleOutPipeComponent implements Server
 {
 	protected ElementTransferData currentData = null;
 
-	protected final TransferInputPipe inputPipe = new TransferInputPipe(this);
-
-	protected final TransferOutputPipe outputPipe = new TransferOutputPipe();
-
-	// private Event completedEvent = null;
+	private Event completedEvent = null;
 
 	private final DataGenerator<Number> serverTime;
 
 	private final TimeUnit timeUnit;
-
-	private long busyUntil = -1L;
-
-	private boolean busy = false;
 
 	public AbstractServer(DataGenerator<Number> serverTime, TimeUnit timeUnit)
 	{
 		this.serverTime = serverTime;
 
 		this.timeUnit = timeUnit;
-
-		final DefaultServeElementContext context = new DefaultServeElementContext(
-				this);
-
-		addProcessDataContext(ElementTransferData.class, context);
 	}
 
+	/**
+	 * Since the server overrides {@link #canGenerate()}, this method is
+	 * redundant. But for good form does let other components know if it has any
+	 * capacity.
+	 */
 	@Override
 	public int getElementCapacity()
 	{
-		return -1;
+		return currentData == null ? 1 : 0;
 	}
 
 	@Override
 	public boolean canReceiveElement(ElementTransferData pipeData)
 	{
-		final long time = pipeData.getTime();
-
-		busy = time < busyUntil;
-
-		return !busy;
+		return completedEvent == null && currentData == null;
 	}
 
-	@Override
-	public TransferInputPipe getTransferInputPipe()
-	{
-		return inputPipe;
-	}
-
-	@Override
-	public TransferOutputPipe getTransferOutputPipe()
-	{
-		return outputPipe;
-	}
-
+	/**
+	 * Server generateEvents has two separate components to it; If there is
+	 * current data, but no completion event has been created, then the
+	 * component creates a {@link ServerCompletedEvent}. This event is stored as
+	 * a field and the next tick of generateEvents cannot fire until the event
+	 * is consumed.
+	 * 
+	 * Once the event is consumed, the Server checks for and passes the
+	 * component downstream if possible.
+	 */
 	@Override
 	protected void generateEvents(EngineTick tick)
 	{
-		// final long tickTime = tick.getEventTime(0);
+		final TransferOutputPipe outputPipe = getTransferOutputPipe();
 
 		// If we have current data, generate a completion event.
-		if (currentData != null && !busy)
+		if (currentData != null && completedEvent == null)
 		{
 			final double rand = tick.getNextRand();
 
@@ -84,34 +69,22 @@ public abstract class AbstractServer extends AbstractComponent implements Server
 
 			final long duration = timeUnit.getMillis(raw);
 
+			// The time at which this event fires is the duration of the server
+			// + the timestamp at which the element was received
 			final long time = duration + currentData.getTime();
 
-			busyUntil = time;
-
-			busy = true;
-
-			final Event completedEvent = new ServerCompletedEvent(
-					this.getLogID(), currentData.getData().getLogID(), time);
+			completedEvent = new ServerCompletedEvent(this.getLogID(),
+					currentData.getData().getLogID(), time);
 
 			super.events.add(completedEvent);
 		}
 
 		// If this tick time is greater than or equal to busyUntil, then check
 		// if we can send the data
-		if (currentData != null && outputPipe.canSendPipeData(currentData))
+		if (currentData != null && completedEvent.isConsumed()
+				&& outputPipe.canSendPipeData(currentData))
 		{
-			// If there's a completed event, then there better be current
-			// data.
-			assert currentData != null;
-
-			long time = busyUntil;
-
-			// If the completion event happened at a new engine tick, the
-			// server sends the element at that engine tick's start time.
-			if (time < tick.getEventTime(0))
-			{
-				time = tick.getEventTime(0);
-			}
+			final long time = tick.getEventTime(0);
 
 			final Component to = outputPipe.getUnion().getDownStreamPipe()
 					.getOwner();
@@ -123,18 +96,26 @@ public abstract class AbstractServer extends AbstractComponent implements Server
 
 			currentData = null;
 
-			// completedEvent = null;
+			completedEvent = null;
 		}
 	}
 
+	/**
+	 * The server component can only generate new events if there either is no
+	 * data, or the completed event was consumed.
+	 * 
+	 * Events are consumed by the engine, which means that the event has
+	 * actually "occurred" and the Component can continue with its processes
+	 */
 	@Override
 	protected boolean canGenerate()
 	{
-		return currentData != null && !busy;
+		return currentData != null || (completedEvent == null ? false
+				: completedEvent.isConsumed());
 	}
 
 	@Override
-	public void serveElement(ElementTransferData data)
+	public void receiveElement(ElementTransferData data)
 	{
 		this.currentData = data;
 	}

@@ -8,6 +8,8 @@ public abstract class AbstractEvent implements Event
 
 	private String ID = null;
 
+	private boolean consumed = false;
+
 	public AbstractEvent(long time)
 	{
 		this.time = time;
@@ -31,5 +33,17 @@ public abstract class AbstractEvent implements Event
 	public String getLogID()
 	{
 		return this.ID == null ? Event.super.getLogID() : ID;
+	}
+
+	@Override
+	public void Consume()
+	{
+		consumed = true;
+	}
+
+	@Override
+	public boolean isConsumed()
+	{
+		return consumed;
 	}
 }
