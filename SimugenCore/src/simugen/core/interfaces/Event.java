@@ -15,4 +15,8 @@ public interface Event extends LoggableID
 	{
 		return this.getLogID();
 	}
+
+	public void Consume();
+
+	public boolean isConsumed();
 }

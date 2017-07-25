@@ -8,10 +8,9 @@ import simugen.core.interfaces.EngineTick;
 import simugen.core.transfer.ElementTransferData;
 import simugen.core.transfer.TransferOutputPipe;
 
-public abstract class AbstractSource extends AbstractComponent implements Source
+public abstract class AbstractSource extends AbstractSingleOutputPipeComponent
+		implements Source
 {
-	protected final TransferOutputPipe transferOutputPipe = new TransferOutputPipe();
-
 	protected final DataGenerator<ElementSourcedEvent> elementGenerator;
 
 	protected final int arrivals;
@@ -40,6 +39,8 @@ public abstract class AbstractSource extends AbstractComponent implements Source
 	{
 		if (sourced < arrivals)
 		{
+			final TransferOutputPipe outputPipe = getTransferOutputPipe();
+
 			final ElementSourcedEvent event = elementGenerator.getNext(tick);
 
 			super.events.add(event);
@@ -54,17 +55,11 @@ public abstract class AbstractSource extends AbstractComponent implements Source
 
 			// Sources generate new elements, and send them on their way if they
 			// can. If elements cannot flow, they exit the system abnormally.
-			if (this.transferOutputPipe.canSendPipeData(data))
+			if (outputPipe.canSendPipeData(data))
 			{
-				super.events.add(this.transferOutputPipe.sendPipeData(data));
+				super.events.add(outputPipe.sendPipeData(data));
 			}
 		}
-	}
-
-	@Override
-	public TransferOutputPipe getTransferOutputPipe()
-	{
-		return this.transferOutputPipe;
 	}
 
 	/**

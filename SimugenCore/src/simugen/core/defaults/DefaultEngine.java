@@ -135,6 +135,8 @@ public class DefaultEngine implements Engine
 					{
 						printEngine(e.getTime(), e.getLogMessage());
 
+						e.Consume();
+
 						if (e instanceof ModelFinishedEvent)
 						{
 							complete = true;

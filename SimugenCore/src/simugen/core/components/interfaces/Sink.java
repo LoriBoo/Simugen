@@ -12,10 +12,5 @@ import simugen.core.transfer.interfaces.SingleTransferInputPipe;
  */
 public interface Sink extends Component, SingleTransferInputPipe
 {
-	/**
-	 * Remove the element from the system.
-	 * 
-	 * @param element
-	 */
-	public void sinkElement(Element element, long time);
+
 }
