@@ -36,6 +36,7 @@ public final class ElementTransferData implements PipeData<Element>
 		return sentTo;
 	}
 
+	@Override
 	public Element getData()
 	{
 		return element;

@@ -24,6 +24,7 @@ public final class TransferInputPipe implements InputPipe<ElementTransferData>
 		return owner.canReceiveElement(pipeData);
 	}
 
+	@Override
 	public Component getOwner()
 	{
 		return owner;
