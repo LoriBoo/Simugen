@@ -334,5 +334,10 @@ public class DefaultEngine implements Engine
 	public void setTimeStamper(TimeStamper timeStamper)
 	{
 		this.timeStamper = timeStamper;
+		
+		if(epoch != 0L)
+		{
+			this.timeStamper.setEpoch(epoch);
+		}
 	}
 }

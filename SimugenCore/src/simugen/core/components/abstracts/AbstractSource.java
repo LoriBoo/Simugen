@@ -1,8 +1,8 @@
 package simugen.core.components.abstracts;
 
+import simugen.core.components.interfaces.Component;
 import simugen.core.components.interfaces.Source;
 import simugen.core.defaults.ElementSourcedEvent;
-import simugen.core.interfaces.Component;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.transfer.ElementTransferData;

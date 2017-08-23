@@ -1,6 +1,6 @@
 package simugen.core.transfer;
 
-import simugen.core.interfaces.Component;
+import simugen.core.components.interfaces.Component;
 import simugen.core.transfer.interfaces.InputPipe;
 
 public final class TransferInputPipe implements InputPipe<ElementTransferData>

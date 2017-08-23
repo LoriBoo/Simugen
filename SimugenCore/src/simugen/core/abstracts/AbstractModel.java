@@ -3,7 +3,7 @@ package simugen.core.abstracts;
 import java.util.ArrayList;
 import java.util.List;
 
-import simugen.core.interfaces.Component;
+import simugen.core.components.interfaces.Component;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;

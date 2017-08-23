@@ -2,6 +2,8 @@ package simugen.core.interfaces;
 
 import java.util.List;
 
+import simugen.core.components.interfaces.Component;
+
 public interface Model
 {
 	public void startUp();

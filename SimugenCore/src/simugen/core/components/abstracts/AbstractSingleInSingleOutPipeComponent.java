@@ -1,6 +1,6 @@
 package simugen.core.components.abstracts;
 
-import simugen.core.interfaces.Component;
+import simugen.core.components.interfaces.Component;
 import simugen.core.interfaces.DataContext;
 import simugen.core.transfer.ElementTransferData;
 import simugen.core.transfer.TransferInputPipe;

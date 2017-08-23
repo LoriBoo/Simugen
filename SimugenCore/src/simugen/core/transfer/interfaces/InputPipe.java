@@ -1,6 +1,6 @@
 package simugen.core.transfer.interfaces;
 
-import simugen.core.interfaces.Component;
+import simugen.core.components.interfaces.Component;
 
 /**
  * Class InputPipe

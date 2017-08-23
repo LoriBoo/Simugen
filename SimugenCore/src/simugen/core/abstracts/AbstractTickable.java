@@ -1,6 +1,6 @@
 package simugen.core.abstracts;
 
-import simugen.core.interfaces.Component;
+import simugen.core.components.interfaces.Component;
 import simugen.core.interfaces.EngineTick;
 
 public abstract class AbstractTickable

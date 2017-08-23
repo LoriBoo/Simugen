@@ -1,5 +1,8 @@
-package simugen.core.interfaces;
+package simugen.core.components.interfaces;
 
+import simugen.core.interfaces.DataContext;
+import simugen.core.interfaces.EngineTick;
+import simugen.core.interfaces.LoggableID;
 import simugen.core.transfer.ElementTransferData;
 import simugen.core.transfer.interfaces.PipeData;
 

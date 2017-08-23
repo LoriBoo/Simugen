@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import simugen.core.components.interfaces.Component;
 import simugen.core.defaults.NullEngineTick;
-import simugen.core.interfaces.Component;
 import simugen.core.interfaces.DataContext;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;

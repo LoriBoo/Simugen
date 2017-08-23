@@ -3,10 +3,10 @@ package simugen.core.components.abstracts;
 import java.util.ArrayList;
 import java.util.List;
 
+import simugen.core.components.interfaces.Component;
 import simugen.core.components.interfaces.Queue;
 import simugen.core.defaults.NullEngineTick;
 import simugen.core.enums.QueueMethod;
-import simugen.core.interfaces.Component;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.transfer.ElementTransferData;
 import simugen.core.transfer.TransferOutputPipe;

@@ -1,9 +1,9 @@
 package simugen.core.components.abstracts;
 
+import simugen.core.components.interfaces.Component;
 import simugen.core.components.interfaces.Server;
 import simugen.core.defaults.ServerCompletedEvent;
 import simugen.core.enums.TimeUnit;
-import simugen.core.interfaces.Component;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;

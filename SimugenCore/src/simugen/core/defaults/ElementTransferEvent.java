@@ -1,7 +1,7 @@
 package simugen.core.defaults;
 
 import simugen.core.abstracts.AbstractEvent;
-import simugen.core.interfaces.Component;
+import simugen.core.components.interfaces.Component;
 import simugen.core.interfaces.Element;
 
 public class ElementTransferEvent extends AbstractEvent
