@@ -35,6 +35,7 @@ public abstract class AbstractSource extends AbstractSingleOutputPipeComponent
 	 * @param tick
 	 * @return
 	 */
+	@Override
 	protected void generateEvents(EngineTick tick)
 	{
 		if (sourced < arrivals)

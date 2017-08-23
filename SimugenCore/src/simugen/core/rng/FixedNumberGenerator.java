@@ -11,6 +11,7 @@ public class FixedNumberGenerator implements DataGenerator<Number>
 		this.fixed = fixed;
 	}
 	
+	@Override
 	public Number getNext(double d)
 	{
 		return fixed;

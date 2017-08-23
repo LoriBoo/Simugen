@@ -2,6 +2,8 @@ package simugen.core.interfaces;
 
 import java.io.PrintStream;
 
+import simugen.core.enums.TimeStamper;
+
 public interface Engine
 {
 	public void setModelBuilder(ModelBuilder builder);
@@ -11,6 +13,10 @@ public interface Engine
 	public void start(long seed);
 
 	public void stop();
+	
+	public void setEpoch(long epoch);
+	
+	public long getEpoch();
 
 	public double getNext();
 
@@ -23,4 +29,6 @@ public interface Engine
 	public void setRuns(int runs);
 
 	public long getMilliseconds();
+
+	void setTimeStamper(TimeStamper timeStamper);
 }

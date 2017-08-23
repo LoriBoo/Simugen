@@ -2,10 +2,12 @@ package simugen.core.defaults;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.math3.random.MersenneTwister;
 
+import simugen.core.enums.TimeStamper;
 import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
@@ -27,6 +29,8 @@ public class DefaultEngine implements Engine
 
 	// private List<SimEventListener> listListeners = new ArrayList<>();
 
+	private long epoch = 0L;
+
 	private boolean running = false;
 
 	private int runs = 0;
@@ -37,8 +41,16 @@ public class DefaultEngine implements Engine
 
 	private Model runningModel;
 
+	private TimeStamper timeStamper = null;
+
+	@Override
 	public void start()
 	{
+		if (epoch == 0L)
+		{
+			setEpoch(Calendar.getInstance().getTimeInMillis());
+		}
+
 		printEngine(milliseconds, "Engine batching started.");
 
 		for (int i = 0; i < runs; i++)
@@ -51,6 +63,24 @@ public class DefaultEngine implements Engine
 		printEngine(milliseconds, "Engine batching finished.");
 	}
 
+	@Override
+	public void setEpoch(long epoch)
+	{
+		this.epoch = epoch;
+
+		if (this.timeStamper != null)
+		{
+			this.timeStamper.setEpoch(epoch);
+		}
+	}
+
+	@Override
+	public long getEpoch()
+	{
+		return this.epoch;
+	}
+
+	@Override
 	public void start(long seed)
 	{
 		this.seed = seed;
@@ -188,11 +218,13 @@ public class DefaultEngine implements Engine
 		return runningModel.getEvents(tick);
 	}
 
+	@Override
 	public void stop()
 	{
 		forceStop = true;
 	}
 
+	@Override
 	public double getNext()
 	{
 		return doubleGenerator.nextDouble();
@@ -200,20 +232,32 @@ public class DefaultEngine implements Engine
 
 	public void printEngine(long time, String message)
 	{
-		printSet(time, "[SimEngine] " + message);
+		String timeStamp = timeStamp(time);
+
+		printSet(timeStamp, "[SimEngine] " + message);
+	}
+
+	private String timeStamp(long time)
+	{
+		if (timeStamper == null)
+		{
+			return Long.toString(time);
+		}
+
+		return timeStamper.getTimeStamp(time);
 	}
 
 	public void printEngineErr(long time, String message)
 	{
-		print(time, "[SimEngine] " + message, LoggingStyle.ERR);
+		print(timeStamp(time), "[SimEngine] " + message, LoggingStyle.ERR);
 	}
 
-	public void printSet(long time, String message)
+	public void printSet(String time, String message)
 	{
 		print(time, message, LoggingStyle.DATA);
 	}
 
-	public void print(long time, String message, LoggingStyle style)
+	public void print(String time, String message, LoggingStyle style)
 	{
 		if (streamOut == null)
 		{
@@ -227,10 +271,10 @@ public class DefaultEngine implements Engine
 		switch (style)
 		{
 		case DATA:
-			streamOut.println("{" + time + "}" + message);
+			streamOut.println("{" + time + "} " + message);
 			break;
 		case DEBUG:
-			streamOut.println("{" + time + "}" + "[DEBUG] " + message);
+			streamOut.println("{" + time + "} " + "[DEBUG] " + message);
 			break;
 		case ERR:
 		{
@@ -284,5 +328,11 @@ public class DefaultEngine implements Engine
 	public void setModelBuilder(ModelBuilder builder)
 	{
 		this.modelBuilder = builder;
+	}
+
+	@Override
+	public void setTimeStamper(TimeStamper timeStamper)
+	{
+		this.timeStamper = timeStamper;
 	}
 }

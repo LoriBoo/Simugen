@@ -12,7 +12,7 @@ import simugen.core.components.interfaces.Source;
 import simugen.core.defaults.NumberedElementSourcedGenerator;
 import simugen.core.enums.TimeUnit;
 import simugen.core.interfaces.DataGenerator;
-import simugen.core.rng.FixedNumberGenerator;
+import simugen.core.rng.TriangularNumberGenerator;
 
 public class TestNewModel extends AbstractModel
 {
@@ -26,14 +26,12 @@ public class TestNewModel extends AbstractModel
 	@Override
 	public void onStartup()
 	{
-		final DataGenerator<Number> gen = new FixedNumberGenerator(1);
+		final DataGenerator<Number> gen = new TriangularNumberGenerator(1, 3, 4);
 
-		// final DataGenerator<Number> servedTime = new
-		// TriangularNumberGenerator(
-		// 1, 5, 7);
+		final DataGenerator<Number> servedTime = new TriangularNumberGenerator(5, 6, 15);
 
 		final NumberedElementSourcedGenerator generator = new NumberedElementSourcedGenerator(
-				"Customer", gen, TimeUnit.MILLISECOND);
+				"Customer", gen, TimeUnit.MINUTE);
 
 		final Source source = new DefaultSource(generator, 10);
 
@@ -41,7 +39,7 @@ public class TestNewModel extends AbstractModel
 
 		final Queue queue = new DefaultQueue();
 
-		final Server server = new DefaultServer(gen, TimeUnit.SECOND);
+		final Server server = new DefaultServer(servedTime, TimeUnit.MINUTE);
 
 		source.setLogID("Customer_Source");
 
