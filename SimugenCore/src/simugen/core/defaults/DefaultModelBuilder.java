@@ -1,5 +1,7 @@
 package simugen.core.defaults;
 
+import java.lang.reflect.InvocationTargetException;
+
 import simugen.core.interfaces.Model;
 import simugen.core.interfaces.ModelBuilder;
 
@@ -24,9 +26,9 @@ public class DefaultModelBuilder implements ModelBuilder
 	}
 
 	@Override
-	public Model buildModel() throws InstantiationException, IllegalAccessException
+	public Model buildModel() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
-		return modelClass.newInstance();
+		return modelClass.getDeclaredConstructor().newInstance();
 	}
 
 }
