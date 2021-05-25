@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import simugen.core.components.interfaces.Component;
+import simugen.core.data.interfaces.EventListener;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
@@ -11,7 +12,9 @@ import simugen.core.interfaces.Model;
 public abstract class AbstractModel implements Model
 {
 	private List<Component> components = new ArrayList<>();
-
+	
+	private List<EventListener> listListeners = new ArrayList<>();
+	
 	boolean complete = false;
 
 	@Override
@@ -43,5 +46,15 @@ public abstract class AbstractModel implements Model
 		}
 
 		return tick.getEvents();
+	}
+	
+	@Override
+	public List<EventListener> getListeners() {
+		return listListeners;
+	}
+	
+	@Override
+	public void addListener(EventListener listener) {
+		listListeners.add(listener);
 	}
 }

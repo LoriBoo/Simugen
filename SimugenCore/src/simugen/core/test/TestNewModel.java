@@ -9,29 +9,28 @@ import simugen.core.components.interfaces.Queue;
 import simugen.core.components.interfaces.Server;
 import simugen.core.components.interfaces.Sink;
 import simugen.core.components.interfaces.Source;
+import simugen.core.data.interfaces.EventListener;
+import simugen.core.defaults.DefaultElementDurationListener;
 import simugen.core.defaults.NumberedElementSourcedGenerator;
 import simugen.core.enums.TimeUnit;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.rng.TriangularNumberGenerator;
 
-public class TestNewModel extends AbstractModel
-{
+public class TestNewModel extends AbstractModel {
 
 	@Override
-	public void onShutdown()
-	{
+	public void onShutdown() {
 
 	}
 
 	@Override
-	public void onStartup()
-	{
+	public void onStartup() {
 		final DataGenerator<Number> gen = new TriangularNumberGenerator(1, 3, 4);
 
 		final DataGenerator<Number> servedTime = new TriangularNumberGenerator(5, 6, 15);
 
-		final NumberedElementSourcedGenerator generator = new NumberedElementSourcedGenerator(
-				"Customer", gen, TimeUnit.MINUTE);
+		final NumberedElementSourcedGenerator generator = new NumberedElementSourcedGenerator("Customer", gen,
+				TimeUnit.MINUTE);
 
 		final Source source = new DefaultSource(generator, 10);
 
@@ -62,11 +61,18 @@ public class TestNewModel extends AbstractModel
 		addComponent(queue);
 
 		addComponent(server);
+
+		EventListener queueListener = new DefaultElementDurationListener(queue, "QueueData.csv");
+
+		EventListener serverListener = new DefaultElementDurationListener(server, "ServerData.csv");
+
+		addListener(queueListener);
+
+		addListener(serverListener);
 	}
 
 	@Override
-	public boolean isReady()
-	{
+	public boolean isReady() {
 		return true;
 	}
 

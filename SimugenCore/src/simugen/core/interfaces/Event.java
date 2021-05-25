@@ -19,4 +19,12 @@ public interface Event extends LoggableID
 	public void Consume();
 
 	public boolean isConsumed();
+
+	//public int getModelRun();
+
+	//public void setModelRun(int modelRun);
+	
+	public long getModelSeed();
+	
+	public void setModelSeed(long modelSeed);
 }

@@ -11,5 +11,5 @@ package simugen.core.interfaces;
  */
 public interface Element extends LoggableID
 {
-
+	
 }
