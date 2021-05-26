@@ -35,10 +35,10 @@ public abstract class AbstractSingleInMultiOutPipeComponent extends AbstractComp
 	}
 
 	@Override
-	public void addTransferOutputPipe(Component connected, TransferInputPipe pipe) {
+	public TransferOutputPipe addTransferOutputPipe(Component connected) {
 		mapPipes.put(connected, new TransferOutputPipe());
-		
-		mapPipes.get(connected).union(pipe);
+
+		return mapPipes.get(connected);
 	}
 
 	@Override

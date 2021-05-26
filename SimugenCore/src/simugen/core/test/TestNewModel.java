@@ -62,9 +62,9 @@ public class TestNewModel extends AbstractModel {
 
 		queue.getTransferOutputPipe().union(router.getTransferInputPipe());
 
-		router.addTransferOutputPipe(server1, server1.getTransferInputPipe());
+		router.addTransferOutputPipe(server1).union(server1.getTransferInputPipe());
 
-		router.addTransferOutputPipe(server2, server2.getTransferInputPipe());
+		router.addTransferOutputPipe(server2).union(server2.getTransferInputPipe());
 
 		server1.getTransferOutputPipe().union(sink.getTransferInputPipe());
 
@@ -75,11 +75,11 @@ public class TestNewModel extends AbstractModel {
 		addComponent(sink);
 
 		addComponent(router);
-		
+
 		addComponent(queue);
 
 		addComponent(server1);
-		
+
 		addComponent(server2);
 
 		EventListener queueListener = new DefaultElementDurationListener(queue, "QueueData.csv");
