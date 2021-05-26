@@ -2,10 +2,12 @@ package simugen.core.test;
 
 import simugen.core.abstracts.AbstractModel;
 import simugen.core.components.DefaultQueue;
+import simugen.core.components.DefaultRouter;
 import simugen.core.components.DefaultServer;
 import simugen.core.components.DefaultSink;
 import simugen.core.components.DefaultSource;
 import simugen.core.components.interfaces.Queue;
+import simugen.core.components.interfaces.Router;
 import simugen.core.components.interfaces.Server;
 import simugen.core.components.interfaces.Sink;
 import simugen.core.components.interfaces.Source;
@@ -38,7 +40,11 @@ public class TestNewModel extends AbstractModel {
 
 		final Queue queue = new DefaultQueue();
 
-		final Server server = new DefaultServer(servedTime, TimeUnit.MINUTE);
+		final Server server1 = new DefaultServer(servedTime, TimeUnit.MINUTE);
+
+		final Server server2 = new DefaultServer(servedTime, TimeUnit.MINUTE);
+
+		final Router router = new DefaultRouter();
 
 		source.setLogID("Customer_Source");
 
@@ -46,29 +52,47 @@ public class TestNewModel extends AbstractModel {
 
 		queue.setLogID("Coffee_Shop_Queue");
 
-		server.setLogID("Barista_Server");
+		server1.setLogID("Barista_Server_1");
+
+		server2.setLogID("Barista_Server_2");
+
+		router.setLogID("Customer_Router");
 
 		source.getTransferOutputPipe().union(queue.getTransferInputPipe());
 
-		queue.getTransferOutputPipe().union(server.getTransferInputPipe());
+		queue.getTransferOutputPipe().union(router.getTransferInputPipe());
 
-		server.getTransferOutputPipe().union(sink.getTransferInputPipe());
+		router.addTransferOutputPipe(server1, server1.getTransferInputPipe());
+
+		router.addTransferOutputPipe(server2, server2.getTransferInputPipe());
+
+		server1.getTransferOutputPipe().union(sink.getTransferInputPipe());
+
+		server2.getTransferOutputPipe().union(sink.getTransferInputPipe());
 
 		addComponent(source);
 
 		addComponent(sink);
 
+		addComponent(router);
+		
 		addComponent(queue);
 
-		addComponent(server);
+		addComponent(server1);
+		
+		addComponent(server2);
 
 		EventListener queueListener = new DefaultElementDurationListener(queue, "QueueData.csv");
 
-		EventListener serverListener = new DefaultElementDurationListener(server, "ServerData.csv");
+		EventListener server1Listener = new DefaultElementDurationListener(server1, "Server1Data.csv");
+
+		EventListener server2Listener = new DefaultElementDurationListener(server2, "Server2Data.csv");
 
 		addListener(queueListener);
 
-		addListener(serverListener);
+		addListener(server1Listener);
+
+		addListener(server2Listener);
 	}
 
 	@Override

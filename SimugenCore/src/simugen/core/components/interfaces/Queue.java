@@ -6,5 +6,5 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
 public interface Queue
 		extends Component, SingleTransferInputPipe, SingleTransferOutputPipe
 {
-
+	public boolean hasElement();
 }
