@@ -113,7 +113,7 @@ public class DefaultEngine implements Engine {
 
 		forceStop = false;
 
-		runningModel.startUp();
+		runningModel.startUp(currentRun, seed);
 
 		publisher.addAllListeners(runningModel.getListeners());
 

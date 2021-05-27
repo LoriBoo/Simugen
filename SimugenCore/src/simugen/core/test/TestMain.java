@@ -22,7 +22,7 @@ public class TestMain
 
 		engine.setModelBuilder(new DefaultModelBuilder(TestNewModel.class));
 
-		engine.setRuns(1);
+		engine.setRuns(5);
 
 		engine.start();
 

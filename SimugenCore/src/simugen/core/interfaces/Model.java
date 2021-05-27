@@ -7,7 +7,7 @@ import simugen.core.data.interfaces.EventListener;
 
 public interface Model
 {
-	public void startUp();
+	public void startUp(int run, long seed);
 
 	public void shutdown();
 
@@ -19,15 +19,13 @@ public interface Model
 
 	public List<Event> getEvents(EngineTick tick);
 
-	// public List<SimMessage> getMessages(SimEngine engine, long tick);
-
-	// public List<SimEventListener> getListeners();
-
-	// public void addListener(SimEventListener e);
-
 	public boolean isReady();
 
 	public List<EventListener> getListeners();
 
 	public void addListener(EventListener listener);
+	
+	public void setOutputLocation(String location);
+	
+	public String getOutputLocation();
 }

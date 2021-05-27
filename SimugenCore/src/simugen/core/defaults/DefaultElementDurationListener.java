@@ -1,35 +1,34 @@
 package simugen.core.defaults;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import simugen.core.abstracts.AbstractComponentOutputListener;
 import simugen.core.components.interfaces.Component;
-import simugen.core.data.interfaces.EventListener;
-import simugen.core.interfaces.Element;
+import simugen.core.data.interfaces.EventContextHandler;
 import simugen.core.interfaces.Event;
+import simugen.core.sql.ColumnType;
+import simugen.core.sql.DefaultTableBuilder;
 
-public class DefaultElementDurationListener implements EventListener {
+public class DefaultElementDurationListener extends AbstractComponentOutputListener {
 
-	private Component component;
+//	private Component component;
+//
+//	private Map<Element, Long> mapElementToBeginTime = new HashMap<>();
+//
+//	private Map<Element, Long> mapElementToEndTime = new HashMap<>();
 
-	private String dataFile;
+	private DefaultTableBuilder builder;
 
-	private Map<Element, Long> mapElementToBeginTime = new HashMap<>();
-
-	private Map<Element, Long> mapElementToEndTime = new HashMap<>();
+	private List<EventContextHandler<ElementTransferEvent>> listEventContextHandlers = new ArrayList<>();;
 
 	public DefaultElementDurationListener(Component component, String dataFile) {
-		this.component = component;
-
-		this.dataFile = dataFile;
+		super(component, dataFile);
 	}
 
 	@Override
 	public Class<? extends Event> getEventType() {
-		// TODO Auto-generated method stub
 		return ElementTransferEvent.class;
 	}
 
@@ -37,28 +36,33 @@ public class DefaultElementDurationListener implements EventListener {
 	public void listen(Event event) {
 		ElementTransferEvent ev = (ElementTransferEvent) event;
 
-		// being the "to" means the element has entered the component.
-		if (ev.getToID().equals(component)) {
-			assert !mapElementToEndTime.containsKey(ev.getElement());
-
-			mapElementToBeginTime.put(ev.getElement(), ev.getTime());
+		for (EventContextHandler<ElementTransferEvent> handler : listEventContextHandlers) {
+			handler.handleEvent(ev);
 		}
+	}
 
-		// being the "from" means the element has left the component.
-		if (ev.getFromID().equals(component)) {
-			mapElementToEndTime.put(ev.getElement(), ev.getTime());
+	public void setTableName(String tableName) {
+		builder = new DefaultTableBuilder(tableName);
+	}
 
-			long duration = mapElementToEndTime.get(ev.getElement()) - mapElementToBeginTime.get(ev.getElement());
+	public void addColumn(String column, ColumnType type) {
+		builder.addColumn(column, type);
+	}
 
-			try {
-				PrintStream writeToCSV = new PrintStream(new FileOutputStream("C:\\Output\\" + dataFile, true));
+	@Override
+	public void createNewTable() {
+		connect();
+		builder.buildTable(connection);
+		disconnect();
+	}
 
-				writeToCSV.println(ev.getModelSeed() + "," + ev.getElement().getLogID() + "," + duration);
+	public void insert(Map<String, String> mapColumnValues) {
+		connect();
+		builder.insert(connection, mapColumnValues);
+		disconnect();
+	}
 
-				writeToCSV.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+	public void addEventContextHandler(EventContextHandler<ElementTransferEvent> handler) {
+		this.listEventContextHandlers.add(handler);
 	}
 }

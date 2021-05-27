@@ -26,4 +26,50 @@ public enum TimeUnit
 			throw new IllegalStateException();
 		}
 	}
+	
+	public double getDays(Number value)
+	{
+		final double v = value.doubleValue();
+		
+		switch(this)
+		{
+		case DAY:
+			return v;
+		case HOUR:
+			return (v / 24.0);
+		case MILLISECOND:
+			return (v / 86400000.0);
+		case MINUTE:
+			return (v / 24.0 / 60.0);
+		case SECOND:
+			return (v / 86400.0);
+		case WEEK:
+			return (v * 7.0);
+		default:
+			throw new IllegalStateException();
+		}
+	}
+	
+	public double getHours(Number value)
+	{
+		final double v = value.doubleValue();
+		
+		switch(this)
+		{
+		case DAY:
+			return v;
+		case HOUR:
+			return v;
+		case MILLISECOND:
+			return (v / 86400000.0);
+		case MINUTE:
+			return (v / 24.0 / 60.0);
+		case SECOND:
+			return (v / 86400.0);
+		case WEEK:
+			return (v * 7.0);
+		default:
+			throw new IllegalStateException();
+		}
+	}
 }
