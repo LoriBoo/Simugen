@@ -30,4 +30,8 @@ public interface Engine {
 	public void printSeed();
 
 	public void addListener(EventListener listener);
+	
+	public String getOutputLocation();
+	
+	public void setOutputLocation(String location);
 }

@@ -16,14 +16,14 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-	
+
 	private Model model;
 
 	/**
 	 * The constructor
 	 */
 	public Activator() {
-		model = new TestNewModel();
+		// model = new TestNewModel(null);
 	}
 
 	@Override

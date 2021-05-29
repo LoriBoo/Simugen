@@ -1,5 +1,6 @@
 package simugen.core.defaults;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -15,10 +16,6 @@ import simugen.core.interfaces.Model;
 import simugen.core.interfaces.ModelBuilder;
 
 public class DefaultEngine implements Engine {
-	// private SimModel runningModel;
-
-	// private PrintStream streamOut;
-
 	private boolean forceStop;
 
 	private MersenneTwister doubleGenerator;
@@ -43,10 +40,14 @@ public class DefaultEngine implements Engine {
 
 	private Model runningModel;
 
-	// private TimeStamper timeStamper = null;
+	private String outputLocation = "C:/Output/db/";
+
+	private int batch = 0;
 
 	@Override
 	public void start() {
+		setBatchNumber();
+
 		publisher = new DefaultEventPublisher();
 
 		publisher.addAllListeners(listListeners);
@@ -68,13 +69,35 @@ public class DefaultEngine implements Engine {
 		publisher.publish(new EngineFinishedEvent(milliseconds));
 	}
 
+	private void setBatchNumber() {
+		String location = this.getOutputLocation() + "Batch X/";
+
+		String loc = null;
+
+		File p = new File(location);
+
+		int i = 1;
+
+		do {
+			loc = location.replace("X", String.valueOf(i));
+
+			p = new File(loc);
+
+			i++;
+
+			if (i == Integer.MAX_VALUE) {
+				throw (new IllegalStateException("Too many Batch folders exist"));
+			}
+		} while (p.isDirectory());
+
+		p.mkdir();
+
+		this.batch = i - 1;
+	}
+
 	@Override
 	public void setEpoch(long epoch) {
 		this.epoch = epoch;
-//
-//		if (this.timeStamper != null) {
-//			this.timeStamper.setEpoch(epoch);
-//		}
 	}
 
 	@Override
@@ -89,19 +112,16 @@ public class DefaultEngine implements Engine {
 		try {
 			this.runningModel = this.modelBuilder.buildModel();
 		} catch (Exception e) {
-			// printEngineErr(milliseconds, "Problem building model.");
 			publisher.publish(new EngineErrorEvent(milliseconds, "Problem Building model!"));
 
 			throw new IllegalStateException("Problem building model.");
 		}
 
 		if (runningModel == null) {
-			// printEngineErr(milliseconds, "Model has not been set!");
 			publisher.publish(new EngineErrorEvent(milliseconds, "Model has not been set!"));
 
 			throw new IllegalStateException("Model has not been set");
 		} else if (!runningModel.isReady()) {
-			// printEngineErr(milliseconds, "Model has not readied up!");
 			publisher.publish(new EngineErrorEvent(milliseconds, "Model has not readied up!"));
 
 			throw new IllegalStateException("Model has not readied up");
@@ -113,7 +133,9 @@ public class DefaultEngine implements Engine {
 
 		forceStop = false;
 
-		runningModel.startUp(currentRun, seed);
+		runningModel.setOutputLocation(getOutputLocation() + "Batch " + batch + "/");
+
+		runningModel.startUp(currentRun, seed, epoch);
 
 		publisher.addAllListeners(runningModel.getListeners());
 
@@ -152,7 +174,7 @@ public class DefaultEngine implements Engine {
 					}
 
 					if (e.getTime() == time) {
-						
+
 						e.setModelSeed(seed);
 
 						publisher.publish(e);
@@ -161,10 +183,6 @@ public class DefaultEngine implements Engine {
 
 						if (e instanceof ModelFinishedEvent) {
 							complete = true;
-						}
-
-						if (e instanceof ServerCompletedEvent) {
-							// System.out.print("");
 						}
 
 						eventList.remove(e);
@@ -189,15 +207,8 @@ public class DefaultEngine implements Engine {
 		}
 
 		if (forceStop) {
-			// printEngineErr(milliseconds, "Engine was forcibly stopped.");
 			publisher.publish(new EngineErrorEvent(milliseconds, "Engine was forcibly stopped."));
 		}
-		// else if (messageList.isEmpty())
-		// {
-		//
-		// }
-
-		// listListeners.removeAll(runningModel.getListeners());
 
 		running = false;
 	}
@@ -216,71 +227,10 @@ public class DefaultEngine implements Engine {
 		return doubleGenerator.nextDouble();
 	}
 
-//	@Deprecated
-//	public void printEngine(long time, String message) {
-//		String timeStamp = timeStamp(time);
-//
-//		printSet(timeStamp, "[SimEngine] " + message);
-//	}
-
-//	private String timeStamp(long time) {
-//		if (timeStamper == null) {
-//			return Long.toString(time);
-//		}
-//
-//		return timeStamper.getTimeStamp(time);
-//	}
-
-//	@Deprecated
-//	public void printEngineErr(long time, String message) {
-//		print(timeStamp(time), "[SimEngine] " + message, LoggingStyle.ERR);
-//	}
-//
-//	@Deprecated
-//	public void printSet(String time, String message) {
-//		print(time, message, LoggingStyle.DATA);
-//	}
-
 	@Override
 	public void printSeed() {
-		// streamOut.println("Seed: " + this.getSeed());
 		publisher.publish(new PublishSeedEvent(this.getSeed()));
 	}
-
-//	@Deprecated
-//	public void print(String time, String message, LoggingStyle style) {
-//		if (streamOut == null) {
-//			streamOut = System.out;
-//		}
-//
-//		if (message == null) {
-//			return;
-//		}
-//		switch (style) {
-//		case DATA:
-//			streamOut.println("{" + time + "} " + message);
-//			break;
-//		case DEBUG:
-//			streamOut.println("{" + time + "} " + "[DEBUG] " + message);
-//			break;
-//		case ERR: {
-//			if (streamOut.equals(System.out)) {
-//				System.err.println("[ERROR] " + message);
-//			} else {
-//				streamOut.println("[ERROR]" + message);
-//			}
-//		}
-//		case SUPRESS:
-//			break;
-//		default:
-//			break;
-//		}
-//	}
-
-//	@Deprecated
-//	public void setStreamOut(PrintStream out) {
-//		this.streamOut = out;
-//	}
 
 	@Override
 	public long getSeed() {
@@ -307,17 +257,18 @@ public class DefaultEngine implements Engine {
 		this.modelBuilder = builder;
 	}
 
-//	@Override
-//	public void setTimeStamper(TimeStamper timeStamper) {
-//		this.timeStamper = timeStamper;
-//
-//		if (epoch != 0L) {
-//			this.timeStamper.setEpoch(epoch);
-//		}
-//	}
-
 	@Override
 	public void addListener(EventListener listener) {
 		listListeners.add(listener);
+	}
+
+	@Override
+	public String getOutputLocation() {
+		return this.outputLocation;
+	}
+
+	@Override
+	public void setOutputLocation(String location) {
+		this.outputLocation = location;
 	}
 }

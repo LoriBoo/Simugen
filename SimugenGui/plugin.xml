@@ -22,10 +22,22 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="simugen.gui.View"
+            class="simugen.gui.views.ConsoleView"
             name="Console"
             id="TestGui.view"
             inject="true">
+      </view>
+      <view
+            class="simugen.gui.views.ModelSettingsView"
+            id="TestGui.ModelSettingsView"
+            name="Model Settings"
+            restorable="true">
+      </view>
+      <view
+            class="simugen.gui.views.OutputView"
+            id="TestGui.OutputView"
+            name="Output"
+            restorable="true">
       </view>
    </extension>
    <extension
@@ -35,9 +47,20 @@
          <view
                id="TestGui.view"
                minimized="false"
-               relationship="left"
-               standalone="true"
+               relationship="bottom"
                relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               id="TestGui.ModelSettingsView"
+               minimized="false"
+               relationship="top"
+               relative="TestGui.view">
+         </view>
+         <view
+               id="TestGui.OutputView"
+               minimized="false"
+               relationship="stack"
+               relative="TestGui.ModelSettingsView">
          </view>
       </perspectiveExtension>
    </extension>
@@ -55,6 +78,14 @@
             <command
                   commandId="org.eclipse.ui.file.exit"
                   label="Exit">
+            </command>
+         </menu>
+         <menu
+               label="Window">
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  label="Show View..."
+                  style="push">
             </command>
          </menu>
       </menuContribution>

@@ -1,15 +1,12 @@
 package simugen.core.enums;
 
-public enum TimeUnit
-{
+public enum SimTimeUnit {
 	MILLISECOND, SECOND, MINUTE, HOUR, DAY, WEEK;
 
-	public long getMillis(Number value)
-	{
+	public long getMillis(Number value) {
 		final double v = value.doubleValue();
 
-		switch (this)
-		{
+		switch (this) {
 		case DAY:
 			return (long) (86400000.0 * v);
 		case HOUR:
@@ -26,13 +23,32 @@ public enum TimeUnit
 			throw new IllegalStateException();
 		}
 	}
-	
-	public double getDays(Number value)
-	{
+
+	public double getConvertMillis(Number value) {
 		final double v = value.doubleValue();
-		
-		switch(this)
-		{
+
+		switch (this) {
+		case DAY:
+			return (v / 86400000.0);
+		case HOUR:
+			return (v / 3600000.0);
+		case MILLISECOND:
+			return v;
+		case MINUTE:
+			return (v / 60000.0);
+		case SECOND:
+			return (v / 1000.0);
+		case WEEK:
+			return (v / 604800000.0);
+		default:
+			throw new IllegalStateException();
+		}
+	}
+
+	public double getDays(Number value) {
+		final double v = value.doubleValue();
+
+		switch (this) {
 		case DAY:
 			return v;
 		case HOUR:
@@ -49,13 +65,11 @@ public enum TimeUnit
 			throw new IllegalStateException();
 		}
 	}
-	
-	public double getHours(Number value)
-	{
+
+	public double getHours(Number value) {
 		final double v = value.doubleValue();
-		
-		switch(this)
-		{
+
+		switch (this) {
 		case DAY:
 			return v;
 		case HOUR:

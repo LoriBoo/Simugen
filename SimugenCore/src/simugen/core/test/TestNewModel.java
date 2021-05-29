@@ -1,5 +1,7 @@
 package simugen.core.test;
 
+import java.util.concurrent.TimeUnit;
+
 import simugen.core.abstracts.AbstractModel;
 import simugen.core.components.DefaultQueue;
 import simugen.core.components.DefaultRouter;
@@ -11,14 +13,12 @@ import simugen.core.components.interfaces.Router;
 import simugen.core.components.interfaces.Server;
 import simugen.core.components.interfaces.Sink;
 import simugen.core.components.interfaces.Source;
+import simugen.core.defaults.DefaultComponentDurationContextHandler;
 import simugen.core.defaults.DefaultElementDurationListener;
-import simugen.core.defaults.DefaultQueueDurationContextHandler;
-import simugen.core.defaults.DefaultServerDurationContextHandler;
 import simugen.core.defaults.NumberedElementSourcedGenerator;
-import simugen.core.enums.TimeUnit;
+import simugen.core.enums.SimTimeUnit;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.rng.TriangularNumberGenerator;
-import simugen.core.sql.ColumnType;
 
 public class TestNewModel extends AbstractModel {
 
@@ -34,7 +34,7 @@ public class TestNewModel extends AbstractModel {
 		final DataGenerator<Number> servedTime = new TriangularNumberGenerator(5, 6, 15);
 
 		final NumberedElementSourcedGenerator generator = new NumberedElementSourcedGenerator("Customer", gen,
-				TimeUnit.MINUTE);
+				SimTimeUnit.MINUTE);
 
 		final Source source = new DefaultSource(generator, 10);
 
@@ -42,9 +42,9 @@ public class TestNewModel extends AbstractModel {
 
 		final Queue queue = new DefaultQueue();
 
-		final Server server1 = new DefaultServer(servedTime, TimeUnit.MINUTE);
+		final Server server1 = new DefaultServer(servedTime, TimeUnit.MINUTES);
 
-		final Server server2 = new DefaultServer(servedTime, TimeUnit.MINUTE);
+		final Server server2 = new DefaultServer(servedTime, TimeUnit.MINUTES);
 
 		final Router router = new DefaultRouter();
 
@@ -84,54 +84,25 @@ public class TestNewModel extends AbstractModel {
 
 		addComponent(server2);
 
-		DefaultElementDurationListener queueListener = new DefaultElementDurationListener(queue, "CoffeeShop.db");
+		String coffeeShopDB = getOutputLocation() + "CoffeeShop.db";
 
-		DefaultElementDurationListener server1Listener = new DefaultElementDurationListener(server1, "CoffeeShop.db");
+		DefaultElementDurationListener queueListener = new DefaultElementDurationListener(
+				new DefaultComponentDurationContextHandler(queue, coffeeShopDB, SimTimeUnit.MINUTE, "QueueData",
+						"Customer", "Queue", run, epoch));
 
-		DefaultElementDurationListener server2Listener = new DefaultElementDurationListener(server2, "CoffeeShop.db");
+		DefaultElementDurationListener server1Listener = new DefaultElementDurationListener(
+				new DefaultComponentDurationContextHandler(queue, coffeeShopDB, SimTimeUnit.MINUTE, "ServerData",
+						"Customer", "Barista", run, epoch));
 
-		setOutputLocation("C:/Output/db/");
+		DefaultElementDurationListener server2Listener = new DefaultElementDurationListener(
+				new DefaultComponentDurationContextHandler(queue, coffeeShopDB, SimTimeUnit.MINUTE, "ServerData",
+						"Customer", "Barista", run, epoch));
 
 		addListener(queueListener);
 
 		addListener(server1Listener);
 
 		addListener(server2Listener);
-
-		queueListener.setTableName("QueueData");
-
-		queueListener.addColumn("Run", ColumnType.DOUBLE);
-		queueListener.addColumn("Customer", ColumnType.STRING);
-		queueListener.addColumn("Duration", ColumnType.DOUBLE);
-
-		queueListener.createNewTable();
-
-		queueListener
-				.addEventContextHandler(new DefaultQueueDurationContextHandler(run, queue, queueListener, "Customer"));
-
-		server1Listener.setTableName("ServerData");
-
-		server1Listener.addColumn("Run", ColumnType.DOUBLE);
-		server1Listener.addColumn("Barista", ColumnType.STRING);
-		server1Listener.addColumn("Customer", ColumnType.STRING);
-		server1Listener.addColumn("Duration", ColumnType.DOUBLE);
-
-		server1Listener.createNewTable();
-
-		server1Listener.addEventContextHandler(new DefaultServerDurationContextHandler(run, server1, server1Listener,
-				"Customer", "Barista", TimeUnit.MINUTE));
-
-		server2Listener.setTableName("ServerData");
-
-		server2Listener.addColumn("Run", ColumnType.DOUBLE);
-		server2Listener.addColumn("Barista", ColumnType.STRING);
-		server2Listener.addColumn("Customer", ColumnType.STRING);
-		server2Listener.addColumn("Duration", ColumnType.DOUBLE);
-
-		server2Listener.createNewTable();
-
-		server2Listener.addEventContextHandler(new DefaultServerDurationContextHandler(run, server2, server2Listener,
-				"Customer", "Barista", TimeUnit.MINUTE));
 	}
 
 	@Override

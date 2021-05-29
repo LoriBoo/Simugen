@@ -1,16 +1,19 @@
 package simugen.core.sql;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DefaultTableBuilder {
 	private String tableName;
 
-	private Map<String, ColumnType> mapColumnToType = new HashMap<>();
+	private Map<String, ColumnType> mapColumnToType = new LinkedHashMap<>();
 
 	public DefaultTableBuilder(String tableName) {
 		this.tableName = tableName;
@@ -33,29 +36,15 @@ public class DefaultTableBuilder {
 		try {
 			Statement statement = conn.createStatement();
 
+			System.out.println(sql);
+
 			statement.execute(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void main(String[] args) {
-		DefaultTableBuilder builder = new DefaultTableBuilder("warehouses");
-
-		Map<String, String> mapColumnValues = new HashMap<>();
-
-		builder.addColumn("name", ColumnType.STRING);
-		builder.addColumn("capacity", ColumnType.INT);
-		builder.addColumn("location", ColumnType.STRING);
-
-		mapColumnValues.put("name", "Warehouse 1");
-		mapColumnValues.put("capacity", "300");
-		mapColumnValues.put("location", "Virginia");
-
-		builder.insert(null, mapColumnValues);
-	}
-
-	public void insert(Connection conn, Map<String, String> mapColumnsValues) {
+	public void insert(Connection conn, Map<String, Object> mapColumnsValues) {
 		// String sql = "INSERT INTO warehouses(name,capacity) VALUES(?,?)";
 
 		assert mapColumnsValues.keySet().containsAll(mapColumnToType.keySet());
@@ -84,21 +73,29 @@ public class DefaultTableBuilder {
 
 				switch (mapColumnToType.get(column)) {
 				case STRING:
-					pstmt.setString(j, mapColumnsValues.get(column));
+					pstmt.setString(j, (String) mapColumnsValues.get(column));
 					break;
 				case DOUBLE:
-					pstmt.setDouble(j, Double.valueOf(mapColumnsValues.get(column)));
+					pstmt.setDouble(j, (Double) mapColumnsValues.get(column));
 					break;
 				case INT:
-					pstmt.setInt(j, Integer.valueOf(mapColumnsValues.get(column)));
+					pstmt.setInt(j, (Integer) mapColumnsValues.get(column));
+					break;
+				case DATE:
+					pstmt.setDate(j, (Date) mapColumnsValues.get(column));
+					break;
+				case TIME:
+					pstmt.setTime(j, (Time) mapColumnsValues.get(column));
+					break;
+				case TIMESTAMP:
+					pstmt.setTimestamp(j, (Timestamp) mapColumnsValues.get(column));
 					break;
 				default:
 					break;
 				}
 			}
 
-			// pstmt.setString(1, name);
-			// pstmt.setDouble(2, capacity);
+			System.out.println(pstmt.toString());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

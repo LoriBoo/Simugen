@@ -1,4 +1,4 @@
-package simugen.gui;
+package simugen.gui.views;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,8 +13,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.part.ViewPart;
 
 import simugen.core.defaults.DefaultConsoleListener;
+import simugen.gui.SimActivator;
 
-public class View extends ViewPart {
+public class ConsoleView extends ViewPart {
 	public static final String ID = "TestGui.view";
 
 	@Inject

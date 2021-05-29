@@ -1,7 +1,7 @@
 package simugen.core.defaults;
 
 import simugen.core.abstracts.AbstractElementSourcedGenerator;
-import simugen.core.enums.TimeUnit;
+import simugen.core.enums.SimTimeUnit;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.interfaces.Element;
 
@@ -10,13 +10,13 @@ public class NumberedElementSourcedGenerator extends AbstractElementSourcedGener
 
 	private final String prefix;
 
-	public NumberedElementSourcedGenerator(String prefix, DataGenerator<Number> numberGen, TimeUnit timeUnit) {
+	public NumberedElementSourcedGenerator(String prefix, DataGenerator<Number> numberGen, SimTimeUnit timeUnit) {
 		super(numberGen, timeUnit);
 
 		this.prefix = prefix;
 	}
 
-	public NumberedElementSourcedGenerator(DataGenerator<Number> numberGen, TimeUnit timeUnit) {
+	public NumberedElementSourcedGenerator(DataGenerator<Number> numberGen, SimTimeUnit timeUnit) {
 		super(numberGen, timeUnit);
 
 		this.prefix = "Element";

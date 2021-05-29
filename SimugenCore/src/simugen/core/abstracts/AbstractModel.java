@@ -17,17 +17,20 @@ public abstract class AbstractModel implements Model {
 	private String outputLocation = null;
 
 	boolean complete = false;
-	
+
 	protected int run = -1;
-	
+
 	protected long seed = 0;
 
+	protected long epoch;
+
 	@Override
-	public void startUp(int run, long seed) {
+	public void startUp(int run, long seed, long epoch) {
 		complete = false;
 		this.seed = seed;
 		this.run = run;
-		
+		this.epoch = epoch;
+
 		onStartup();
 	}
 
@@ -60,12 +63,6 @@ public abstract class AbstractModel implements Model {
 	@Override
 	public void addListener(EventListener listener) {
 		listListeners.add(listener);
-
-		if (AbstractComponentOutputListener.class.isAssignableFrom(listener.getClass())) {
-			AbstractComponentOutputListener abstractListen = (AbstractComponentOutputListener) listener;
-
-			abstractListen.setOutputLocation(this.getOutputLocation());
-		}
 	}
 
 	@Override

@@ -1,7 +1,8 @@
 package simugen.core.components;
 
+import java.util.concurrent.TimeUnit;
+
 import simugen.core.components.abstracts.AbstractServer;
-import simugen.core.enums.TimeUnit;
 import simugen.core.interfaces.DataGenerator;
 
 public class DefaultServer extends AbstractServer

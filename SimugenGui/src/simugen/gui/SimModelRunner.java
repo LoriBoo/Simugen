@@ -3,10 +3,14 @@ package simugen.gui;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
+import simugen.core.data.interfaces.EventListener;
 import simugen.core.defaults.DefaultModelBuilder;
+import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.Engine;
+import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
 import simugen.gui.interfaces.ModelRunner;
+import simugen.gui.interfaces.RefreshableView;
 
 public class SimModelRunner implements ModelRunner {
 
@@ -27,6 +31,22 @@ public class SimModelRunner implements ModelRunner {
 		// engine.setTimeStamper(TimeStamper.SHORT_DATE_AMPM);
 
 		engine.setModelBuilder(new DefaultModelBuilder(model.getClass()));
+
+		engine.addListener(new EventListener() {
+
+			@Override
+			public void listen(Event event) {
+				for (RefreshableView view : SimActivator.getDefault().getRefreshableViews()) {
+					view.refresh();
+				}
+			}
+
+			@Override
+			public Class<? extends Event> getEventType() {
+				// TODO Auto-generated method stub
+				return ModelFinishedEvent.class;
+			}
+		});
 
 		engine.setRuns(5);
 

@@ -2,11 +2,16 @@ package simugen.core.test;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  *
@@ -42,7 +47,7 @@ public class TestDB {
 	 */
 	private Connection connect() {
 		// SQLite connection string
-		String url = "jdbc:sqlite:C:/Output/db/CoffeeShop.db";
+		String url = "jdbc:sqlite:C:/Output/db/test.db";
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection(url);
@@ -58,12 +63,14 @@ public class TestDB {
 	 * @param name
 	 * @param capacity
 	 */
-	public void insert(String name, double capacity) {
-		String sql = "INSERT INTO warehouses(name,capacity) VALUES(?,?)";
+	public void insert() {
+		String sql = "INSERT INTO testTable (testTime, testDate, testTimestamp) VALUES(?,?,?)";
 
 		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, name);
-			pstmt.setDouble(2, capacity);
+			pstmt.setTime(1, new Time(Calendar.getInstance().getTimeInMillis()));
+			pstmt.setDate(2, new Date(Calendar.getInstance().getTimeInMillis()));
+			pstmt.setTimestamp(3, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			System.out.println(pstmt.toString());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -75,9 +82,9 @@ public class TestDB {
 		String url = "jdbc:sqlite:C:/Output/db/test.db";
 
 		// SQL statement for creating a new table
-		String sql = "CREATE TABLE IF NOT EXISTS warehouses (\n" + "	id integer PRIMARY KEY,\n"
-				+ "	name text NOT NULL,\n" + "	capacity real\n" + ");";
-
+		String sql = "CREATE TABLE IF NOT EXISTS testTable (\n" + "	testTime TIME(3),\n" + "	testDate DATE,\n"
+				+ "	testTimestamp TIMESTAMP\n" + ");";
+		
 		try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
 			// create a new table
 			stmt.execute(sql);
@@ -91,34 +98,27 @@ public class TestDB {
 	 * select all rows in the warehouses table
 	 */
 	public void selectAll() {
-		String sql = "SELECT Run, Customer, Duration FROM QueueData";
+		String sql = "SELECT testTime, testDate, testTimestamp FROM testTable";
 
 		try (Connection conn = this.connect();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			
+			System.out.println(rsmd.getColumnTypeName(1));
+			System.out.println(rsmd.getColumnType(1));
+			System.out.println(rsmd.getColumnType(2));
+			System.out.println(rsmd.getColumnType(3));
+			
 			// loop through the result set
 			while (rs.next()) {
-				System.out
-						.println(rs.getInt("Run") + "\t" + rs.getString("Customer") + "\t" + rs.getDouble("Duration"));
+				System.out.println(rs.getTime("testTime") + "\t" + rs.getDate("testDate") + "\t"
+						+ rs.getTimestamp("testTimestamp"));
 			}
 
 			conn.close();
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-
-		sql = "SELECT Run, Barista, Customer, Duration FROM ServerData";
-
-		try (Connection conn = this.connect();
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
-			// loop through the result set
-			while (rs.next()) {
-				System.out.println(rs.getInt("Run") + "\t" + rs.getString("Barista") + "\t" + rs.getString("Customer")
-						+ "\t" + rs.getDouble("Duration"));
-			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -129,24 +129,8 @@ public class TestDB {
 	 */
 	public static void main(String[] args) {
 		TestDB test = new TestDB();
-
+		test.createNewTable();
+		test.insert();
 		test.selectAll();
-//
-//		String sql = "SELECT AVG(Duration) AS AverageDuration FROM QueueData;";
-//
-//		try (Connection conn = test.connect();
-//				Statement stmt = conn.createStatement();
-//				ResultSet rs = stmt.executeQuery(sql)) {
-//
-//			// loop through the result set
-//			while (rs.next()) {
-//				System.out.println(rs.getDouble(1));
-//			}
-//
-//			conn.close();
-//		} catch (SQLException e) {
-//			System.out.println(e.getMessage());
-//		}
-
 	}
 }
