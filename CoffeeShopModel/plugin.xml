@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="coffeeshopmodel.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="coffeeshopmodel.Perspective"
+            name="RCP Perspective"
+            id="CoffeeShopModel.perspective">
+      </perspective>
+   </extension>
+<extension
+         point="org.eclipse.ui.views">
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <view
+               id="SimGui.Console.View"
+               minimized="false"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               id="SimGui.ModelSettings.View"
+               minimized="false"
+               relationship="top"
+               relative="SimGui.Console.View"
+               visible="true">
+         </view>
+         <view
+               id="SimGui.Output.View"
+               minimized="false"
+               relationship="stack"
+               relative="SimGui.ModelSettings.View">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="File">
+            <command
+                  commandId="CoffeeShop.Run"
+                  disabledIcon="icons/eclipse16.png"
+                  label="Run">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Exit">
+            </command>
+         </menu>
+         <menu
+               label="Window">
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  label="Show View..."
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="coffeeshopmodel.src.CoffeeShopRunHandler"
+            id="CoffeeShop.Run"
+            name="Run">
+      </command>
+   </extension>
+</plugin>

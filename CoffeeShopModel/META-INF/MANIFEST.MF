@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CoffeeShopModel
+Bundle-SymbolicName: CoffeeShopModel;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: coffeeshopmodel.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.apache.felix.scr,
+ org.eclipse.equinox.event,
+ SimugenCore;bundle-version="0.1.0",
+ SimugenGui;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-15
+Automatic-Module-Name: CoffeeShopModel
+Bundle-ActivationPolicy: lazy

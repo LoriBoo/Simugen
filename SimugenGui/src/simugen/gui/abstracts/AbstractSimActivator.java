@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.Model;
 import simugen.gui.SimActivator;
+import simugen.gui.interfaces.LoadedViewContext;
 import simugen.gui.interfaces.ModelRunner;
 import simugen.gui.interfaces.RefreshableView;
+import simugen.gui.views.parts.DefaultOutputViewLoadedViewContext;
 
 public abstract class AbstractSimActivator extends AbstractUIPlugin {
 	// The shared instance
@@ -25,6 +28,8 @@ public abstract class AbstractSimActivator extends AbstractUIPlugin {
 
 	private List<RefreshableView> refreshableViews = new ArrayList<>();
 
+	private List<LoadedViewContext<?>> listLoadedViewContexts = new ArrayList<>();
+
 	/**
 	 * The constructor
 	 */
@@ -32,6 +37,7 @@ public abstract class AbstractSimActivator extends AbstractUIPlugin {
 		modelClass = setModelClass();
 		modelRunner = setModelRunner();
 		modelEngine = setModelEngine();
+		addLoadedViewContext(new DefaultOutputViewLoadedViewContext());
 	}
 
 	@Override
@@ -102,4 +108,19 @@ public abstract class AbstractSimActivator extends AbstractUIPlugin {
 	protected abstract ModelRunner setModelRunner();
 
 	protected abstract Engine setModelEngine();
+
+	public void addLoadedViewContext(LoadedViewContext<?> loadedViewContext) {
+		listLoadedViewContexts.add(loadedViewContext);
+	}
+
+	public <T extends ViewPart> void onViewLoaded(T view) {
+		for(LoadedViewContext<?> lvc : listLoadedViewContexts) {
+			if(lvc.getViewClass().equals(view.getClass())) {
+				@SuppressWarnings("unchecked")
+				LoadedViewContext<T> tlvc = (LoadedViewContext<T>) lvc;
+				
+				tlvc.onLoad(view);
+			}
+		}
+	}
 }

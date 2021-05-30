@@ -6,19 +6,13 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.inject.Inject;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -27,19 +21,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.part.ViewPart;
 
-import simugen.core.sql.SqlUtils;
 import simugen.gui.SimActivator;
 import simugen.gui.interfaces.RefreshableView;
+import simugen.gui.views.utils.SqlTableFiller;
 
 public class OutputView extends ViewPart implements RefreshableView {
 	public static final String ID = "TestGui.OutputView";
@@ -47,9 +37,17 @@ public class OutputView extends ViewPart implements RefreshableView {
 	@Inject
 	IWorkbench workbench;
 
-	private Combo comboDatabases;
+	public Combo comboDatabases;
 
-	private String location;
+	public String location;
+
+	public Table table;
+
+	public Tree treeDatabase;
+
+	public Composite canvas;
+
+	public SqlTableFiller sqlTableFiller;
 
 	@Override
 	public void dispose() {
@@ -63,7 +61,7 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 		location = SimActivator.getDefault().getOutputLocation();
 
-		Composite canvas = new Composite(parent, SWT.BORDER);
+		canvas = new Composite(parent, SWT.BORDER);
 
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 5;
@@ -118,7 +116,7 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 		saveSettings.setLayoutData(gridData);
 
-		Tree treeDatabase = new Tree(canvas, SWT.BORDER);
+		treeDatabase = new Tree(canvas, SWT.BORDER);
 
 		gridData = new GridData();
 
@@ -131,24 +129,19 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 		treeDatabase.setLayoutData(gridData);
 
-		final Menu menu = new Menu(treeDatabase);
+		// final Menu menu = new Menu(treeDatabase);
 
-		treeDatabase.setMenu(menu);
+		// treeDatabase.setMenu(menu);
 
 		treeDatabase.addMenuDetectListener(new MenuDetectListener() {
 
 			@Override
 			public void menuDetected(MenuDetectEvent e) {
-				TreeItem item = treeDatabase.getSelection()[0];
-				TreeItem root = treeDatabase.getItem(0);
-
-				if (item.equals(root)) {
-					e.doit = false;
-				}
+				e.doit = treeDatabase.getItemCount() > 0;
 			}
 		});
 
-		Table table = new Table(canvas, SWT.BORDER);
+		table = new Table(canvas, SWT.BORDER);
 
 		gridData = new GridData();
 
@@ -160,6 +153,8 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 		table.setLayoutData(gridData);
 
+		sqlTableFiller = new SqlTableFiller(table);
+
 		saveSettings.addListener(SWT.Selection, new Listener() {
 
 			@Override
@@ -169,100 +164,12 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 		});
 
-		menu.addMenuListener(new MenuAdapter() {
-			public void menuShown(MenuEvent e) {
+		// DefaultDatabaseContextMenu contextMenu = new
+		// DefaultDatabaseContextMenu(this);
 
-				MenuItem[] items = menu.getItems();
+		// menu.addMenuListener(contextMenu);
 
-				for (int i = 0; i < items.length; i++) {
-					items[i].dispose();
-				}
-
-				MenuItem newItem = new MenuItem(menu, SWT.NONE);
-
-				newItem.setText("SELECT * FROM  " + treeDatabase.getSelection()[0].getText() + ";");
-
-				newItem.addSelectionListener(new SelectionListener() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						// TODO Auto-generated method stub
-						TreeItem sub = treeDatabase.getSelection()[0];
-
-						String path = (String) sub.getData("path");
-
-						String url = "jdbc:sqlite:" + path;
-
-						String sql = (String) sub.getData("query");
-
-						if (sql != null) {
-
-							try {
-
-								while (table.getColumnCount() > 0) {
-									table.getColumns()[0].dispose();
-								}
-
-								Class.forName("org.sqlite.JDBC");
-
-								Connection connection = DriverManager.getConnection(url);
-
-								Statement stmt = connection.createStatement();
-
-								stmt.execute(sql);
-
-								ResultSet set = stmt.getResultSet();
-
-								ResultSetMetaData rsmd = set.getMetaData();
-
-								int columnCount = rsmd.getColumnCount();
-
-								table.clearAll();
-
-								for (TableItem tableItem : table.getItems()) {
-									tableItem.dispose();
-								}
-
-								for (int i = 1; i <= columnCount; i++) {
-									String name = rsmd.getColumnName(i);
-
-									TableColumn col = new TableColumn(table, SWT.CENTER);
-
-									col.setText(name);
-
-									col.setWidth(100);
-
-									table.setHeaderVisible(true);
-								}
-
-								while (set.next()) {
-									String[] values = new String[columnCount];
-
-									for (int i = 1; i <= columnCount; i++) {
-										values[i - 1] = SqlUtils.getString(rsmd, set, i);
-									}
-
-									TableItem tableItem = new TableItem(table, SWT.NONE);
-
-									tableItem.setText(values);
-								}
-
-								connection.close();
-							} catch (SQLException | ClassNotFoundException exp) {
-								System.out.println(exp.getMessage());
-							}
-						}
-					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-			}
-
-		});
+		SimActivator.getDefault().<OutputView>onViewLoaded(this);
 	}
 
 	private void fillComboBox() {
@@ -344,5 +251,4 @@ public class OutputView extends ViewPart implements RefreshableView {
 	public void refresh() {
 		fillComboBox();
 	}
-
 }

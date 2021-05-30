@@ -1,4 +1,4 @@
-package simugen.core.test;
+package coffeeshopmodel.src;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,7 @@ import simugen.core.enums.SimTimeUnit;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.rng.TriangularNumberGenerator;
 
-public class TestNewModel extends AbstractModel {
+public class CoffeeShopModel extends AbstractModel {
 
 	@Override
 	public void onShutdown() {
