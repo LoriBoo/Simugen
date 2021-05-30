@@ -10,7 +10,6 @@ import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
-import simugen.gui.SimActivator;
 import simugen.gui.interfaces.ModelRunner;
 import simugen.gui.interfaces.RefreshableView;
 
@@ -38,7 +37,7 @@ public class CoffeeShopModelRunner implements ModelRunner {
 
 			@Override
 			public void listen(Event event) {
-				for (RefreshableView view : SimActivator.getDefault().getRefreshableViews()) {
+				for (RefreshableView view : Activator.getDefault().getRefreshableViews()) {
 					view.refresh();
 				}
 			}

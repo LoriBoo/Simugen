@@ -13,7 +13,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.part.ViewPart;
 
 import simugen.core.defaults.DefaultConsoleListener;
-import simugen.gui.SimActivator;
+import simugen.gui.Activator;
 
 public class ConsoleView extends ViewPart {
 	public static final String ID = "TestGui.view";
@@ -42,7 +42,7 @@ public class ConsoleView extends ViewPart {
 		PrintStream ps = new PrintStream(out, true);
 
 		// SimActivator.getDefault().getModelEngine().setStreamOut(ps);
-		SimActivator.getDefault().getModelEngine().addListener(new DefaultConsoleListener(ps));
+		Activator.getDefault().getModelEngine().addListener(new DefaultConsoleListener(ps));
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.part.ViewPart;
 
-import simugen.gui.SimActivator;
+import simugen.gui.Activator;
 
 public class ModelSettingsView extends ViewPart {
 	public static final String ID = "TestGui.ModelSettingsView";
@@ -25,7 +25,7 @@ public class ModelSettingsView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		String location = SimActivator.getDefault().getOutputLocation();
+		String location = Activator.getDefault().getOutputLocation();
 
 		Composite canvas = new Composite(parent, SWT.NONE);
 
@@ -97,9 +97,9 @@ public class ModelSettingsView extends ViewPart {
 					System.out.println(output);
 
 					textOutputLocation.setText(output);
-					SimActivator.getDefault().getModelEngine().setOutputLocation(output);
+					Activator.getDefault().getModelEngine().setOutputLocation(output);
 
-					IPreferenceStore preferences = SimActivator.getDefault().getPreferenceStore();
+					IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
 
 					preferences.setValue("OutputLocation", output);
 				}

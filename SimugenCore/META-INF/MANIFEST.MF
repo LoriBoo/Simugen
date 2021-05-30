@@ -30,6 +30,5 @@ Export-Package: org.apache.commons.math3,
  simugen.core.rng,
  simugen.core.sql,
  simugen.core.stats,
- simugen.core.test,
  simugen.core.transfer,
  simugen.core.transfer.interfaces

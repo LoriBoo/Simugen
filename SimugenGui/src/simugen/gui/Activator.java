@@ -1,53 +1,31 @@
 package simugen.gui;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
-
+import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.Model;
-import simugen.core.test.TestNewModel;
+import simugen.gui.abstracts.AbstractSimActivator;
+import simugen.gui.interfaces.ModelRunner;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractSimActivator {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "TestGui"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "CoffeeShopModel"; //$NON-NLS-1$
 
-	// The shared instance
-	private static Activator plugin;
-
-	private Model model;
-
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		// model = new TestNewModel(null);
+	@Override
+	protected Class<? extends Model> setModelClass() {
+		return null;
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
+	protected ModelRunner setModelRunner() {
+		return null;
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
+	protected Engine setModelEngine() {
+		return null;
 	}
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
-
-	public Model getModel() {
-		return plugin.model;
-	}
 }

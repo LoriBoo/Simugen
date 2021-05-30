@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 
 import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.Model;
-import simugen.gui.SimActivator;
+import simugen.gui.Activator;
 import simugen.gui.interfaces.LoadedViewContext;
 import simugen.gui.interfaces.ModelRunner;
 import simugen.gui.interfaces.RefreshableView;
@@ -74,7 +74,7 @@ public abstract class AbstractSimActivator extends AbstractUIPlugin {
 	}
 
 	public String getOutputLocation() {
-		IPreferenceStore preferences = SimActivator.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
 
 		String prefLoc = preferences.getString("OutputLocation");
 
@@ -85,7 +85,7 @@ public abstract class AbstractSimActivator extends AbstractUIPlugin {
 			preferences.setValue("OutputLocation", location);
 		} else {
 			location = prefLoc;
-			SimActivator.getDefault().getModelEngine().setOutputLocation(location);
+			Activator.getDefault().getModelEngine().setOutputLocation(location);
 		}
 
 		return location;

@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.part.ViewPart;
 
-import simugen.gui.SimActivator;
+import simugen.gui.Activator;
 import simugen.gui.interfaces.RefreshableView;
 import simugen.gui.views.utils.SqlTableFiller;
 
@@ -51,15 +51,15 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 	@Override
 	public void dispose() {
-		SimActivator.getDefault().removeRefreshableView(this);
+		Activator.getDefault().removeRefreshableView(this);
 		super.dispose();
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		SimActivator.getDefault().addRefreshableView(this);
+		Activator.getDefault().addRefreshableView(this);
 
-		location = SimActivator.getDefault().getOutputLocation();
+		location = Activator.getDefault().getOutputLocation();
 
 		canvas = new Composite(parent, SWT.BORDER);
 
@@ -169,7 +169,7 @@ public class OutputView extends ViewPart implements RefreshableView {
 
 		// menu.addMenuListener(contextMenu);
 
-		SimActivator.getDefault().<OutputView>onViewLoaded(this);
+		Activator.getDefault().<OutputView>onViewLoaded(this);
 	}
 
 	private void fillComboBox() {
