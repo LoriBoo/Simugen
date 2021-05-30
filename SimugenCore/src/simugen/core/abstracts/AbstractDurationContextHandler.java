@@ -17,6 +17,7 @@ import simugen.core.sql.ColumnType;
 import simugen.core.sql.DefaultTableBuilder;
 import simugen.core.sql.SqlUtils;
 
+@Deprecated
 public abstract class AbstractDurationContextHandler implements EventContextHandler<ElementTransferEvent> {
 	protected Component component;
 

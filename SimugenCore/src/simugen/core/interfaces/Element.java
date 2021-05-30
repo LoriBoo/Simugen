@@ -6,7 +6,7 @@ package simugen.core.interfaces;
  * For example, in the ubiquitous Coffee Shop model, Elements would represent
  * customers flowing through the system.
  * 
- * @author BASHH
+ * @author Lorelei
  *
  */
 public interface Element extends LoggableID

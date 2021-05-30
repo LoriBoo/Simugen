@@ -4,6 +4,7 @@ import simugen.core.abstracts.AbstractDurationContextHandler;
 import simugen.core.components.interfaces.Component;
 import simugen.core.enums.SimTimeUnit;
 
+@Deprecated
 public class DefaultComponentDurationContextHandler extends AbstractDurationContextHandler {
 
 	public DefaultComponentDurationContextHandler(Component component, String pathToDB, SimTimeUnit unit,

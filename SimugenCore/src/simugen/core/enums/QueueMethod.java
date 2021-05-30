@@ -10,7 +10,7 @@ package simugen.core.enums;
  * 
  * Priority - Requires a custom routine to be provided by subclasses.
  * 
- * @author BASHH
+ * @author Lorelei
  *
  */
 public enum QueueMethod

@@ -13,7 +13,6 @@ import simugen.core.components.interfaces.Router;
 import simugen.core.components.interfaces.Server;
 import simugen.core.components.interfaces.Sink;
 import simugen.core.components.interfaces.Source;
-import simugen.core.defaults.DefaultComponentDurationContextHandler;
 import simugen.core.defaults.DefaultElementDurationListener;
 import simugen.core.defaults.NumberedElementSourcedGenerator;
 import simugen.core.enums.SimTimeUnit;
@@ -86,17 +85,14 @@ public class CoffeeShopModel extends AbstractModel {
 
 		String coffeeShopDB = getOutputLocation() + "CoffeeShop.db";
 
-		DefaultElementDurationListener queueListener = new DefaultElementDurationListener(
-				new DefaultComponentDurationContextHandler(queue, coffeeShopDB, SimTimeUnit.MINUTE, "QueueData",
-						"Customer", "Queue", run, epoch));
+		DefaultElementDurationListener queueListener = new DefaultElementDurationListener(queue, coffeeShopDB,
+				SimTimeUnit.MINUTE, "QueueData", "Customer", "Queue", run, epoch);
 
-		DefaultElementDurationListener server1Listener = new DefaultElementDurationListener(
-				new DefaultComponentDurationContextHandler(server1, coffeeShopDB, SimTimeUnit.MINUTE, "ServerData",
-						"Customer", "Barista", run, epoch));
+		DefaultElementDurationListener server1Listener = new DefaultElementDurationListener(server1, coffeeShopDB,
+				SimTimeUnit.MINUTE, "ServerData", "Customer", "Barista", run, epoch);
 
-		DefaultElementDurationListener server2Listener = new DefaultElementDurationListener(
-				new DefaultComponentDurationContextHandler(server2, coffeeShopDB, SimTimeUnit.MINUTE, "ServerData",
-						"Customer", "Barista", run, epoch));
+		DefaultElementDurationListener server2Listener = new DefaultElementDurationListener(server2, coffeeShopDB,
+				SimTimeUnit.MINUTE, "ServerData", "Customer", "Barista", run, epoch);
 
 		addListener(queueListener);
 

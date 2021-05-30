@@ -6,7 +6,7 @@ import simugen.core.transfer.interfaces.SingleTransferInputPipe;
 /**
  * Sinks remove {@link Element}s from the system.
  * 
- * @author BASHH
+ * @author Lorelei
  *
  */
 public interface Sink extends Component, SingleTransferInputPipe

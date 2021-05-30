@@ -23,11 +23,13 @@ public class ModelSettingsView extends ViewPart {
 	@Inject
 	IWorkbench workbench;
 
+	Composite canvas;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		String location = Activator.getDefault().getOutputLocation();
 
-		Composite canvas = new Composite(parent, SWT.NONE);
+		canvas = new Composite(parent, SWT.NONE);
 
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 5;
@@ -105,6 +107,8 @@ public class ModelSettingsView extends ViewPart {
 				}
 			}
 		});
+
+		Activator.getDefault().onViewLoaded(this);
 	}
 
 	@Override

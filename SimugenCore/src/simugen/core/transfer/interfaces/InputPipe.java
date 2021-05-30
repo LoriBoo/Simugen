@@ -8,7 +8,7 @@ import simugen.core.components.interfaces.Component;
  * InputPipes are children of a {@link Component}, and allows {@link PipeData}
  * of subType T to be received by the component
  * 
- * @author BASHH
+ * @author Lorelei
  *
  * @param <T>
  */

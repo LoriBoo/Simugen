@@ -9,7 +9,7 @@ import simugen.core.interfaces.Event;
  * OutputPipe are children of a {@link Component}, and allows {@link PipeData}
  * of subType T to be sent by the component
  * 
- * @author BASHH
+ * @author Lorelei
  *
  * @param <T>
  */
