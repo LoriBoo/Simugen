@@ -14,8 +14,8 @@ import simugen.core.transfer.interfaces.PipeData;
  * Components are connected to other components to convey Elements and other
  * interactions<br>
  * <br>
- * <b>Custom {@link Component}s should subclass {@link AbstractComponent}, and
- * not implement this interface directly.
+ * <b>Subclasses {@link Component}s should subclass {@link AbstractComponent},
+ * and not implement {@link Component} directly.</b>
  * 
  * @author Lorelei
  *

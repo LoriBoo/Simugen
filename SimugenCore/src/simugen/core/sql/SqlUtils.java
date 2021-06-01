@@ -3,13 +3,25 @@ package simugen.core.sql;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
+/**
+ * A set of helpful SQL utilities that I could not find already existing
+ * somewhere.
+ * 
+ * @author Lorelei
+ *
+ */
 public class SqlUtils {
+
+	/**
+	 * This utility might be deprecated.
+	 * 
+	 * @param millis Milliseconds since the java {@link Calendar} Epoch (January 1st
+	 *               1970, 0:00:0.00)
+	 * @return A {@link String} formatted output of the date, that SQL likes to use.
+	 */
 	public static String getFormattedTimeStamp(long millis) {
 		Calendar cal = Calendar.getInstance();
 
@@ -20,11 +32,18 @@ public class SqlUtils {
 		return format.format(cal.getTime());
 	}
 
-	public static Date getTimeStamp(long millis) {
-		return new Timestamp(millis);
-	}
+	/**
+	 * Returns a readable {@link String} value of the data inserted. Used mainly to
+	 * capture DATE, TIME, And TIMESTAMP column types.
+	 * 
+	 * @param set The {@link ResultSet}.
+	 * @param col The column we care about.
+	 * @return Readable {@link String} value of the column.
+	 * @throws SQLException
+	 */
+	public static String getString(ResultSet set, int col) throws SQLException {
+		ResultSetMetaData rsmd = set.getMetaData();
 
-	public static String getString(ResultSetMetaData rsmd, ResultSet set, int col) {
 		try {
 			switch (rsmd.getColumnTypeName(col)) {
 			case "DATE":
@@ -41,14 +60,5 @@ public class SqlUtils {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public static Time getTime(Long millis) {
-
-		return new Time(millis);
-	}
-
-	public static Date getDate(Long millis) {
-		return new Date(millis);
 	}
 }

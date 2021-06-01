@@ -10,19 +10,35 @@ import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Builds a SQL Table.
+ * 
+ * @author Lorelei
+ *
+ */
 public class DefaultTableBuilder {
 	private String tableName;
 
 	private Map<String, ColumnType> mapColumnToType = new LinkedHashMap<>();
 
+	/**
+	 * @param tableName The name of the table to build.
+	 */
 	public DefaultTableBuilder(String tableName) {
 		this.tableName = tableName;
 	}
 
+	/**
+	 * @param name The name of the column to be added to the table.
+	 * @param type The {@link ColumnType} of the column to be added.
+	 */
 	public void addColumn(String name, ColumnType type) {
 		mapColumnToType.put(name, type);
 	}
 
+	/**
+	 * @param conn The {@link Connection} with which to build the table.
+	 */
 	public void buildTable(Connection conn) {
 		String sql = "CREATE TABLE IF NOT EXISTS " + tableName + " (\n";
 
@@ -44,9 +60,12 @@ public class DefaultTableBuilder {
 		}
 	}
 
+	/**
+	 * @param conn             The {@link Connection} in which to insert values.
+	 * @param mapColumnsValues The {@link Map} of <i>columns</i> to <i>values</i> to
+	 *                         be inserted.
+	 */
 	public void insert(Connection conn, Map<String, Object> mapColumnsValues) {
-		// String sql = "INSERT INTO warehouses(name,capacity) VALUES(?,?)";
-
 		assert mapColumnsValues.keySet().containsAll(mapColumnToType.keySet());
 
 		String sql = "INSERT INTO " + tableName + "(";

@@ -16,7 +16,8 @@ import simugen.core.interfaces.Event;
 public interface EventListener<T extends Event> {
 	/**
 	 * 
-	 * @return
+	 * @return The {@link Class} of the {@link Event} type that this
+	 *         {@link EventListener} listens for.
 	 */
 	public Class<T> getEventType();
 

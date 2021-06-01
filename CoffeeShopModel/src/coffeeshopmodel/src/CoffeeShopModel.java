@@ -13,7 +13,7 @@ import simugen.core.components.interfaces.Router;
 import simugen.core.components.interfaces.Server;
 import simugen.core.components.interfaces.Sink;
 import simugen.core.components.interfaces.Source;
-import simugen.core.defaults.DefaultElementDurationListener;
+import simugen.core.data.defaults.DefaultElementDurationListener;
 import simugen.core.defaults.NumberedElementSourcedGenerator;
 import simugen.core.enums.SimTimeUnit;
 import simugen.core.interfaces.DataGenerator;

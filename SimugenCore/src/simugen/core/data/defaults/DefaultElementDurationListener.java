@@ -1,8 +1,10 @@
-package simugen.core.defaults;
+package simugen.core.data.defaults;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,13 +12,45 @@ import java.util.Map;
 
 import simugen.core.components.interfaces.Component;
 import simugen.core.data.interfaces.EventListener;
+import simugen.core.defaults.ElementTransferEvent;
 import simugen.core.enums.SimTimeUnit;
 import simugen.core.interfaces.Element;
+import simugen.core.interfaces.Event;
 import simugen.core.sql.ColumnType;
 import simugen.core.sql.DefaultTableBuilder;
-import simugen.core.sql.SqlUtils;
 
-public class DefaultElementDurationListener implements EventListener<ElementTransferEvent> {
+/**
+ * Default implementation of {@link EventListener} that fills a database with
+ * duration information at which an {@link Element} was at a specified
+ * {@link Component}.<br>
+ * <br>
+ * By default, the specified table in the constructor will be filled with the
+ * following information from each {@link ElementTransferEvent}: <br>
+ * <br>
+ * <li><b>Run</b> - The <i>model run</i> in which the data was collected. An
+ * integer value.</li>
+ * <li><b>Component</b> - The {@link String} value of the
+ * {@link Component#getLogID()}. The header for this column is specified in by
+ * the user in the constructor.</li>
+ * <li><b>Element</b> - The {@link String} value of the
+ * {@link Element#getLogID()}. The header for this column is specified in by the
+ * user in the constructor.</li>
+ * <li><b>Time In</b> - The time at which the {@link Element} entered the
+ * {@link Component}. <i>Currently displays time as a {@link Time}, without
+ * {@link Date}; Needs to be abstracted to allow the end user to
+ * specify.</i></li>
+ * <li><b>Time Out</b> - The time at which the {@link Element} exited the
+ * {@link Component}. <i>Currently displays time as a {@link Time}, without
+ * {@link Date}; Needs to be abstracted to allow the end user to
+ * specify.</i></li>
+ * <li><b>Duration</b> - The <i>duration</i> in the specified
+ * {@link SimTimeUnit} at which the {@link Element} was at the
+ * {@link Component}</li>
+ * 
+ * @author Lorelei
+ *
+ */
+final public class DefaultElementDurationListener implements EventListener<ElementTransferEvent> {
 	private Component component;
 
 	private String pathToDB;
@@ -58,7 +92,7 @@ public class DefaultElementDurationListener implements EventListener<ElementTran
 		this.componentColumn = componentColumn;
 		this.run = run;
 		this.epoch = epoch;
-		
+
 		builder = new DefaultTableBuilder(tableName);
 
 		builder.addColumn(RUN, ColumnType.INT);
@@ -93,6 +127,13 @@ public class DefaultElementDurationListener implements EventListener<ElementTran
 		}
 	}
 
+	/**
+	 * Private method for inserting data into the table.
+	 * 
+	 * @param event The {@link ElementTransferEvent} for which to process the data.
+	 *              At this point should be the <i>Exit</i> {@link Event} with the
+	 *              {@link Element} leaving the {@link Component}.
+	 */
 	private void insert(ElementTransferEvent event) {
 		Element e = event.getElement();
 
@@ -107,8 +148,8 @@ public class DefaultElementDurationListener implements EventListener<ElementTran
 		mapRowValues.put(RUN, this.run);
 		mapRowValues.put(this.componentColumn, component.getLogID());
 		mapRowValues.put(this.elementColumn, element);
-		mapRowValues.put(TIME_IN, SqlUtils.getTime(mapBeginTimes.get(e)));
-		mapRowValues.put(TIME_OUT, SqlUtils.getTime(mapEndTimes.get(e)));
+		mapRowValues.put(TIME_IN, new Time(mapBeginTimes.get(e)));
+		mapRowValues.put(TIME_OUT, new Time(mapEndTimes.get(e)));
 		mapRowValues.put(DURATION, time);
 
 		connect();

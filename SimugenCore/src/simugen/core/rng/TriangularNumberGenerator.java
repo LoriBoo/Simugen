@@ -3,6 +3,18 @@ package simugen.core.rng;
 import simugen.core.interfaces.DataGenerator;
 import simugen.core.interfaces.EngineTick;
 
+/**
+ * Generates a variate based on a simple triangular distribution. <br>
+ * <br>
+ * A triangular distribution uses the min, max, and mode to generate a random
+ * variate. Note that Mode is not necessarily the median, it is just the number
+ * that appears the most in the set.
+ * 
+ * @author Lorelei
+ * @see <a href=
+ *      "https://en.wikipedia.org/wiki/Triangular_distribution">Wikipedia -
+ *      Triangular Distribution</a>
+ */
 public class TriangularNumberGenerator implements DataGenerator<Number> {
 	private double min = 0;
 

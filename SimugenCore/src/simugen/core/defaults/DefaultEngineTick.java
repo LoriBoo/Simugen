@@ -25,7 +25,7 @@ public final class DefaultEngineTick implements EngineTick
 	@Override
 	public double getNextRand()
 	{
-		return engine.getNext();
+		return engine.getNextRand();
 	}
 
 	@Override

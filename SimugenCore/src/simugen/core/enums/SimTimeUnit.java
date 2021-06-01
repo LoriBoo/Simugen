@@ -1,5 +1,16 @@
 package simugen.core.enums;
 
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Might be redundant with Java's {@link TimeUnit}, but I couldn't figure out
+ * how to do what I wanted, so I built my own. <br>
+ * <br>
+ * Allows for easy conversion between time units.
+ * 
+ * @author Lorelei
+ *
+ */
 public enum SimTimeUnit {
 	MILLISECOND, SECOND, MINUTE, HOUR, DAY, WEEK;
 

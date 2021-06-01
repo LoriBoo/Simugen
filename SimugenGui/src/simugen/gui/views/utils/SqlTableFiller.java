@@ -65,7 +65,7 @@ public class SqlTableFiller {
 			String[] values = new String[columnCount];
 
 			for (int i = 1; i <= columnCount; i++) {
-				values[i - 1] = SqlUtils.getString(rsmd, set, i);
+				values[i - 1] = SqlUtils.getString(set, i);
 			}
 
 			TableItem tableItem = new TableItem(table, SWT.NONE);

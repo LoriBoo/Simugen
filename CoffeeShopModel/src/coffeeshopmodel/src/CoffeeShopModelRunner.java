@@ -53,7 +53,7 @@ public class CoffeeShopModelRunner implements ModelRunner {
 
 		engine.start();
 
-		engine.printSeed();
+		engine.publishSeed();
 	}
 
 }

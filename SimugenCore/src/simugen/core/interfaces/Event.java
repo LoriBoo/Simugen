@@ -16,13 +16,16 @@ import simugen.core.data.interfaces.EventPublisher;
 public interface Event extends LoggableID {
 
 	/**
-	 * The time, in milliseconds from model start that this event was created.<br>
-	 * Represents model time, not real time.
-	 * 
-	 * @return
+	 * @return The time, in milliseconds from model start that this event was
+	 *         created.<br>
+	 *         Represents model time, not real time.
 	 */
 	public long getTime();
 
+	/**
+	 * @return The default implementation returns the {@link #getLogID()} for this
+	 *         {@link Event}.
+	 */
 	default String getLogMessage() {
 		return this.getLogID();
 	}

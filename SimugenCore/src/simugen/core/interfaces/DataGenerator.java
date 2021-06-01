@@ -10,7 +10,6 @@ package simugen.core.interfaces;
 public interface DataGenerator<T extends Object> {
 
 	/**
-	 * 
 	 * @param tick The 'tick' of the {@link Engine}.
 	 * @return The next object that this generator generates.
 	 */

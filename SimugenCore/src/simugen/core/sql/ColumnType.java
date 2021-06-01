@@ -1,5 +1,11 @@
 package simugen.core.sql;
 
+/**
+ * Enumerators for column types for SQL.
+ * 
+ * @author Lorelei
+ *
+ */
 public enum ColumnType {
 	STRING, INT, DOUBLE, TIME, DATE, TIMESTAMP;
 

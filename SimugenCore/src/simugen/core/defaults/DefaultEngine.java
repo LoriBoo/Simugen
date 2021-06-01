@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.math3.random.MersenneTwister;
 
+import simugen.core.data.defaults.DefaultEventPublisher;
 import simugen.core.data.interfaces.EventListener;
 import simugen.core.data.interfaces.EventPublisher;
 import simugen.core.interfaces.Engine;
@@ -223,12 +224,12 @@ public class DefaultEngine implements Engine {
 	}
 
 	@Override
-	public double getNext() {
+	public double getNextRand() {
 		return doubleGenerator.nextDouble();
 	}
 
 	@Override
-	public void printSeed() {
+	public void publishSeed() {
 		publisher.publish(new PublishSeedEvent(this.getSeed()));
 	}
 
