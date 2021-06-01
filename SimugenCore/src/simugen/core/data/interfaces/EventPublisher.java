@@ -8,8 +8,8 @@ public interface EventPublisher {
 
 	void publish(Event event);
 
-	void addEventListener(EventListener eventListener);
+	void addEventListener(EventListener<?> eventListener);
 
-	void addAllListeners(List<EventListener> listListeners);
+	void addAllListeners(List<EventListener<?>> listListeners);
 
 }

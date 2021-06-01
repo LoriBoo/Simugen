@@ -22,7 +22,7 @@ public class DefaultEngine implements Engine {
 
 	private long seed;
 
-	private List<EventListener> listListeners = new ArrayList<>();
+	private List<EventListener<?>> listListeners = new ArrayList<>();
 
 	private EventPublisher publisher;
 
@@ -179,7 +179,7 @@ public class DefaultEngine implements Engine {
 
 						publisher.publish(e);
 
-						e.Consume();
+						e.consume();
 
 						if (e instanceof ModelFinishedEvent) {
 							complete = true;
@@ -258,7 +258,7 @@ public class DefaultEngine implements Engine {
 	}
 
 	@Override
-	public void addListener(EventListener listener) {
+	public void addListener(EventListener<?> listener) {
 		listListeners.add(listener);
 	}
 

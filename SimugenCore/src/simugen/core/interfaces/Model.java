@@ -20,9 +20,9 @@ public interface Model {
 
 	public boolean isReady();
 
-	public List<EventListener> getListeners();
+	public List<EventListener<?>> getListeners();
 
-	public void addListener(EventListener listener);
+	public void addListener(EventListener<?> listener);
 
 	public void setOutputLocation(String location);
 

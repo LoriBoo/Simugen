@@ -32,3 +32,4 @@ Export-Package: org.apache.commons.math3,
  simugen.core.stats,
  simugen.core.transfer,
  simugen.core.transfer.interfaces
+Import-Package: simugen.core.defaults

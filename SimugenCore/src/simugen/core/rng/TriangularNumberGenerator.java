@@ -1,9 +1,9 @@
 package simugen.core.rng;
 
 import simugen.core.interfaces.DataGenerator;
+import simugen.core.interfaces.EngineTick;
 
-public class TriangularNumberGenerator implements DataGenerator<Number>
-{
+public class TriangularNumberGenerator implements DataGenerator<Number> {
 	private double min = 0;
 
 	private double max = 0;
@@ -12,8 +12,7 @@ public class TriangularNumberGenerator implements DataGenerator<Number>
 
 	private double Fc = 0;
 
-	public TriangularNumberGenerator(double min, double mode, double max)
-	{
+	public TriangularNumberGenerator(double min, double mode, double max) {
 		this.min = min;
 		this.max = max;
 		this.mode = mode;
@@ -21,19 +20,17 @@ public class TriangularNumberGenerator implements DataGenerator<Number>
 	}
 
 	@Override
-	public Number getNext(double d)
-	{
+	public Number getNext(EngineTick tick) {
 		assert min < max;
 		assert min < mode;
 		assert mode < max;
 
+		double d = tick.getNextRand();
+
 		Number number = null;
-		if (d < Fc)
-		{
+		if (d < Fc) {
 			number = min + Math.sqrt(d * (max - min) * (mode - min));
-		}
-		else
-		{
+		} else {
 			number = max - Math.sqrt((1 - d) * (max - min) * (max - mode));
 		}
 

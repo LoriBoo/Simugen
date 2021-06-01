@@ -6,6 +6,13 @@ import simugen.core.interfaces.DataGenerator;
 import simugen.core.interfaces.Element;
 import simugen.core.interfaces.EngineTick;
 
+/**
+ * Abstract implementation of {@link DataGenerator}; Generates
+ * {@link ElementSourcedEvent}s, which adds an {@link Element} to the model.
+ * 
+ * @author Lorelei
+ *
+ */
 public abstract class AbstractElementSourcedGenerator implements DataGenerator<ElementSourcedEvent> {
 	private final DataGenerator<Number> numberGen;
 
@@ -19,9 +26,7 @@ public abstract class AbstractElementSourcedGenerator implements DataGenerator<E
 
 	@Override
 	public ElementSourcedEvent getNext(EngineTick tick) {
-		final double rand = tick.getNextRand();
-
-		final long duration = timeUnit.getMillis(numberGen.getNext(rand));
+		final long duration = timeUnit.getMillis(numberGen.getNext(tick));
 
 		final Element element = getElement();
 

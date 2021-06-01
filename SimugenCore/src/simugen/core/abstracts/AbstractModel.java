@@ -12,7 +12,7 @@ import simugen.core.interfaces.Model;
 public abstract class AbstractModel implements Model {
 	private List<Component> components = new ArrayList<>();
 
-	private List<EventListener> listListeners = new ArrayList<>();
+	private List<EventListener<?>> listListeners = new ArrayList<>();
 
 	private String outputLocation = null;
 
@@ -56,12 +56,12 @@ public abstract class AbstractModel implements Model {
 	}
 
 	@Override
-	public List<EventListener> getListeners() {
+	public List<EventListener<?>> getListeners() {
 		return listListeners;
 	}
 
 	@Override
-	public void addListener(EventListener listener) {
+	public void addListener(EventListener<?> listener) {
 		listListeners.add(listener);
 	}
 

@@ -2,9 +2,16 @@ package simugen.core.abstracts;
 
 import simugen.core.interfaces.Element;
 
+/**
+ * Abstract implementation of {@link Element}.
+ * 
+ * @author Lorelei
+ *
+ */
 public abstract class AbstractElement implements Element {
 	private String ID = null;
 
+	
 	@Override
 	public void setLogID(String ID) {
 		assert this.ID == null;

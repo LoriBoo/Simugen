@@ -11,6 +11,12 @@ import simugen.core.interfaces.EngineTick;
 import simugen.core.transfer.ElementTransferData;
 import simugen.core.transfer.TransferOutputPipe;
 
+/**
+ * 
+ * 
+ * @author Lorelei
+ *
+ */
 public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeComponent implements Queue {
 	protected int totalCapacity = -1;
 
@@ -110,7 +116,7 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	}
 
 	/**
-	 * Sub-classes must override if they want to make a priority queue
+	 * Sub-classes must override this method if they want to make a priority queue
 	 * 
 	 * @return
 	 */
@@ -129,7 +135,7 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	}
 
 	@Override
-	public void receiveElement(ElementTransferData data) {
+	public void receiveElementTransferData(ElementTransferData data) {
 		elementsInQueue.add(data);
 	}
 

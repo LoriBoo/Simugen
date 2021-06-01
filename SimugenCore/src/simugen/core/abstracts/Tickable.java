@@ -1,5 +1,10 @@
 package simugen.core.abstracts;
 
+/**
+ * 
+ * @author Lorelei
+ * @deprecated
+ */
 public abstract class Tickable
 {
 	private long tick = -1L;

@@ -19,7 +19,7 @@ public abstract class AbstractSink extends AbstractSingleInputPipeComponent
 	}
 
 	@Override
-	public void receiveElement(ElementTransferData data)
+	public void receiveElementTransferData(ElementTransferData data)
 	{
 		final Event evt = new ElementSunkEvent(data.getData(), data.getTime());
 

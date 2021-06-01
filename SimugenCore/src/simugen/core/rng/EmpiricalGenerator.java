@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import simugen.core.interfaces.DataGenerator;
+import simugen.core.interfaces.EngineTick;
 
-public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
-{
+public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private ArrayList<Double> values = new ArrayList<>();
@@ -22,28 +22,23 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 
 	private boolean ready = false;
 
-	public void addValue(double d)
-	{
+	public void addValue(double d) {
 		values.add(d);
 
 		ready = false;
 	}
 
-	public void computeProbabilities()
-	{
+	public void computeProbabilities() {
 		double n = values.size();
 
 		double prob;
 
 		@SuppressWarnings("unchecked")
-		ArrayList<Double> buffer = (ArrayList<Double>) values.getClass()
-				.cast(values.clone());
+		ArrayList<Double> buffer = (ArrayList<Double>) values.getClass().cast(values.clone());
 
-		buffer.sort(new Comparator<Double>()
-		{
+		buffer.sort(new Comparator<Double>() {
 			@Override
-			public int compare(Double o1, Double o2)
-			{
+			public int compare(Double o1, Double o2) {
 				int count1 = getNumberOf(o1);
 				int count2 = getNumberOf(o2);
 
@@ -53,10 +48,8 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 
 		values = buffer;
 
-		for (double d : values)
-		{
-			if (mapValueToProbabilities.containsKey(d))
-			{
+		for (double d : values) {
+			if (mapValueToProbabilities.containsKey(d)) {
 				continue;
 			}
 
@@ -72,13 +65,10 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 		ready = true;
 	}
 
-	private void createCDF()
-	{
+	private void createCDF() {
 		double last = 0;
 
-		for (Double value : mapValueToProbabilities.keySet()
-				.toArray(new Double[0]))
-		{
+		for (Double value : mapValueToProbabilities.keySet().toArray(new Double[0])) {
 			last += mapValueToProbabilities.get(value);
 
 			mapValueToProbabilities.put(value, last);
@@ -91,13 +81,10 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 		probabilities.addAll(mapValueToProbabilities.values());
 	}
 
-	private int getNumberOf(double d)
-	{
+	private int getNumberOf(double d) {
 		int count = 0;
-		for (double val : values)
-		{
-			if (Double.valueOf(val).equals(d))
-			{
+		for (double val : values) {
+			if (Double.valueOf(val).equals(d)) {
 				count++;
 			}
 		}
@@ -107,14 +94,13 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
 	// If the probability of a number is 0.25,
 	// and the passed probability, d, is <=0.25, it's valid.
 	@Override
-	public Number getNext(double d)
-	{
+	public Number getNext(EngineTick tick) {
 		assert ready;
-		
-		for (Double prob : probabilities)
-		{
-			if (d <= prob)
-			{
+
+		double d = tick.getNextRand();
+
+		for (Double prob : probabilities) {
+			if (d <= prob) {
 				return cdf.get(prob);
 			}
 		}

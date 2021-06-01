@@ -1,6 +1,7 @@
 package simugen.core.rng;
 
 import simugen.core.interfaces.DataGenerator;
+import simugen.core.interfaces.EngineTick;
 
 public class FixedNumberGenerator implements DataGenerator<Number>
 {
@@ -12,7 +13,7 @@ public class FixedNumberGenerator implements DataGenerator<Number>
 	}
 	
 	@Override
-	public Number getNext(double d)
+	public Number getNext(EngineTick tick)
 	{
 		return fixed;
 	}

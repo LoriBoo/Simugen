@@ -2,6 +2,12 @@ package simugen.core.abstracts;
 
 import simugen.core.interfaces.Event;
 
+/**
+ * Abstract implementation of {@link Event}
+ * 
+ * @author Lorelei
+ *
+ */
 public abstract class AbstractEvent implements Event {
 	private final long time;
 
@@ -11,6 +17,12 @@ public abstract class AbstractEvent implements Event {
 
 	private long modelSeed;
 
+	/**
+	 * 
+	 * @param time The time in milliseconds from model start at which this
+	 *             {@link Event} occurred.<br>
+	 *             Represents model time, not real time.
+	 */
 	public AbstractEvent(long time) {
 		this.time = time;
 	}
@@ -33,7 +45,7 @@ public abstract class AbstractEvent implements Event {
 	}
 
 	@Override
-	public void Consume() {
+	public void consume() {
 		consumed = true;
 	}
 

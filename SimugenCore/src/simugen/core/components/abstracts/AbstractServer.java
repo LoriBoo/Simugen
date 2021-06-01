@@ -27,14 +27,23 @@ public abstract class AbstractServer extends AbstractSingleInSingleOutPipeCompon
 	}
 
 	/**
-	 * Since the server overrides {@link #canGenerate()}, this method is redundant.
-	 * But for good form does let other components know if it has any capacity.
+	 * Since {@link AbstractServer} overrides {@link #canGenerate()}, this method is
+	 * redundant. But for good form does let other classes that have access know if
+	 * it has any capacity.
 	 */
 	@Override
 	public int getElementCapacity() {
 		return currentData == null ? 1 : 0;
 	}
 
+	/**
+	 * Abstract implementation of {@link #canReceiveElement(ElementTransferData)}.
+	 * 
+	 * @return <b>True</b> if there is no {@link #completedEvent} ready to be
+	 *         published, and the {@link ElementTransferData} in
+	 *         {@link #currentData} has been cleared out (nulled).<br>
+	 *         <b>False</b> otherwise.
+	 */
 	@Override
 	public boolean canReceiveElement(ElementTransferData pipeData) {
 		return completedEvent == null && currentData == null;
@@ -55,9 +64,7 @@ public abstract class AbstractServer extends AbstractSingleInSingleOutPipeCompon
 
 		// If we have current data, generate a completion event.
 		if (currentData != null && completedEvent == null) {
-			final double rand = tick.getNextRand();
-
-			final double raw = serverTime.getNext(rand).doubleValue();
+			final double raw = serverTime.getNext(tick).doubleValue();
 
 			final long duration = timeUnit.toMillis((long) raw);
 
@@ -100,7 +107,7 @@ public abstract class AbstractServer extends AbstractSingleInSingleOutPipeCompon
 	}
 
 	@Override
-	public void receiveElement(ElementTransferData data) {
+	public void receiveElementTransferData(ElementTransferData data) {
 		this.currentData = data;
 	}
 }

@@ -1,14 +1,18 @@
 package simugen.core.interfaces;
 
-public interface DataGenerator<T extends Object>
-{
-	default T getNext(double d)
-	{
-		throw new IllegalAccessError();
-	}
+/**
+ * Classes that generate data will implement this interface.
+ * 
+ * @author Lorelei
+ *
+ * @param <T>
+ */
+public interface DataGenerator<T extends Object> {
 
-	default T getNext(EngineTick tick)
-	{
-		throw new IllegalAccessError();
-	}
+	/**
+	 * 
+	 * @param tick The 'tick' of the {@link Engine}.
+	 * @return The next object that this generator generates.
+	 */
+	public T getNext(EngineTick tick);
 }
