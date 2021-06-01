@@ -6,7 +6,6 @@ import java.util.List;
 import simugen.core.data.interfaces.EventListener;
 import simugen.core.data.interfaces.EventPublisher;
 import simugen.core.interfaces.Event;
-import simugen.core.interfaces.TimeStampable;
 
 /**
  * Default implementation of {@link EventPublisher}.
@@ -16,8 +15,6 @@ import simugen.core.interfaces.TimeStampable;
  */
 final public class DefaultEventPublisher implements EventPublisher {
 	private List<EventListener<?>> listEventListeners = new ArrayList<>();
-
-	private long epoch = 0L;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -40,12 +37,6 @@ final public class DefaultEventPublisher implements EventPublisher {
 
 	@Override
 	public void addEventListener(EventListener<?> eventListener) {
-		if (TimeStampable.class.isAssignableFrom(eventListener.getClass())) {
-			TimeStampable time = (TimeStampable) eventListener;
-
-			time.setEpoch(epoch);
-		}
-
 		listEventListeners.add(eventListener);
 	}
 

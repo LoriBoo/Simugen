@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import simugen.core.data.interfaces.EventListener;
 import simugen.core.interfaces.Event;
 
-public class DefaultConsoleListener implements EventListener {
+public class DefaultConsoleListener implements EventListener<Event> {
 	private PrintStream console = System.out;
 
 	public DefaultConsoleListener() {
@@ -17,7 +17,7 @@ public class DefaultConsoleListener implements EventListener {
 	}
 
 	@Override
-	public Class<? extends Event> getEventType() {
+	public Class<Event> getEventType() {
 		return Event.class;
 	}
 

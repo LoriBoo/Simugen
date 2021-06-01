@@ -8,7 +8,6 @@ import simugen.core.data.interfaces.EventListener;
 import simugen.core.defaults.DefaultModelBuilder;
 import simugen.core.defaults.ModelFinishedEvent;
 import simugen.core.interfaces.Engine;
-import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
 import simugen.gui.interfaces.ModelRunner;
 import simugen.gui.interfaces.RefreshableView;
@@ -33,17 +32,17 @@ public class CoffeeShopModelRunner implements ModelRunner {
 
 		engine.setModelBuilder(new DefaultModelBuilder(model.getClass()));
 
-		engine.addListener(new EventListener() {
+		engine.addListener(new EventListener<ModelFinishedEvent>() {
 
 			@Override
-			public void listen(Event event) {
+			public void listen(ModelFinishedEvent event) {
 				for (RefreshableView view : Activator.getDefault().getRefreshableViews()) {
 					view.refresh();
 				}
 			}
 
 			@Override
-			public Class<? extends Event> getEventType() {
+			public Class<ModelFinishedEvent> getEventType() {
 				// TODO Auto-generated method stub
 				return ModelFinishedEvent.class;
 			}
