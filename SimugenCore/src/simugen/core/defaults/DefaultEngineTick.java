@@ -7,6 +7,12 @@ import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
 
+/**
+ * Default implementation of {@link EngineTick}.
+ * 
+ * @author Lorelei
+ *
+ */
 final public class DefaultEngineTick implements EngineTick
 {
 	private final Engine engine;

@@ -16,6 +16,21 @@ import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
 import simugen.core.interfaces.ModelBuilder;
 
+/**
+ * Default implementation of {@link Engine}. Utilizes the
+ * {@link MersenneTwister} random number generator to generate seeds, and to
+ * generate new random numbers {0,1} for generating variates throughout the
+ * {@link Model}.<br>
+ * <br>
+ * End users should be able to utilize {@link DefaultEngine} without needing to
+ * build their own {@link Engine}; however the capability is there if needed.
+ * <b>Note:</b> There is no abstract implementation of {@link Engine} and
+ * therefore end users will need to take care that their implementation of
+ * {@link Engine} is sound.
+ * 
+ * @author Lorelei
+ * 
+ */
 final public class DefaultEngine implements Engine
 {
 	private boolean forceStop;
@@ -46,33 +61,15 @@ final public class DefaultEngine implements Engine
 
 	private int batch = 0;
 
+	/**
+	 * Start the {@link Engine} with a new random seed.
+	 * 
+	 * @see #start(long) start(long).
+	 */
 	@Override
 	public void start()
 	{
-		setBatchNumber();
-
-		publisher = new DefaultEventPublisher();
-
-		publisher.addAllListeners(listListeners);
-
-		publisher.addEventListener(new DefaultConsoleListener());
-
-		if (epoch == 0L)
-		{
-			setEpoch(Calendar.getInstance().getTimeInMillis());
-		}
-
-		publisher.publish(new EngineStartedEvent(milliseconds));
-
-		for (currentRun = 0; currentRun < runs; currentRun++)
-		{
-			publisher.publish(
-					new ModelRunStartedEvent(milliseconds, currentRun));
-
-			start(new MersenneTwister().nextLong());
-		}
-
-		publisher.publish(new EngineFinishedEvent(milliseconds));
+		start(new MersenneTwister().nextLong());
 	}
 
 	private void setBatchNumber()
@@ -117,139 +114,178 @@ final public class DefaultEngine implements Engine
 		return this.epoch;
 	}
 
+	/**
+	 * Starts the {@link Engine} with a defined seed.<br>
+	 * <br>
+	 * Operations that happen:
+	 * <li>{@link #publisher} gets initialized</li>
+	 * <li>Publish new {@link ModelRunStartedEvent}</li>
+	 * <li>Add all {@link EventListener}s from the {@link Engine} to the
+	 * {@link #publisher}, including a {@link DefaultConsoleListener}</li>
+	 * <li>Publish an {@link EngineStartedEvent}</li>
+	 * <li>Build the model with {@link #modelBuilder}</li>
+	 * <li>Set the {@link Model} output location</li>
+	 * <li>Start the {@link Model}</li>
+	 * <li>Add all {@link EventListener}s from the {@link Model} to the
+	 * {@link #publisher}</li>
+	 * <li>Loop through all {@link EngineTick}s until the {@link Model} is
+	 * complete</li>
+	 * <li>Publish {@link Event}s as they occur</li>
+	 * <li>Publish {@link EngineFinishedEvent} when batching is done.</li>
+	 */
 	@Override
 	public void start(long seed)
 	{
-		this.seed = seed;
-
-		try
+		for (currentRun = 0; currentRun < runs; currentRun++)
 		{
-			this.runningModel = this.modelBuilder.buildModel();
-		}
-		catch (Exception e)
-		{
-			publisher.publish(new EngineErrorEvent(milliseconds,
-					"Problem Building model!"));
+			setBatchNumber();
 
-			throw new IllegalStateException("Problem building model.");
-		}
+			publisher = new DefaultEventPublisher();
 
-		if (runningModel == null)
-		{
-			publisher.publish(new EngineErrorEvent(milliseconds,
-					"Model has not been set!"));
+			publisher.publish(
+					new ModelRunStartedEvent(milliseconds, currentRun));
 
-			throw new IllegalStateException("Model has not been set");
-		}
-		else if (!runningModel.isReady())
-		{
-			publisher.publish(new EngineErrorEvent(milliseconds,
-					"Model has not readied up!"));
+			publisher.addAllListeners(listListeners);
 
-			throw new IllegalStateException("Model has not readied up");
-		}
+			publisher.addEventListener(new DefaultConsoleListener());
 
-		this.running = true;
-
-		doubleGenerator = new MersenneTwister(seed);
-
-		forceStop = false;
-
-		runningModel.setOutputLocation(
-				getOutputLocation() + "Batch " + batch + "/");
-
-		runningModel.startUp(currentRun, seed, epoch);
-
-		publisher.addAllListeners(runningModel.getListeners());
-
-		// Keep getting events until there are none left, or the engine has been
-		// halted by the user.
-		boolean dirty = false;
-
-		boolean complete = false;
-
-		final List<Event> eventList = new ArrayList<>();
-
-		while (complete == false)
-		{
-			EngineTick tick = new DefaultEngineTick(this);
-
-			final List<Event> getEvents = getEvents(tick);
-
-			if (getEvents != null)
+			if (epoch == 0L)
 			{
-				eventList.addAll(getEvents);
+				setEpoch(Calendar.getInstance().getTimeInMillis());
 			}
 
-			if (eventList.isEmpty())
+			publisher.publish(new EngineStartedEvent(milliseconds));
+
+			this.seed = seed;
+
+			try
 			{
-				eventList.add(new ModelFinishedEvent(milliseconds));
+				this.runningModel = this.modelBuilder.buildModel();
+			}
+			catch (Exception e)
+			{
+				publisher.publish(new EngineErrorEvent(milliseconds,
+						"Problem Building model!"));
+
+				throw new IllegalStateException("Problem building model.");
 			}
 
-			long time = -1L;
-
-			do
+			if (runningModel == null)
 			{
-				final List<Event> copy = new ArrayList<>(eventList);
+				publisher.publish(new EngineErrorEvent(milliseconds,
+						"Model has not been set!"));
 
-				// Sort the list in order of model time
-				copy.sort(new EventSorter());
+				throw new IllegalStateException("Model has not been set");
+			}
+			else if (!runningModel.isReady())
+			{
+				publisher.publish(new EngineErrorEvent(milliseconds,
+						"Model has not readied up!"));
 
-				for (Event e : copy)
+				throw new IllegalStateException("Model has not readied up");
+			}
+
+			this.running = true;
+
+			doubleGenerator = new MersenneTwister(seed);
+
+			forceStop = false;
+
+			runningModel.setOutputLocation(
+					getOutputLocation() + "Batch " + batch + "/");
+
+			runningModel.startUp(this.currentRun, this.seed, this.epoch);
+
+			publisher.addAllListeners(runningModel.getListeners());
+
+			// Keep getting events until there are none left, or the engine has
+			// been
+			// halted by the user.
+			boolean dirty = false;
+
+			boolean complete = false;
+
+			final List<Event> eventList = new ArrayList<>();
+
+			while (complete == false)
+			{
+				EngineTick tick = new DefaultEngineTick(this);
+
+				final List<Event> getEvents = runningModel.getEvents(tick);
+
+				if (getEvents != null)
 				{
-					if (time == -1L)
+					eventList.addAll(getEvents);
+				}
+
+				if (eventList.isEmpty())
+				{
+					eventList.add(new ModelFinishedEvent(milliseconds));
+				}
+
+				long time = -1L;
+
+				do
+				{
+					final List<Event> copy = new ArrayList<>(eventList);
+
+					// Sort the list in order of model time
+					copy.sort(new EventSorter());
+
+					for (Event e : copy)
 					{
-						time = e.getTime();
-					}
-
-					if (e.getTime() == time)
-					{
-
-						e.setModelSeed(seed);
-
-						publisher.publish(e);
-
-						e.consume();
-
-						if (e instanceof ModelFinishedEvent)
+						if (time == -1L)
 						{
-							complete = true;
+							time = e.getTime();
 						}
 
-						eventList.remove(e);
+						if (e.getTime() == time)
+						{
+
+							e.setModelSeed(seed);
+
+							publisher.publish(e);
+
+							e.consume();
+
+							if (e instanceof ModelFinishedEvent)
+							{
+								complete = true;
+							}
+
+							eventList.remove(e);
+						}
 					}
-				}
 
-				milliseconds = time;
+					milliseconds = time;
 
-				tick.setCurrentTime(milliseconds);
+					tick.setCurrentTime(milliseconds);
 
-				final List<Event> newEvents = getEvents(tick);
+					final List<Event> newEvents = runningModel.getEvents(tick);
 
-				// If we got new messages based on messages sent, the engine is
-				// dirty and needs to process the messages
-				dirty = newEvents != null;
+					// If we got new messages based on messages sent, the engine
+					// is
+					// dirty and needs to process the messages
+					dirty = newEvents != null;
 
-				if (newEvents != null)
-				{
-					eventList.addAll(newEvents);
-				}
+					if (newEvents != null)
+					{
+						eventList.addAll(newEvents);
+					}
 
-			} while (dirty && !forceStop && !complete);
+				} while (dirty && !forceStop && !complete);
+			}
+
+			if (forceStop)
+			{
+				publisher.publish(new EngineErrorEvent(milliseconds,
+						"Engine was forcibly stopped."));
+			}
+
+			running = false;
 		}
 
-		if (forceStop)
-		{
-			publisher.publish(new EngineErrorEvent(milliseconds,
-					"Engine was forcibly stopped."));
-		}
-
-		running = false;
-	}
-
-	private List<Event> getEvents(EngineTick tick)
-	{
-		return runningModel.getEvents(tick);
+		publisher.publish(new EngineFinishedEvent(milliseconds));
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import simugen.core.defaults.ElementTransferEvent;
 public interface EngineTick
 {
 	/**
-	 * Get the next random number from the Engine.<br>
+	 * Get the next random number from the {@link Engine}.<br>
 	 * <br>
 	 * Used to generate random variates from DataGenerators.
 	 * 
