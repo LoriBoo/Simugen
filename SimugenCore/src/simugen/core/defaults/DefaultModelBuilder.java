@@ -5,7 +5,13 @@ import java.lang.reflect.InvocationTargetException;
 import simugen.core.interfaces.Model;
 import simugen.core.interfaces.ModelBuilder;
 
-public class DefaultModelBuilder implements ModelBuilder
+/**
+ * Default implementation of {@link ModelBuilder}.
+ * 
+ * @author Lorelei
+ *
+ */
+final public class DefaultModelBuilder implements ModelBuilder
 {
 
 	private final Class<? extends Model> modelClass;
@@ -15,6 +21,8 @@ public class DefaultModelBuilder implements ModelBuilder
 	 * with no parameters
 	 * 
 	 * @param modelClass
+	 *            The subclass of {@link Model} which this {@link ModelBuilder}
+	 *            will build new instances of.
 	 */
 	public DefaultModelBuilder(Class<? extends Model> modelClass)
 	{
@@ -25,8 +33,14 @@ public class DefaultModelBuilder implements ModelBuilder
 		this.modelClass = modelClass;
 	}
 
+	/**
+	 * @return The new instance of the {@link Model} subclass that this
+	 *         {@link ModelBuilder} was instantiated with.
+	 */
 	@Override
-	public Model buildModel() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+	public Model buildModel() throws InstantiationException,
+			IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException
 	{
 		return modelClass.getDeclaredConstructor().newInstance();
 	}

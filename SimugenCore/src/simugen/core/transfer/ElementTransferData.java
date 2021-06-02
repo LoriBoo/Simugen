@@ -12,7 +12,8 @@ import simugen.core.transfer.interfaces.PipeData;
  * @author Lorelei
  *
  */
-public final class ElementTransferData implements PipeData<Element> {
+public final class ElementTransferData implements PipeData<Element>
+{
 	private final Element element;
 
 	private final long timestamp;
@@ -22,13 +23,19 @@ public final class ElementTransferData implements PipeData<Element> {
 	private final Component sentTo;
 
 	/**
-	 * @param sentFrom  The component that sent the {@link Element}.
-	 * @param sentTo    The component receiving.
-	 * @param element   The {@link Element} being transfered.
-	 * @param timestamp The {@link Model} time in milliseconds in which the transfer
-	 *                  occurred
+	 * @param sentFrom
+	 *            The component that sent the {@link Element}.
+	 * @param sentTo
+	 *            The component receiving.
+	 * @param element
+	 *            The {@link Element} being transfered.
+	 * @param timestamp
+	 *            The {@link Model} time in milliseconds in which the transfer
+	 *            occurred
 	 */
-	public ElementTransferData(Component sentFrom, Component sentTo, Element element, long timestamp) {
+	public ElementTransferData(Component sentFrom, Component sentTo,
+			Element element, long timestamp)
+	{
 		this.sentFrom = sentFrom;
 
 		this.sentTo = sentTo;
@@ -41,14 +48,16 @@ public final class ElementTransferData implements PipeData<Element> {
 	/**
 	 * @return The {@link Component} that sent the {@link Element}.
 	 */
-	public Component getSentFrom() {
+	public Component getSentFrom()
+	{
 		return sentFrom;
 	}
 
 	/**
 	 * @return The {@link Component} that received the {@link Element}.
 	 */
-	public Component getSentTo() {
+	public Component getSentTo()
+	{
 		return sentTo;
 	}
 
@@ -56,7 +65,8 @@ public final class ElementTransferData implements PipeData<Element> {
 	 * @return The {@link Element} being transfered.
 	 */
 	@Override
-	public Element getData() {
+	public Element getData()
+	{
 		return element;
 	}
 
@@ -64,7 +74,8 @@ public final class ElementTransferData implements PipeData<Element> {
 	 * @return The {@link Model} time in which the transfer occurred
 	 */
 	@Override
-	public long getTime() {
+	public long getTime()
+	{
 		return timestamp;
 	}
 }

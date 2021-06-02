@@ -14,25 +14,30 @@ import simugen.core.transfer.interfaces.PipeData;
  * @author Lorelei
  *
  */
-public final class TransferInputPipe implements InputPipe<ElementTransferData> {
+public final class TransferInputPipe implements InputPipe<ElementTransferData>
+{
 	private final Component owner;
 
-	public TransferInputPipe(Component owner) {
+	public TransferInputPipe(Component owner)
+	{
 		this.owner = owner;
 	}
-	
+
 	@Override
-	public void getPipeData(ElementTransferData pipeData) {
+	public void getPipeData(ElementTransferData pipeData)
+	{
 		this.owner.receiveData(pipeData);
 	}
 
 	@Override
-	public boolean isReady(ElementTransferData pipeData) {
+	public boolean isReady(ElementTransferData pipeData)
+	{
 		return owner.canReceiveElement(pipeData);
 	}
 
 	@Override
-	public Component getOwner() {
+	public Component getOwner()
+	{
 		return owner;
 	}
 }

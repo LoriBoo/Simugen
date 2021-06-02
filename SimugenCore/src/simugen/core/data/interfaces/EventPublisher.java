@@ -20,12 +20,26 @@ import simugen.core.interfaces.Model;
  * @author Lorelei
  *
  */
-public interface EventPublisher {
+public interface EventPublisher
+{
+	/**
+	 * @param event
+	 *            {@link Event} to be published to {@link EventListener}s.
+	 */
+	public void publish(Event event);
 
-	void publish(Event event);
+	/**
+	 * @param eventListener
+	 *            The {@link EventListener} to be added to the list in the
+	 *            {@link EventPublisher}.
+	 */
+	public void addEventListener(EventListener<?> eventListener);
 
-	void addEventListener(EventListener<?> eventListener);
-
-	void addAllListeners(List<EventListener<?>> listListeners);
+	/**
+	 * @param listListeners
+	 *            List of {@link EventListener}s to be added to the list in the
+	 *            {@link EventPublisher}.
+	 */
+	public void addAllListeners(List<EventListener<?>> listListeners);
 
 }

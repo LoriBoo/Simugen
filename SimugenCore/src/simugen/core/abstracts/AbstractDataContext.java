@@ -16,7 +16,9 @@ import simugen.core.transfer.interfaces.PipeData;
  * @param <T>
  * @param <V>
  */
-public abstract class AbstractDataContext<T, V extends PipeData<? extends Object>> implements DataContext<T, V> {
+public abstract class AbstractDataContext<T, V extends PipeData<? extends Object>>
+		implements DataContext<T, V>
+{
 	private T contextOwner;
 
 	/**
@@ -25,30 +27,36 @@ public abstract class AbstractDataContext<T, V extends PipeData<? extends Object
 	 * {@link #doProcessData(Object, PipeData)}.<br>
 	 * <br>
 	 * 
-	 * @param contextOwner the owner of the process.
+	 * @param contextOwner
+	 *            the owner of the process.
 	 */
-	public AbstractDataContext(T contextOwner) {
+	public AbstractDataContext(T contextOwner)
+	{
 		this.contextOwner = contextOwner;
 	}
 
 	/**
 	 * Method {@link #processData(PipeData)} is called by any data processor.
-	 * Abstracted to {@link #doProcessData(Object, PipeData)} to allow subclasses
-	 * exposure to the {@link #contextOwner}
+	 * Abstracted to {@link #doProcessData(Object, PipeData)} to allow
+	 * subclasses exposure to the {@link #contextOwner}
 	 * 
-	 * @param data The data to be processed.
+	 * @param data
+	 *            The data to be processed.
 	 */
 	@Override
-	public void processData(V data) {
+	public void processData(V data)
+	{
 		doProcessData(contextOwner, data);
 	}
 
 	/**
-	 * Abstracted method for subclasses to {@link Override}, in order to actually
-	 * process the data. Exposes {@link #contextOwner} to the method.
+	 * Abstracted method for subclasses to {@link Override}, in order to
+	 * actually process the data. Exposes {@link #contextOwner} to the method.
 	 * 
-	 * @param componentContext The owner of the process.
-	 * @param data             The data to be processed
+	 * @param componentContext
+	 *            The owner of the process.
+	 * @param data
+	 *            The data to be processed
 	 */
 	abstract protected void doProcessData(T componentContext, V data);
 }

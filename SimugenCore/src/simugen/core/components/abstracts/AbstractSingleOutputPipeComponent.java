@@ -25,11 +25,14 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * @author Lorelei
  *
  */
-public abstract class AbstractSingleOutputPipeComponent extends AbstractComponent implements SingleTransferOutputPipe {
+public abstract class AbstractSingleOutputPipeComponent
+		extends AbstractComponent implements SingleTransferOutputPipe
+{
 	private final TransferOutputPipe outputPipe = new TransferOutputPipe();
 
 	@Override
-	public TransferOutputPipe getTransferOutputPipe() {
+	public TransferOutputPipe getTransferOutputPipe()
+	{
 		return outputPipe;
 	}
 }

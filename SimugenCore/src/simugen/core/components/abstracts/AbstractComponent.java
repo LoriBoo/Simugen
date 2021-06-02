@@ -21,7 +21,8 @@ import simugen.core.transfer.interfaces.PipeData;
  * @author Lorelei
  *
  */
-public abstract class AbstractComponent implements Component {
+public abstract class AbstractComponent implements Component
+{
 	private final Map<Class<?>, DataContext<?, ? extends PipeData<?>>> mapDataContext = new HashMap<>();
 
 	private String ID = null;
@@ -31,7 +32,9 @@ public abstract class AbstractComponent implements Component {
 	protected final List<Event> events = new ArrayList<>();
 
 	@Override
-	public void addProcessDataContext(Class<?> dataClass, DataContext<?, ? extends PipeData<?>> dataContext) {
+	public void addProcessDataContext(Class<?> dataClass,
+			DataContext<?, ? extends PipeData<?>> dataContext)
+	{
 		mapDataContext.put(dataClass, dataContext);
 	}
 
@@ -39,16 +42,20 @@ public abstract class AbstractComponent implements Component {
 	// always work, because there're a lot of checks along the way.
 	@SuppressWarnings("unchecked")
 	@Override
-	public void receiveData(PipeData<?> data) {
-		final DataContext<?, PipeData<?>> context = (DataContext<?, PipeData<?>>) mapDataContext.get(data.getClass());
+	public void receiveData(PipeData<?> data)
+	{
+		final DataContext<?, PipeData<?>> context = (DataContext<?, PipeData<?>>) mapDataContext
+				.get(data.getClass());
 
-		if (context != null) {
+		if (context != null)
+		{
 			context.processData(data);
 		}
 	}
 
 	@Override
-	public void setLogID(String ID) {
+	public void setLogID(String ID)
+	{
 		// Only set once.
 		assert ID == null;
 
@@ -56,13 +63,16 @@ public abstract class AbstractComponent implements Component {
 	}
 
 	@Override
-	public String getLogID() {
+	public String getLogID()
+	{
 		return this.ID == null ? Component.super.getLogID() : ID;
 	}
 
 	@Override
-	public void getEvents(EngineTick tick) {
-		if (!current.equals(tick) && canGenerate()) {
+	public void getEvents(EngineTick tick)
+	{
+		if (!current.equals(tick) && canGenerate())
+		{
 			current = tick;
 
 			generateEvents(tick);
@@ -78,22 +88,24 @@ public abstract class AbstractComponent implements Component {
 	 * checks the {@link #getElementCapacity()} value to see if it's non-zero.
 	 */
 	@Override
-	public boolean canReceiveElement(ElementTransferData pipeData) {
+	public boolean canReceiveElement(ElementTransferData pipeData)
+	{
 		return this.getElementCapacity() != 0;
 	}
 
 	/**
-	 * Method for generating events. Classes that extend this class shall determine
-	 * what the rules are for generating events.
+	 * Method for generating events. Classes that extend this class shall
+	 * determine what the rules are for generating events.
 	 * 
-	 * @param tick The {@link EngineTick} in which this event was generated.
+	 * @param tick
+	 *            The {@link EngineTick} in which this event was generated.
 	 */
 	protected abstract void generateEvents(EngineTick tick);
 
 	/**
 	 * 
-	 * @return <b>True</b> if this component is ready to generate an {@link Event},
-	 *         <b>False</b> otherwise.
+	 * @return <b>True</b> if this component is ready to generate an
+	 *         {@link Event}, <b>False</b> otherwise.
 	 */
 	protected abstract boolean canGenerate();
 }

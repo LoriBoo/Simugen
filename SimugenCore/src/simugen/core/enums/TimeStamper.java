@@ -8,39 +8,49 @@ import java.util.Date;
  * @author Lorelei
  * @deprecated
  */
-public enum TimeStamper {
+public enum TimeStamper
+{
 	AMPM, SHORT_DATE_AMPM, LONG_DATE_AMPM, CUSTOM;
 
-	private static final SimpleDateFormat FORMAT_AMPM = new SimpleDateFormat("hh:mm:ss aa");
+	private static final SimpleDateFormat FORMAT_AMPM = new SimpleDateFormat(
+			"hh:mm:ss aa");
 
-	private static final SimpleDateFormat FORMAT_SHORT_DATE_AMPM = new SimpleDateFormat("MM/dd/yy hh:mm:ss aa");
+	private static final SimpleDateFormat FORMAT_SHORT_DATE_AMPM = new SimpleDateFormat(
+			"MM/dd/yy hh:mm:ss aa");
 
-	private static final SimpleDateFormat FORMAT_LONG_DATE_AMPM = new SimpleDateFormat("MMMM dd, yyyy hh:mm:ss aa");
+	private static final SimpleDateFormat FORMAT_LONG_DATE_AMPM = new SimpleDateFormat(
+			"MMMM dd, yyyy hh:mm:ss aa");
 
 	private static SimpleDateFormat formatCustom = null;
 
 	private long epoch = 0L;
 
-	public void setEpoch(long epoch) {
+	public void setEpoch(long epoch)
+	{
 		this.epoch = epoch;
 	}
 
-	public void setCustom(SimpleDateFormat format) {
-		if (!this.equals(CUSTOM)) {
+	public void setCustom(SimpleDateFormat format)
+	{
+		if (!this.equals(CUSTOM))
+		{
 			throw new IllegalAccessError();
 		}
 
 		formatCustom = format;
 	}
 
-	public String getTimeStamp(long time) {
+	public String getTimeStamp(long time)
+	{
 		final Date date = new Date(time + epoch);
 
-		switch (this) {
+		switch (this)
+		{
 		case AMPM:
 			return FORMAT_AMPM.format(date);
 		case CUSTOM:
-			if (formatCustom == null) {
+			if (formatCustom == null)
+			{
 				throw new IllegalStateException();
 			}
 			return formatCustom.format(date);

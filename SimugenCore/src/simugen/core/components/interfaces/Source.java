@@ -13,6 +13,7 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * @author Lorelei
  *
  */
-public interface Source extends Component, SingleTransferOutputPipe {
+public interface Source extends Component, SingleTransferOutputPipe
+{
 
 }

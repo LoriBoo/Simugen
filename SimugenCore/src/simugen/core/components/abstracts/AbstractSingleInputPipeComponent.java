@@ -15,10 +15,10 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * {@link Component}s.<br>
  * <br>
  * Users should first consider extending
- * {@link AbstractSingleInputPipeComponent} or other potential abstract
- * classes in lieu of implementing the interfaces directly, unless it's
- * absolutely necessary to create a non-{@link Component} Java {@link Object}
- * that utilizes the functionality. <br>
+ * {@link AbstractSingleInputPipeComponent} or other potential abstract classes
+ * in lieu of implementing the interfaces directly, unless it's absolutely
+ * necessary to create a non-{@link Component} Java {@link Object} that utilizes
+ * the functionality. <br>
  * <br>
  * Abstract classes related to this one: <br>
  * <li>{@link AbstractSingleInMultiOutPipeComponent}</li>
@@ -28,18 +28,22 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * @author Lorelei
  *
  */
-public abstract class AbstractSingleInputPipeComponent extends AbstractComponent implements SingleTransferInputPipe {
+public abstract class AbstractSingleInputPipeComponent extends AbstractComponent
+		implements SingleTransferInputPipe
+{
 	private final TransferInputPipe inputPipe = new TransferInputPipe(this);
 
 	private final DefaultElementTransferDataContext<SingleTransferInputPipe> dataContext = new DefaultElementTransferDataContext<>(
 			this);
 
-	public AbstractSingleInputPipeComponent() {
+	public AbstractSingleInputPipeComponent()
+	{
 		addProcessDataContext(ElementTransferData.class, dataContext);
 	}
 
 	@Override
-	public TransferInputPipe getTransferInputPipe() {
+	public TransferInputPipe getTransferInputPipe()
+	{
 		return inputPipe;
 	}
 }

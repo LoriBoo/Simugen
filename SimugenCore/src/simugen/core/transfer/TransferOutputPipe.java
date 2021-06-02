@@ -14,17 +14,22 @@ import simugen.core.transfer.interfaces.PipeUnion;
  * @author Lorelei
  *
  */
-public final class TransferOutputPipe implements OutputPipe<ElementTransferData, TransferInputPipe> {
+public final class TransferOutputPipe
+		implements OutputPipe<ElementTransferData, TransferInputPipe>
+{
 	protected TransferPipeUnion pipeUnion = null;
 
 	@Override
-	public boolean canSendPipeData(ElementTransferData pipeData) {
+	public boolean canSendPipeData(ElementTransferData pipeData)
+	{
 		return pipeUnion.getDownStreamPipe().isReady(pipeData);
 	}
 
 	@Override
-	public Event sendPipeData(ElementTransferData pipeData) {
-		final Event event = new ElementTransferEvent(pipeData.getData(), pipeData.getSentFrom(), pipeData.getSentTo(),
+	public Event sendPipeData(ElementTransferData pipeData)
+	{
+		final Event event = new ElementTransferEvent(pipeData.getData(),
+				pipeData.getSentFrom(), pipeData.getSentTo(),
 				pipeData.getTime());
 
 		pipeUnion.getDownStreamPipe().getPipeData(pipeData);
@@ -33,7 +38,8 @@ public final class TransferOutputPipe implements OutputPipe<ElementTransferData,
 	}
 
 	@Override
-	public void union(TransferInputPipe transferInputPipe) {
+	public void union(TransferInputPipe transferInputPipe)
+	{
 		assert this.pipeUnion == null;
 
 		assert transferInputPipe instanceof TransferInputPipe;
@@ -42,7 +48,8 @@ public final class TransferOutputPipe implements OutputPipe<ElementTransferData,
 	}
 
 	@Override
-	public PipeUnion<ElementTransferData> getUnion() {
+	public PipeUnion<ElementTransferData> getUnion()
+	{
 		return pipeUnion;
 	}
 

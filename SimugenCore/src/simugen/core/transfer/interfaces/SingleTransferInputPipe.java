@@ -17,7 +17,8 @@ import simugen.core.transfer.TransferInputPipe;
  * @author Lorelei
  *
  */
-public interface SingleTransferInputPipe {
+public interface SingleTransferInputPipe
+{
 	/**
 	 * 
 	 * @return The {@link TransferInputPipe} for this {@link Component}.
@@ -25,9 +26,9 @@ public interface SingleTransferInputPipe {
 	public TransferInputPipe getTransferInputPipe();
 
 	/**
-	 * Classes that implement {@link SingleTransferInputPipe} will implement this
-	 * method to process receiving {@link ElementTransferData} from upstream
-	 * {@link Component}.
+	 * Classes that implement {@link SingleTransferInputPipe} will implement
+	 * this method to process receiving {@link ElementTransferData} from
+	 * upstream {@link Component}.
 	 * 
 	 * @param data
 	 */

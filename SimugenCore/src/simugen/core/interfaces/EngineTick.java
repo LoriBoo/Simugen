@@ -22,7 +22,8 @@ import simugen.core.defaults.ElementTransferEvent;
  * @author Lorelei
  *
  */
-public interface EngineTick {
+public interface EngineTick
+{
 	/**
 	 * Get the next random number from the Engine.<br>
 	 * <br>
@@ -33,42 +34,45 @@ public interface EngineTick {
 	public double getNextRand();
 
 	/**
-	 * Gets the time at which the event should fire, based on the current time of
-	 * the engine.<br>
+	 * Gets the time at which the event should fire, based on the current time
+	 * of the engine.<br>
 	 * <br>
 	 * The duration gets saved as the new time for the {@link Engine} once the
-	 * {@link EngineTick} is done. <i>Only update the new event if the duration is
-	 * longer than the previous event's duration. <b>(I am unsure if this is a valid
-	 * statement)</b></i>
+	 * {@link EngineTick} is done. <i>Only update the new event if the duration
+	 * is longer than the previous event's duration. <b>(I am unsure if this is
+	 * a valid statement)</b></i>
 	 * 
-	 * @param duration The duration in milliseconds that this {@link Event} took.
-	 *                 Eg. The time at which an {@link Element} was at a
-	 *                 {@link Server}
+	 * @param duration
+	 *            The duration in milliseconds that this {@link Event} took. Eg.
+	 *            The time at which an {@link Element} was at a {@link Server}
 	 * @return The time in milliseconds for this {@link Event}, in {@link Model}
 	 *         time.
 	 */
 	public long getEventTime(long duration);
 
 	/**
-	 * @param event The {@link Event} to add to the {@link EngineTick}, to be
-	 *              processed by the {@link Engine}.
+	 * @param event
+	 *            The {@link Event} to add to the {@link EngineTick}, to be
+	 *            processed by the {@link Engine}.
 	 */
 	public void addEvent(Event event);
 
 	/**
-	 * @param listEvents All of the {@link Event}s to add to the list in this
-	 *                   {@link EngineTick}.
+	 * @param listEvents
+	 *            All of the {@link Event}s to add to the list in this
+	 *            {@link EngineTick}.
 	 */
 	public void addAllEvents(List<Event> listEvents);
 
 	/**
-	 * @return The list of Events for this {@link EngineTick}. Intended to be called
-	 *         by the {@link Engine}.
+	 * @return The list of Events for this {@link EngineTick}. Intended to be
+	 *         called by the {@link Engine}.
 	 */
 	public List<Event> getEvents();
 
 	/**
-	 * @param milliseconds The current time in milliseconds, of the {@link Engine}.
+	 * @param milliseconds
+	 *            The current time in milliseconds, of the {@link Engine}.
 	 */
 	public void setCurrentTime(long milliseconds);
 }

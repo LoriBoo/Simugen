@@ -20,31 +20,33 @@ import simugen.core.transfer.interfaces.PipeData;
  * @author Lorelei
  *
  */
-public interface Component extends LoggableID {
+public interface Component extends LoggableID
+{
 	final static String NO_INPUT_PIPE_ERR = "Component does not have an InputPipe to receive data.";
 
 	/**
 	 * For this EngineTick, get the events from the component.<br>
 	 * <br>
-	 * Note: Many {@link Component}s can only generate events once per EngineTick,
-	 * and may have resultant events based on other events that have occurred during
-	 * this {@link EngineTick}. <br>
+	 * Note: Many {@link Component}s can only generate events once per
+	 * EngineTick, and may have resultant events based on other events that have
+	 * occurred during this {@link EngineTick}. <br>
 	 * <br>
-	 * {@link Router}s and {@link Queue}s are examples of {@link Component}s that
-	 * are allowed to generate multiple events per engine tick.<br>
+	 * {@link Router}s and {@link Queue}s are examples of {@link Component}s
+	 * that are allowed to generate multiple events per engine tick.<br>
 	 * <br>
-	 * This method may seem counter-intuitive since it is labeled as a getter, but
-	 * is a <code>void</code> return type;<br>
+	 * This method may seem counter-intuitive since it is labeled as a getter,
+	 * but is a <code>void</code> return type;<br>
 	 * <br>
 	 * <b>This method places any gotten events into the EngineTick.<b>
 	 * 
-	 * @param tick the current {@link EngineTick} of the {@link Engine}.
+	 * @param tick
+	 *            the current {@link EngineTick} of the {@link Engine}.
 	 */
 	public void getEvents(EngineTick tick);
 
 	/**
-	 * Get the current capacity of the Component, eg. number of free slots left for
-	 * Elements to be received. -1 is infinite.
+	 * Get the current capacity of the Component, eg. number of free slots left
+	 * for Elements to be received. -1 is infinite.
 	 * 
 	 * @return
 	 */
@@ -58,7 +60,8 @@ public interface Component extends LoggableID {
 	 * {@link Component} has a {@link DataContext} in which to handle this
 	 * {@link PipeData}, and therefore subclasses must handle this.
 	 * 
-	 * @param data The {@link PipeData} from the upstream {@link Component}.
+	 * @param data
+	 *            The {@link PipeData} from the upstream {@link Component}.
 	 */
 	public void receiveData(PipeData<?> data);
 
@@ -70,11 +73,13 @@ public interface Component extends LoggableID {
 	 * @param dataClass
 	 * @param dataContext
 	 */
-	public void addProcessDataContext(Class<?> dataClass, DataContext<?, ? extends PipeData<?>> dataContext);
+	public void addProcessDataContext(Class<?> dataClass,
+			DataContext<?, ? extends PipeData<?>> dataContext);
 
 	/**
 	 * 
-	 * @param elementTransferData data for the potential transfer.
+	 * @param elementTransferData
+	 *            data for the potential transfer.
 	 * @return <b>True</b> if this {@link Component} can receive an element,
 	 *         <b>false</b> otherwise.
 	 */

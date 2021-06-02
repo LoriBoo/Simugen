@@ -6,11 +6,14 @@ package simugen.core.sql;
  * @author Lorelei
  *
  */
-public enum ColumnType {
+public enum ColumnType
+{
 	STRING, INT, DOUBLE, TIME, DATE, TIMESTAMP;
 
-	public String getType() {
-		switch (this) {
+	public String getType()
+	{
+		switch (this)
+		{
 		case STRING:
 			return "TEXT";
 		case INT:

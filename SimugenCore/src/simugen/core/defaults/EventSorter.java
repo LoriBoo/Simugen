@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import simugen.core.interfaces.Event;
 
-public class EventSorter implements Comparator<Event>
+final public class EventSorter implements Comparator<Event>
 {
 
 	@Override

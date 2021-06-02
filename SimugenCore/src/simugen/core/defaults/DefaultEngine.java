@@ -16,7 +16,8 @@ import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
 import simugen.core.interfaces.ModelBuilder;
 
-public class DefaultEngine implements Engine {
+final public class DefaultEngine implements Engine
+{
 	private boolean forceStop;
 
 	private MersenneTwister doubleGenerator;
@@ -46,7 +47,8 @@ public class DefaultEngine implements Engine {
 	private int batch = 0;
 
 	@Override
-	public void start() {
+	public void start()
+	{
 		setBatchNumber();
 
 		publisher = new DefaultEventPublisher();
@@ -55,14 +57,17 @@ public class DefaultEngine implements Engine {
 
 		publisher.addEventListener(new DefaultConsoleListener());
 
-		if (epoch == 0L) {
+		if (epoch == 0L)
+		{
 			setEpoch(Calendar.getInstance().getTimeInMillis());
 		}
 
 		publisher.publish(new EngineStartedEvent(milliseconds));
 
-		for (currentRun = 0; currentRun < runs; currentRun++) {
-			publisher.publish(new ModelRunStartedEvent(milliseconds, currentRun));
+		for (currentRun = 0; currentRun < runs; currentRun++)
+		{
+			publisher.publish(
+					new ModelRunStartedEvent(milliseconds, currentRun));
 
 			start(new MersenneTwister().nextLong());
 		}
@@ -70,7 +75,8 @@ public class DefaultEngine implements Engine {
 		publisher.publish(new EngineFinishedEvent(milliseconds));
 	}
 
-	private void setBatchNumber() {
+	private void setBatchNumber()
+	{
 		String location = this.getOutputLocation() + "Batch X/";
 
 		String loc = null;
@@ -79,15 +85,18 @@ public class DefaultEngine implements Engine {
 
 		int i = 1;
 
-		do {
+		do
+		{
 			loc = location.replace("X", String.valueOf(i));
 
 			p = new File(loc);
 
 			i++;
 
-			if (i == Integer.MAX_VALUE) {
-				throw (new IllegalStateException("Too many Batch folders exist"));
+			if (i == Integer.MAX_VALUE)
+			{
+				throw (new IllegalStateException(
+						"Too many Batch folders exist"));
 			}
 		} while (p.isDirectory());
 
@@ -97,33 +106,45 @@ public class DefaultEngine implements Engine {
 	}
 
 	@Override
-	public void setEpoch(long epoch) {
+	public void setEpoch(long epoch)
+	{
 		this.epoch = epoch;
 	}
 
 	@Override
-	public long getEpoch() {
+	public long getEpoch()
+	{
 		return this.epoch;
 	}
 
 	@Override
-	public void start(long seed) {
+	public void start(long seed)
+	{
 		this.seed = seed;
 
-		try {
+		try
+		{
 			this.runningModel = this.modelBuilder.buildModel();
-		} catch (Exception e) {
-			publisher.publish(new EngineErrorEvent(milliseconds, "Problem Building model!"));
+		}
+		catch (Exception e)
+		{
+			publisher.publish(new EngineErrorEvent(milliseconds,
+					"Problem Building model!"));
 
 			throw new IllegalStateException("Problem building model.");
 		}
 
-		if (runningModel == null) {
-			publisher.publish(new EngineErrorEvent(milliseconds, "Model has not been set!"));
+		if (runningModel == null)
+		{
+			publisher.publish(new EngineErrorEvent(milliseconds,
+					"Model has not been set!"));
 
 			throw new IllegalStateException("Model has not been set");
-		} else if (!runningModel.isReady()) {
-			publisher.publish(new EngineErrorEvent(milliseconds, "Model has not readied up!"));
+		}
+		else if (!runningModel.isReady())
+		{
+			publisher.publish(new EngineErrorEvent(milliseconds,
+					"Model has not readied up!"));
 
 			throw new IllegalStateException("Model has not readied up");
 		}
@@ -134,7 +155,8 @@ public class DefaultEngine implements Engine {
 
 		forceStop = false;
 
-		runningModel.setOutputLocation(getOutputLocation() + "Batch " + batch + "/");
+		runningModel.setOutputLocation(
+				getOutputLocation() + "Batch " + batch + "/");
 
 		runningModel.startUp(currentRun, seed, epoch);
 
@@ -148,33 +170,40 @@ public class DefaultEngine implements Engine {
 
 		final List<Event> eventList = new ArrayList<>();
 
-		while (complete == false) {
+		while (complete == false)
+		{
 			EngineTick tick = new DefaultEngineTick(this);
 
 			final List<Event> getEvents = getEvents(tick);
 
-			if (getEvents != null) {
+			if (getEvents != null)
+			{
 				eventList.addAll(getEvents);
 			}
 
-			if (eventList.isEmpty()) {
+			if (eventList.isEmpty())
+			{
 				eventList.add(new ModelFinishedEvent(milliseconds));
 			}
 
 			long time = -1L;
 
-			do {
+			do
+			{
 				final List<Event> copy = new ArrayList<>(eventList);
 
 				// Sort the list in order of model time
 				copy.sort(new EventSorter());
 
-				for (Event e : copy) {
-					if (time == -1L) {
+				for (Event e : copy)
+				{
+					if (time == -1L)
+					{
 						time = e.getTime();
 					}
 
-					if (e.getTime() == time) {
+					if (e.getTime() == time)
+					{
 
 						e.setModelSeed(seed);
 
@@ -182,7 +211,8 @@ public class DefaultEngine implements Engine {
 
 						e.consume();
 
-						if (e instanceof ModelFinishedEvent) {
+						if (e instanceof ModelFinishedEvent)
+						{
 							complete = true;
 						}
 
@@ -200,76 +230,91 @@ public class DefaultEngine implements Engine {
 				// dirty and needs to process the messages
 				dirty = newEvents != null;
 
-				if (newEvents != null) {
+				if (newEvents != null)
+				{
 					eventList.addAll(newEvents);
 				}
 
 			} while (dirty && !forceStop && !complete);
 		}
 
-		if (forceStop) {
-			publisher.publish(new EngineErrorEvent(milliseconds, "Engine was forcibly stopped."));
+		if (forceStop)
+		{
+			publisher.publish(new EngineErrorEvent(milliseconds,
+					"Engine was forcibly stopped."));
 		}
 
 		running = false;
 	}
 
-	private List<Event> getEvents(EngineTick tick) {
+	private List<Event> getEvents(EngineTick tick)
+	{
 		return runningModel.getEvents(tick);
 	}
 
 	@Override
-	public void stop() {
+	public void stop()
+	{
 		forceStop = true;
 	}
 
 	@Override
-	public double getNextRand() {
+	public double getNextRand()
+	{
 		return doubleGenerator.nextDouble();
 	}
 
 	@Override
-	public void publishSeed() {
+	public void publishSeed()
+	{
 		publisher.publish(new PublishSeedEvent(this.getSeed()));
 	}
 
 	@Override
-	public long getSeed() {
+	public long getSeed()
+	{
 		return seed;
 	}
 
 	@Override
-	public boolean isRunning() {
+	public boolean isRunning()
+	{
 		return running;
 	}
 
 	@Override
-	public void setRuns(int runs) {
+	public void setRuns(int runs)
+	{
 		this.runs = runs;
 	}
 
 	@Override
-	public long getMilliseconds() {
+	public long getMilliseconds()
+	{
 		return milliseconds;
 	}
 
 	@Override
-	public void setModelBuilder(ModelBuilder builder) {
+	public void setModelBuilder(ModelBuilder builder)
+	{
 		this.modelBuilder = builder;
 	}
 
 	@Override
-	public void addListener(EventListener<?> listener) {
+	public void addListener(EventListener<?> listener)
+	{
 		listListeners.add(listener);
 	}
 
 	@Override
-	public String getOutputLocation() {
+	public String getOutputLocation()
+	{
 		return this.outputLocation;
 	}
 
 	@Override
-	public void setOutputLocation(String location) {
+	public void setOutputLocation(String location)
+	{
 		this.outputLocation = location;
 	}
 }

@@ -9,19 +9,23 @@ import simugen.core.interfaces.EngineTick;
  * @author Lorelei
  *
  */
-public class FixedNumberGenerator implements DataGenerator<Number> {
+public class FixedNumberGenerator implements DataGenerator<Number>
+{
 	final double fixed;
 
-	public FixedNumberGenerator(double fixed) {
+	public FixedNumberGenerator(double fixed)
+	{
 		this.fixed = fixed;
 	}
 
 	@Override
-	public Number getNext(EngineTick tick) {
+	public Number getNext(EngineTick tick)
+	{
 		return fixed;
 	}
 
-	public boolean isReady() {
+	public boolean isReady()
+	{
 		return true;
 	}
 }

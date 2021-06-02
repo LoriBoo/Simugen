@@ -19,6 +19,8 @@ import simugen.core.transfer.interfaces.SingleTransferInputPipe;
  *
  */
 
-public interface Router extends Component, SingleTransferInputPipe, MultiTransferOutputPipe {
+public interface Router
+		extends Component, SingleTransferInputPipe, MultiTransferOutputPipe
+{
 
 }

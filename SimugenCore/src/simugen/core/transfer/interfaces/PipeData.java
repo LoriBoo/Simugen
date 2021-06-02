@@ -8,9 +8,11 @@ import simugen.core.interfaces.Model;
  * 
  * @author Lorelei
  *
- * @param <T> The class of the data to be sent.
+ * @param <T>
+ *            The class of the data to be sent.
  */
-public interface PipeData<T extends Object> {
+public interface PipeData<T extends Object>
+{
 
 	/**
 	 * @return The data being sent.

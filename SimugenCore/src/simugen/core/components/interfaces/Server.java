@@ -14,6 +14,8 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * @author Lorelei
  *
  */
-public interface Server extends Component, SingleTransferInputPipe, SingleTransferOutputPipe {
+public interface Server
+		extends Component, SingleTransferInputPipe, SingleTransferOutputPipe
+{
 
 }

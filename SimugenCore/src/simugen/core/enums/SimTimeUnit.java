@@ -11,13 +11,16 @@ import java.util.concurrent.TimeUnit;
  * @author Lorelei
  *
  */
-public enum SimTimeUnit {
+public enum SimTimeUnit
+{
 	MILLISECOND, SECOND, MINUTE, HOUR, DAY, WEEK;
 
-	public long getMillis(Number value) {
+	public long getMillis(Number value)
+	{
 		final double v = value.doubleValue();
 
-		switch (this) {
+		switch (this)
+		{
 		case DAY:
 			return (long) (86400000.0 * v);
 		case HOUR:
@@ -35,10 +38,12 @@ public enum SimTimeUnit {
 		}
 	}
 
-	public double getConvertMillis(Number value) {
+	public double getConvertMillis(Number value)
+	{
 		final double v = value.doubleValue();
 
-		switch (this) {
+		switch (this)
+		{
 		case DAY:
 			return (v / 86400000.0);
 		case HOUR:
@@ -56,10 +61,12 @@ public enum SimTimeUnit {
 		}
 	}
 
-	public double getDays(Number value) {
+	public double getDays(Number value)
+	{
 		final double v = value.doubleValue();
 
-		switch (this) {
+		switch (this)
+		{
 		case DAY:
 			return v;
 		case HOUR:
@@ -77,10 +84,12 @@ public enum SimTimeUnit {
 		}
 	}
 
-	public double getHours(Number value) {
+	public double getHours(Number value)
+	{
 		final double v = value.doubleValue();
 
-		switch (this) {
+		switch (this)
+		{
 		case DAY:
 			return v;
 		case HOUR:

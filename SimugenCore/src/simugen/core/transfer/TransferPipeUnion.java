@@ -11,24 +11,29 @@ import simugen.core.transfer.interfaces.PipeUnion;
  * @author Lorelei
  *
  */
-public final class TransferPipeUnion implements PipeUnion<ElementTransferData> {
+public final class TransferPipeUnion implements PipeUnion<ElementTransferData>
+{
 	private final TransferOutputPipe upstreamPipe;
 
 	private final TransferInputPipe downstreamPipe;
 
-	public TransferPipeUnion(TransferOutputPipe upstreamPipe, TransferInputPipe downstreamPipe) {
+	public TransferPipeUnion(TransferOutputPipe upstreamPipe,
+			TransferInputPipe downstreamPipe)
+	{
 		this.upstreamPipe = upstreamPipe;
 
 		this.downstreamPipe = downstreamPipe;
 	}
 
 	@Override
-	public OutputPipe<ElementTransferData, ?> getUpstreamPipe() {
+	public OutputPipe<ElementTransferData, ?> getUpstreamPipe()
+	{
 		return this.upstreamPipe;
 	}
 
 	@Override
-	public InputPipe<ElementTransferData> getDownStreamPipe() {
+	public InputPipe<ElementTransferData> getDownStreamPipe()
+	{
 		return this.downstreamPipe;
 	}
 }

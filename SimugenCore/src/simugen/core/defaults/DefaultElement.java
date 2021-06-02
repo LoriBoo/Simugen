@@ -1,8 +1,15 @@
 package simugen.core.defaults;
 
 import simugen.core.abstracts.AbstractElement;
+import simugen.core.interfaces.Element;
 
-public class DefaultElement extends AbstractElement
+/**
+ * Default implementation of {@link Element}.
+ * 
+ * @author Lorelei
+ *
+ */
+final public class DefaultElement extends AbstractElement
 {
 
 }

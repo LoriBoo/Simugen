@@ -50,7 +50,9 @@ import simugen.core.sql.DefaultTableBuilder;
  * @author Lorelei
  *
  */
-final public class DefaultElementDurationListener implements EventListener<ElementTransferEvent> {
+final public class DefaultElementDurationListener
+		implements EventListener<ElementTransferEvent>
+{
 	private Component component;
 
 	private String pathToDB;
@@ -83,8 +85,10 @@ final public class DefaultElementDurationListener implements EventListener<Eleme
 
 	private Connection connection;
 
-	public DefaultElementDurationListener(Component component, String pathToDB, SimTimeUnit unit, String tableName,
-			String elementColumn, String componentColumn, int run, long epoch) {
+	public DefaultElementDurationListener(Component component, String pathToDB,
+			SimTimeUnit unit, String tableName, String elementColumn,
+			String componentColumn, int run, long epoch)
+	{
 		this.component = component;
 		this.pathToDB = pathToDB;
 		this.unit = unit;
@@ -108,17 +112,22 @@ final public class DefaultElementDurationListener implements EventListener<Eleme
 	}
 
 	@Override
-	public Class<ElementTransferEvent> getEventType() {
+	public Class<ElementTransferEvent> getEventType()
+	{
 		return ElementTransferEvent.class;
 	}
 
 	@Override
-	public void listen(ElementTransferEvent event) {
+	public void listen(ElementTransferEvent event)
+	{
 		Element e = event.getElement();
 
-		if (event.getToID().equals(component)) {
+		if (event.getToID().equals(component))
+		{
 			mapBeginTimes.put(e, event.getTime() + epoch);
-		} else if (event.getFromID().equals(component)) {
+		}
+		else if (event.getFromID().equals(component))
+		{
 			mapEndTimes.put(e, event.getTime() + epoch);
 
 			mapDurations.put(e, mapEndTimes.get(e) - mapBeginTimes.get(e));
@@ -130,16 +139,19 @@ final public class DefaultElementDurationListener implements EventListener<Eleme
 	/**
 	 * Private method for inserting data into the table.
 	 * 
-	 * @param event The {@link ElementTransferEvent} for which to process the data.
-	 *              At this point should be the <i>Exit</i> {@link Event} with the
-	 *              {@link Element} leaving the {@link Component}.
+	 * @param event
+	 *            The {@link ElementTransferEvent} for which to process the
+	 *            data. At this point should be the <i>Exit</i> {@link Event}
+	 *            with the {@link Element} leaving the {@link Component}.
 	 */
-	private void insert(ElementTransferEvent event) {
+	private void insert(ElementTransferEvent event)
+	{
 		Element e = event.getElement();
 
 		DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
-		double time = Double.valueOf(decimalFormat.format(unit.getConvertMillis(mapDurations.get(e))));
+		double time = Double.valueOf(decimalFormat
+				.format(unit.getConvertMillis(mapDurations.get(e))));
 
 		String element = event.getElement().getLogID();
 
@@ -159,20 +171,28 @@ final public class DefaultElementDurationListener implements EventListener<Eleme
 		disconnect();
 	}
 
-	protected void connect() {
+	protected void connect()
+	{
 		String url = "jdbc:sqlite:" + pathToDB;
 
-		try {
+		try
+		{
 			connection = DriverManager.getConnection(url);
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			System.out.println(e.getMessage());
 		}
 	}
 
-	protected void disconnect() {
-		try {
+	protected void disconnect()
+	{
+		try
+		{
 			connection.close();
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 	}

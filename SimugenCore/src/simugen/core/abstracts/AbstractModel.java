@@ -9,7 +9,8 @@ import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
 import simugen.core.interfaces.Model;
 
-public abstract class AbstractModel implements Model {
+public abstract class AbstractModel implements Model
+{
 	private List<Component> components = new ArrayList<>();
 
 	private List<EventListener<?>> listListeners = new ArrayList<>();
@@ -25,7 +26,8 @@ public abstract class AbstractModel implements Model {
 	protected long epoch;
 
 	@Override
-	public void startUp(int run, long seed, long epoch) {
+	public void startUp(int run, long seed, long epoch)
+	{
 		complete = false;
 		this.seed = seed;
 		this.run = run;
@@ -35,20 +37,24 @@ public abstract class AbstractModel implements Model {
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown()
+	{
 		complete = true;
 		this.seed = 0;
 		onShutdown();
 	}
 
 	@Override
-	public void addComponent(Component components) {
+	public void addComponent(Component components)
+	{
 		this.components.add(components);
 	}
 
 	@Override
-	public List<Event> getEvents(EngineTick tick) {
-		for (Component c : components) {
+	public List<Event> getEvents(EngineTick tick)
+	{
+		for (Component c : components)
+		{
 			c.getEvents(tick);
 		}
 
@@ -56,22 +62,26 @@ public abstract class AbstractModel implements Model {
 	}
 
 	@Override
-	public List<EventListener<?>> getListeners() {
+	public List<EventListener<?>> getListeners()
+	{
 		return listListeners;
 	}
 
 	@Override
-	public void addListener(EventListener<?> listener) {
+	public void addListener(EventListener<?> listener)
+	{
 		listListeners.add(listener);
 	}
 
 	@Override
-	public void setOutputLocation(String location) {
+	public void setOutputLocation(String location)
+	{
 		this.outputLocation = location;
 	}
 
 	@Override
-	public String getOutputLocation() {
+	public String getOutputLocation()
+	{
 		return this.outputLocation;
 	}
 }

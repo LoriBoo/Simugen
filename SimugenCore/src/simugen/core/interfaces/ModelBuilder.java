@@ -12,7 +12,8 @@ import java.lang.reflect.InvocationTargetException;
  * @author Lorelei
  *
  */
-public interface ModelBuilder {
+public interface ModelBuilder
+{
 
 	/**
 	 * @return A new instance of the {@link Model} that is associated with this
@@ -24,6 +25,7 @@ public interface ModelBuilder {
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
-	public Model buildModel() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+	public Model buildModel() throws InstantiationException,
+			IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException;
 }

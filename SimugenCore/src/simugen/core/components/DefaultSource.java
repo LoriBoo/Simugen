@@ -4,7 +4,7 @@ import simugen.core.components.abstracts.AbstractSource;
 import simugen.core.defaults.ElementSourcedEvent;
 import simugen.core.interfaces.DataGenerator;
 
-public class DefaultSource extends AbstractSource
+final public class DefaultSource extends AbstractSource
 {
 	public DefaultSource(DataGenerator<ElementSourcedEvent> elementGenerator,
 			int arrivals)

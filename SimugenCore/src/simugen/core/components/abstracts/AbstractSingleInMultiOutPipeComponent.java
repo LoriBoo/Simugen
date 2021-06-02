@@ -13,9 +13,8 @@ import simugen.core.transfer.interfaces.SingleTransferInputPipe;
 
 /**
  * Abstract implementation of a component that has both one single
- * {@link TransferInputPipe} and multiple {@link TransferOutputPipe}.
- * Implements both {@link SingleTransferInputPipe} and
- * {@link MultiTransferOutputPipe} <br>
+ * {@link TransferInputPipe} and multiple {@link TransferOutputPipe}. Implements
+ * both {@link SingleTransferInputPipe} and {@link MultiTransferOutputPipe} <br>
  * <br>
  * Extends {@link AbstractComponent}, as the default implementation will be for
  * extending {@link Component}s.<br>
@@ -34,8 +33,10 @@ import simugen.core.transfer.interfaces.SingleTransferInputPipe;
  * @author Lorelei
  *
  */
-public abstract class AbstractSingleInMultiOutPipeComponent extends AbstractComponent
-		implements MultiTransferOutputPipe, SingleTransferInputPipe {
+public abstract class AbstractSingleInMultiOutPipeComponent
+		extends AbstractComponent
+		implements MultiTransferOutputPipe, SingleTransferInputPipe
+{
 
 	protected Map<Component, TransferOutputPipe> mapPipes = new HashMap<>();
 
@@ -44,24 +45,28 @@ public abstract class AbstractSingleInMultiOutPipeComponent extends AbstractComp
 	private final DefaultElementTransferDataContext<AbstractSingleInMultiOutPipeComponent> dataContext = new DefaultElementTransferDataContext<>(
 			this);
 
-	public AbstractSingleInMultiOutPipeComponent() {
+	public AbstractSingleInMultiOutPipeComponent()
+	{
 		addProcessDataContext(ElementTransferData.class, dataContext);
 	}
 
 	@Override
-	public TransferInputPipe getTransferInputPipe() {
+	public TransferInputPipe getTransferInputPipe()
+	{
 		return inputPipe;
 	}
 
 	@Override
-	public TransferOutputPipe addTransferOutputPipe(Component connected) {
+	public TransferOutputPipe addTransferOutputPipe(Component connected)
+	{
 		mapPipes.put(connected, new TransferOutputPipe());
 
 		return mapPipes.get(connected);
 	}
 
 	@Override
-	public TransferOutputPipe getTransferOutputPipe(Component connected) {
+	public TransferOutputPipe getTransferOutputPipe(Component connected)
+	{
 		return mapPipes.get(connected);
 	}
 

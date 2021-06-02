@@ -8,9 +8,11 @@ import simugen.core.components.interfaces.Component;
  * 
  * @author Lorelei
  *
- * @param <T> The {@link PipeData} the two pipes share.
+ * @param <T>
+ *            The {@link PipeData} the two pipes share.
  */
-public interface PipeUnion<T extends PipeData<?>> {
+public interface PipeUnion<T extends PipeData<?>>
+{
 
 	/**
 	 * @return The upstream {@link Component}'s {@link OutputPipe}.

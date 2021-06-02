@@ -3,7 +3,7 @@ package simugen.core.components;
 import simugen.core.components.abstracts.AbstractQueue;
 import simugen.core.enums.QueueMethod;
 
-public class DefaultQueue extends AbstractQueue
+final public class DefaultQueue extends AbstractQueue
 {
 
 	public DefaultQueue()

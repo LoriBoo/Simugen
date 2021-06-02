@@ -25,7 +25,8 @@ import simugen.core.interfaces.EngineTick;
  * @author Lorelei
  *
  */
-public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
+public class EmpiricalGenerator implements DataGenerator<Number>, Serializable
+{
 	private static final long serialVersionUID = 1L;
 
 	private ArrayList<Double> values = new ArrayList<>();
@@ -39,9 +40,11 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	private boolean ready = false;
 
 	/**
-	 * @param d A value to be added to the empirical distribution.
+	 * @param d
+	 *            A value to be added to the empirical distribution.
 	 */
-	public void addValue(double d) {
+	public void addValue(double d)
+	{
 		values.add(d);
 
 		ready = false;
@@ -53,17 +56,21 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	 * For example, {1,3,3,4,8,10}; 3 would have a probability of 0.333... and 1
 	 * would have a probability of 0.166...
 	 */
-	public void computeProbabilities() {
+	public void computeProbabilities()
+	{
 		double n = values.size();
 
 		double prob;
 
 		@SuppressWarnings("unchecked")
-		ArrayList<Double> buffer = (ArrayList<Double>) values.getClass().cast(values.clone());
+		ArrayList<Double> buffer = (ArrayList<Double>) values.getClass()
+				.cast(values.clone());
 
-		buffer.sort(new Comparator<Double>() {
+		buffer.sort(new Comparator<Double>()
+		{
 			@Override
-			public int compare(Double o1, Double o2) {
+			public int compare(Double o1, Double o2)
+			{
 				int count1 = getNumberOf(o1);
 				int count2 = getNumberOf(o2);
 
@@ -73,8 +80,10 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 
 		values = buffer;
 
-		for (double d : values) {
-			if (mapValueToProbabilities.containsKey(d)) {
+		for (double d : values)
+		{
+			if (mapValueToProbabilities.containsKey(d))
+			{
 				continue;
 			}
 
@@ -93,9 +102,9 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	/**
 	 * Generate the Cumulative Distribution Function.<br>
 	 * <br>
-	 * In probabilities, the cumulative distribution function is a function that has
-	 * a range from {0,1} in which a random number from {0,1} will generate a
-	 * variate, X from the input values.<br>
+	 * In probabilities, the cumulative distribution function is a function that
+	 * has a range from {0,1} in which a random number from {0,1} will generate
+	 * a variate, X from the input values.<br>
 	 * <br>
 	 * The CDF for an empirical distribution is a step function. Wikipedia has a
 	 * better explanation of CDFs than a little snippet in JavaDoc could ever
@@ -106,10 +115,13 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	 *      "https://en.wikipedia.org/wiki/Cumulative_distribution_function">Wikipedia
 	 *      - Cumulative Distribution Function</a>
 	 */
-	private void createCDF() {
+	private void createCDF()
+	{
 		double last = 0;
 
-		for (Double value : mapValueToProbabilities.keySet().toArray(new Double[0])) {
+		for (Double value : mapValueToProbabilities.keySet()
+				.toArray(new Double[0]))
+		{
 			last += mapValueToProbabilities.get(value);
 
 			mapValueToProbabilities.put(value, last);
@@ -123,13 +135,17 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	}
 
 	/**
-	 * @param d The {@link Double} that is to be checked for in the list.
+	 * @param d
+	 *            The {@link Double} that is to be checked for in the list.
 	 * @return The number of times this value exists in the list.
 	 */
-	private int getNumberOf(double d) {
+	private int getNumberOf(double d)
+	{
 		int count = 0;
-		for (double val : values) {
-			if (Double.valueOf(val).equals(d)) {
+		for (double val : values)
+		{
+			if (Double.valueOf(val).equals(d))
+			{
 				count++;
 			}
 		}
@@ -140,21 +156,27 @@ public class EmpiricalGenerator implements DataGenerator<Number>, Serializable {
 	 * Get the next random variate from this distribution.
 	 */
 	@Override
-	public Number getNext(EngineTick tick) {
+	public Number getNext(EngineTick tick)
+	{
 		assert ready;
 
 		double d = tick.getNextRand();
 
 		// If the probability of a number is 0.25,
 		// and the passed probability, d, is <=0.25, it's valid.
-		// Because of how CDFs work, successive numbers have the previous probability
-		// added to them. For example, if {1,2,3,4} was the distribution, the CDF would
+		// Because of how CDFs work, successive numbers have the previous
+		// probability
+		// added to them. For example, if {1,2,3,4} was the distribution, the
+		// CDF would
 		// be: x = {1,2,3,4} y = {0.25, 0.5, 0.75, 1}
-		// The steps between each y-value is 0.25, and as such with a random number
+		// The steps between each y-value is 0.25, and as such with a random
+		// number
 		// {0,1} there's 25% chance of generating a variate from any of the four
 		// x-values. This is highly simplified.
-		for (Double prob : probabilities) {
-			if (d <= prob) {
+		for (Double prob : probabilities)
+		{
+			if (d <= prob)
+			{
 				return cdf.get(prob);
 			}
 		}

@@ -13,7 +13,8 @@ import simugen.core.data.interfaces.EventPublisher;
  * @author Lorelei
  *
  */
-public interface Event extends LoggableID {
+public interface Event extends LoggableID
+{
 
 	/**
 	 * @return The time, in milliseconds from model start that this event was
@@ -23,10 +24,11 @@ public interface Event extends LoggableID {
 	public long getTime();
 
 	/**
-	 * @return The default implementation returns the {@link #getLogID()} for this
-	 *         {@link Event}.
+	 * @return The default implementation returns the {@link #getLogID()} for
+	 *         this {@link Event}.
 	 */
-	default String getLogMessage() {
+	default String getLogMessage()
+	{
 		return this.getLogID();
 	}
 
@@ -37,8 +39,8 @@ public interface Event extends LoggableID {
 
 	/**
 	 * 
-	 * @return <b>True</b> or <b>False</b> whether or not the {@link Event} has been
-	 *         consumed; <br>
+	 * @return <b>True</b> or <b>False</b> whether or not the {@link Event} has
+	 *         been consumed; <br>
 	 *         see: {@link #consume()}.
 	 */
 	public boolean isConsumed();
@@ -56,7 +58,8 @@ public interface Event extends LoggableID {
 	 * <br>
 	 * <b>>>This method a candidate for deletion<<</b>
 	 * 
-	 * @param modelSeed The seed for the current {@link Model} run.
+	 * @param modelSeed
+	 *            The seed for the current {@link Model} run.
 	 */
 	public void setModelSeed(long modelSeed);
 }

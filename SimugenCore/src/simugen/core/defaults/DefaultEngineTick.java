@@ -7,7 +7,7 @@ import simugen.core.interfaces.Engine;
 import simugen.core.interfaces.EngineTick;
 import simugen.core.interfaces.Event;
 
-public final class DefaultEngineTick implements EngineTick
+final public class DefaultEngineTick implements EngineTick
 {
 	private final Engine engine;
 

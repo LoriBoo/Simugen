@@ -17,7 +17,9 @@ import simugen.core.transfer.TransferOutputPipe;
  * @author Lorelei
  *
  */
-public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeComponent implements Queue {
+public abstract class AbstractQueue
+		extends AbstractSingleInSingleOutPipeComponent implements Queue
+{
 	protected int totalCapacity = -1;
 
 	protected final QueueMethod method;
@@ -27,7 +29,8 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	/**
 	 * Default infinite queue with First in First out queuing rules.
 	 */
-	public AbstractQueue() {
+	public AbstractQueue()
+	{
 		this.method = QueueMethod.FIFO;
 	}
 
@@ -36,7 +39,8 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	 * 
 	 * @param totalCapacity
 	 */
-	public AbstractQueue(int totalCapacity) {
+	public AbstractQueue(int totalCapacity)
+	{
 		this(totalCapacity, QueueMethod.FIFO);
 	}
 
@@ -45,7 +49,8 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	 * 
 	 * @param method
 	 */
-	public AbstractQueue(QueueMethod method) {
+	public AbstractQueue(QueueMethod method)
+	{
 		this.method = method;
 	}
 
@@ -55,7 +60,8 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	 * @param totalCapacity
 	 * @param method
 	 */
-	public AbstractQueue(int totalCapacity, QueueMethod method) {
+	public AbstractQueue(int totalCapacity, QueueMethod method)
+	{
 		this(method);
 
 		this.totalCapacity = totalCapacity;
@@ -65,32 +71,38 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	 * Queues don't care what tick it is, if it can move persons out, it will.
 	 */
 	@Override
-	public void getEvents(EngineTick tick) {
+	public void getEvents(EngineTick tick)
+	{
 		current = new NullEngineTick();
 
 		super.getEvents(tick);
 	}
 
 	@Override
-	protected void generateEvents(EngineTick tick) {
+	protected void generateEvents(EngineTick tick)
+	{
 		final int index = getNextIndex();
 
 		final ElementTransferData eData = elementsInQueue.get(index);
 
 		final TransferOutputPipe outputPipe = getTransferOutputPipe();
 
-		final Component to = outputPipe.getUnion().getDownStreamPipe().getOwner();
+		final Component to = outputPipe.getUnion().getDownStreamPipe()
+				.getOwner();
 
 		long time = tick.getEventTime(0);
 
 		// If the element entered and exited the queue in the same tick.
-		if (time < eData.getTime()) {
+		if (time < eData.getTime())
+		{
 			time = eData.getTime();
 		}
 
-		final ElementTransferData data = new ElementTransferData(this, to, eData.getData(), time);
+		final ElementTransferData data = new ElementTransferData(this, to,
+				eData.getData(), time);
 
-		if (outputPipe.canSendPipeData(data)) {
+		if (outputPipe.canSendPipeData(data))
+		{
 			super.events.add(outputPipe.sendPipeData(data));
 
 			elementsInQueue.remove(eData);
@@ -98,12 +110,15 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	}
 
 	@Override
-	public boolean hasElement() {
+	public boolean hasElement()
+	{
 		return !elementsInQueue.isEmpty();
 	}
 
-	protected int getNextIndex() {
-		switch (this.method) {
+	protected int getNextIndex()
+	{
+		switch (this.method)
+		{
 		case FIFO:
 			return 0;
 		case LIFO:
@@ -116,26 +131,32 @@ public abstract class AbstractQueue extends AbstractSingleInSingleOutPipeCompone
 	}
 
 	/**
-	 * Sub-classes must override this method if they want to make a priority queue
+	 * Sub-classes must override this method if they want to make a priority
+	 * queue
 	 * 
 	 * @return
 	 */
-	protected int getNextIndexPriority() {
+	protected int getNextIndexPriority()
+	{
 		throw new IllegalAccessError();
 	}
 
 	@Override
-	public int getElementCapacity() {
-		return totalCapacity == -1 ? -1 : totalCapacity - elementsInQueue.size();
+	public int getElementCapacity()
+	{
+		return totalCapacity == -1 ? -1
+				: totalCapacity - elementsInQueue.size();
 	}
 
 	@Override
-	protected boolean canGenerate() {
+	protected boolean canGenerate()
+	{
 		return !elementsInQueue.isEmpty();
 	}
 
 	@Override
-	public void receiveElementTransferData(ElementTransferData data) {
+	public void receiveElementTransferData(ElementTransferData data)
+	{
 		elementsInQueue.add(data);
 	}
 

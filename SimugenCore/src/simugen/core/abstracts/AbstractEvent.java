@@ -8,7 +8,8 @@ import simugen.core.interfaces.Event;
  * @author Lorelei
  *
  */
-public abstract class AbstractEvent implements Event {
+public abstract class AbstractEvent implements Event
+{
 	private final long time;
 
 	private String ID = null;
@@ -19,48 +20,57 @@ public abstract class AbstractEvent implements Event {
 
 	/**
 	 * 
-	 * @param time The time in milliseconds from model start at which this
-	 *             {@link Event} occurred.<br>
-	 *             Represents model time, not real time.
+	 * @param time
+	 *            The time in milliseconds from model start at which this
+	 *            {@link Event} occurred.<br>
+	 *            Represents model time, not real time.
 	 */
-	public AbstractEvent(long time) {
+	public AbstractEvent(long time)
+	{
 		this.time = time;
 	}
 
 	@Override
-	public long getTime() {
+	public long getTime()
+	{
 		return time;
 	}
 
 	@Override
-	public void setLogID(String ID) {
+	public void setLogID(String ID)
+	{
 		assert this.ID == null;
 
 		this.ID = ID;
 	}
 
 	@Override
-	public String getLogID() {
+	public String getLogID()
+	{
 		return this.ID == null ? Event.super.getLogID() : ID;
 	}
 
 	@Override
-	public void consume() {
+	public void consume()
+	{
 		consumed = true;
 	}
 
 	@Override
-	public boolean isConsumed() {
+	public boolean isConsumed()
+	{
 		return consumed;
 	}
 
 	@Override
-	public long getModelSeed() {
+	public long getModelSeed()
+	{
 		return modelSeed;
 	}
 
 	@Override
-	public void setModelSeed(long modelSeed) {
+	public void setModelSeed(long modelSeed)
+	{
 		this.modelSeed = modelSeed;
 	}
 }

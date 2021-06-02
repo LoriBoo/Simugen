@@ -32,30 +32,38 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * @author Lorelei
  *
  */
-public abstract class AbstractSingleInSingleOutPipeComponent extends AbstractComponent
-		implements SingleTransferInputPipe, SingleTransferOutputPipe {
+public abstract class AbstractSingleInSingleOutPipeComponent
+		extends AbstractComponent
+		implements SingleTransferInputPipe, SingleTransferOutputPipe
+{
 	private final TransferInputPipe inputPipe = new TransferInputPipe(this);
 
 	private final TransferOutputPipe outputPipe = new TransferOutputPipe();
 
-	private final DataContext<Component, ElementTransferData> dataContext = new DataContext<Component, ElementTransferData>() {
+	private final DataContext<Component, ElementTransferData> dataContext = new DataContext<Component, ElementTransferData>()
+	{
 		@Override
-		public void processData(ElementTransferData data) {
-			AbstractSingleInSingleOutPipeComponent.this.receiveElementTransferData(data);
+		public void processData(ElementTransferData data)
+		{
+			AbstractSingleInSingleOutPipeComponent.this
+					.receiveElementTransferData(data);
 		}
 	};
 
-	public AbstractSingleInSingleOutPipeComponent() {
+	public AbstractSingleInSingleOutPipeComponent()
+	{
 		addProcessDataContext(ElementTransferData.class, dataContext);
 	}
 
 	@Override
-	public TransferInputPipe getTransferInputPipe() {
+	public TransferInputPipe getTransferInputPipe()
+	{
 		return inputPipe;
 	}
 
 	@Override
-	public TransferOutputPipe getTransferOutputPipe() {
+	public TransferOutputPipe getTransferOutputPipe()
+	{
 		return outputPipe;
 	}
 }

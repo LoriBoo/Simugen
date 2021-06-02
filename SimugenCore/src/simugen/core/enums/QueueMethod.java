@@ -15,6 +15,7 @@ package simugen.core.enums;
  * @author Lorelei
  *
  */
-public enum QueueMethod {
+public enum QueueMethod
+{
 	FIFO, LIFO, PRIORITY;
 }

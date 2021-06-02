@@ -16,7 +16,9 @@ import simugen.core.transfer.interfaces.SingleTransferOutputPipe;
  * @author Lorelei
  *
  */
-public interface Queue extends Component, SingleTransferInputPipe, SingleTransferOutputPipe {
+public interface Queue
+		extends Component, SingleTransferInputPipe, SingleTransferOutputPipe
+{
 
 	/**
 	 * @return Whether or not the queue contains one or more element

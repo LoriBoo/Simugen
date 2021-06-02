@@ -18,6 +18,7 @@ import simugen.core.defaults.EngineErrorEvent;
  * @author Lorelei
  *
  */
-public enum LoggingStyle {
+public enum LoggingStyle
+{
 	DATA, DEBUG, ERR, SUPRESS
 }

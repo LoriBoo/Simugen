@@ -13,16 +13,20 @@ import java.util.Calendar;
  * @author Lorelei
  *
  */
-public class SqlUtils {
+public class SqlUtils
+{
 
 	/**
 	 * This utility might be deprecated.
 	 * 
-	 * @param millis Milliseconds since the java {@link Calendar} Epoch (January 1st
-	 *               1970, 0:00:0.00)
-	 * @return A {@link String} formatted output of the date, that SQL likes to use.
+	 * @param millis
+	 *            Milliseconds since the java {@link Calendar} Epoch (January
+	 *            1st 1970, 0:00:0.00)
+	 * @return A {@link String} formatted output of the date, that SQL likes to
+	 *         use.
 	 */
-	public static String getFormattedTimeStamp(long millis) {
+	public static String getFormattedTimeStamp(long millis)
+	{
 		Calendar cal = Calendar.getInstance();
 
 		cal.setTimeInMillis(millis);
@@ -33,19 +37,24 @@ public class SqlUtils {
 	}
 
 	/**
-	 * Returns a readable {@link String} value of the data inserted. Used mainly to
-	 * capture DATE, TIME, And TIMESTAMP column types.
+	 * Returns a readable {@link String} value of the data inserted. Used mainly
+	 * to capture DATE, TIME, And TIMESTAMP column types.
 	 * 
-	 * @param set The {@link ResultSet}.
-	 * @param col The column we care about.
+	 * @param set
+	 *            The {@link ResultSet}.
+	 * @param col
+	 *            The column we care about.
 	 * @return Readable {@link String} value of the column.
 	 * @throws SQLException
 	 */
-	public static String getString(ResultSet set, int col) throws SQLException {
+	public static String getString(ResultSet set, int col) throws SQLException
+	{
 		ResultSetMetaData rsmd = set.getMetaData();
 
-		try {
-			switch (rsmd.getColumnTypeName(col)) {
+		try
+		{
+			switch (rsmd.getColumnTypeName(col))
+			{
 			case "DATE":
 				return set.getDate(col).toString();
 			case "TIME":
@@ -55,7 +64,9 @@ public class SqlUtils {
 			default:
 				return set.getString(col);
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

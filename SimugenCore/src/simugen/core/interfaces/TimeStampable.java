@@ -6,6 +6,7 @@ package simugen.core.interfaces;
  * @author Lorelei
  * @deprecated
  */
-public interface TimeStampable {
+public interface TimeStampable
+{
 	public void setEpoch(long epoch);
 }

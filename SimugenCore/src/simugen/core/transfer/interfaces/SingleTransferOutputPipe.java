@@ -16,8 +16,8 @@ import simugen.core.transfer.TransferOutputPipe;
  * @author Lorelei
  *
  */
-public interface SingleTransferOutputPipe {
-
+public interface SingleTransferOutputPipe
+{
 	/**
 	 * @return The one {@link TransferOutputPipe} that exists on this
 	 *         {@link Object}.
